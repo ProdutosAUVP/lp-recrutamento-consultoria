@@ -174,7 +174,228 @@ function aplicarVideo() {
   secao.hidden = false;
 }
 
+/* ==========================================================================
+   Interações
+   ========================================================================== */
+
+const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Agrupa leituras de scroll num único rAF por quadro. */
+function aoRolar(fn) {
+  let agendado = false;
+  const handler = () => {
+    if (agendado) return;
+    agendado = true;
+    requestAnimationFrame(() => {
+      fn();
+      agendado = false;
+    });
+  };
+  window.addEventListener("scroll", handler, { passive: true });
+  handler();
+}
+
+/** Menu vira pílula flutuante depois do topo. */
+function iniciarNavFlutuante() {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  aoRolar(() => nav.classList.toggle("is-floating", window.scrollY > 80));
+}
+
+/** Números da faixa de prova contam até o valor final ao entrar na tela. */
+function iniciarContadores() {
+  const alvos = document.querySelectorAll(".stat__value strong");
+  if (!alvos.length || semMovimento || !("IntersectionObserver" in window)) return;
+
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+
+        const texto = e.target.textContent;
+        const numero = parseInt(texto.replace(/\D/g, ""), 10);
+        if (!Number.isFinite(numero)) return;
+        const sufixo = texto.replace(/[\d]/g, "");
+
+        const duracao = 900;
+        const inicio = performance.now();
+        const passo = (agora) => {
+          const p = Math.min((agora - inicio) / duracao, 1);
+          // easeOutCubic: rápido no começo, assenta no fim
+          const valor = Math.round(numero * (1 - Math.pow(1 - p, 3)));
+          e.target.textContent = valor + sufixo;
+          if (p < 1) requestAnimationFrame(passo);
+        };
+        requestAnimationFrame(passo);
+      });
+    },
+    { threshold: 0.6 }
+  );
+  alvos.forEach((el) => io.observe(el));
+}
+
+/** Gráfico do repasse: anima ao entrar na tela e mostra a divisão no hover. */
+function iniciarGrafico() {
+  const fee = document.querySelector("[data-fee]");
+  if (!fee) return;
+
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.setAttribute("data-on", "");
+          io.unobserve(e.target);
+        });
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(fee);
+  } else {
+    fee.setAttribute("data-on", "");
+  }
+
+  const leitura = fee.querySelector("[data-readout]");
+  const padrao = leitura ? leitura.innerHTML : "";
+  fee.querySelectorAll("[data-col]").forEach((col) => {
+    const mostrar = () => {
+      if (!leitura) return;
+      const voce = col.dataset.voce;
+      const auvp = col.dataset.auvp;
+      leitura.innerHTML =
+        `Em cada R$ 100 de fee: <b>R$ ${voce},00 para você</b> e R$ ${auvp},00 para a AUVP.`;
+    };
+    const limpar = () => { if (leitura) leitura.innerHTML = padrao; };
+    col.addEventListener("mouseenter", mostrar);
+    col.addEventListener("mouseleave", limpar);
+    col.addEventListener("focus", mostrar);
+    col.addEventListener("blur", limpar);
+  });
+}
+
+/** Roadmap: trilho preenche e as etapas acendem conforme a rolagem. */
+function iniciarRoadmap() {
+  const lista = document.querySelector("[data-roadmap]");
+  const trilho = document.querySelector("[data-rail]");
+  if (!lista || !trilho) return;
+
+  const etapas = Array.from(lista.querySelectorAll(".roadmap__step"));
+  const horizontal = () => window.matchMedia("(min-width: 68.0625rem)").matches;
+
+  aoRolar(() => {
+    const r = lista.getBoundingClientRect();
+    const alvo = window.innerHeight * 0.72;
+    // 0 quando o topo da lista cruza a linha de leitura, 1 quando o fim cruza
+    const bruto = (alvo - r.top) / Math.max(r.height, 1);
+    const p = Math.min(Math.max(bruto, 0), 1);
+
+    trilho.style[horizontal() ? "width" : "height"] = `${p * 100}%`;
+
+    etapas.forEach((etapa, i) => {
+      etapa.classList.toggle("is-reached", p >= i / etapas.length);
+    });
+  });
+}
+
+/** Perfis do catálogo — o visitante compara, como o cliente faz. */
+const PERFIS = [
+  {
+    foto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop&crop=faces",
+    nome: "Mariana Ribeiro",
+    local: "São Paulo, SP · Atende todo o Brasil",
+    nota: "9,4",
+    avaliacao: "★ 4,9",
+    cert: "CNPI-P",
+    certs: "CPA · CGE",
+    metodologia: "Acompanhamento mensal com rebalanceamento por metas. Transparência total sobre o processo.",
+    pedido: "Patrimônio R$ 1,2M · Objetivo: aposentadoria · Acompanhamento trimestral",
+  },
+  {
+    foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop&crop=faces",
+    nome: "Rafael Ferraz",
+    local: "Curitiba, PR · Atende todo o Brasil",
+    nota: "9,1",
+    avaliacao: "★ 4,8",
+    cert: "CPRO-I",
+    certs: "CPA · CNPI-T",
+    metodologia: "Construção de renda passiva com revisão semestral e relatório aberto de cada movimentação.",
+    pedido: "Patrimônio R$ 850 mil · Objetivo: renda mensal · Acompanhamento semestral",
+  },
+  {
+    foto: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=300&auto=format&fit=crop&crop=faces",
+    nome: "Beatriz Nunes",
+    local: "Recife, PE · Atende todo o Brasil",
+    nota: "9,7",
+    avaliacao: "★ 5,0",
+    cert: "CGE",
+    certs: "CPRO-R · CNPI-P",
+    metodologia: "Planejamento sucessório e estruturação fiscal para famílias, com revisão anual do plano.",
+    pedido: "Patrimônio R$ 4,5M · Objetivo: sucessão familiar · Acompanhamento trimestral",
+  },
+];
+
+function iniciarPerfis() {
+  const bloco = document.querySelector("[data-profiles]");
+  const card = document.querySelector("[data-profile-card]");
+  if (!bloco || !card) return;
+
+  const botoes = Array.from(bloco.querySelectorAll("[data-profile]"));
+
+  botoes.forEach((botao) => {
+    botao.addEventListener("click", () => {
+      const perfil = PERFIS[Number(botao.dataset.profile)];
+      if (!perfil) return;
+
+      botoes.forEach((b) => {
+        const ativo = b === botao;
+        b.classList.toggle("is-active", ativo);
+        b.setAttribute("aria-selected", String(ativo));
+      });
+
+      const aplicar = () => {
+        Object.entries(perfil).forEach(([chave, valor]) => {
+          const campo = card.querySelector(`[data-field="${chave}"]`);
+          if (!campo) return;
+          if (campo.tagName === "IMG") campo.src = valor;
+          else campo.textContent = valor;
+        });
+        card.classList.remove("is-swapping");
+      };
+
+      if (semMovimento) return aplicar();
+      card.classList.add("is-swapping");
+      setTimeout(aplicar, 160);
+    });
+  });
+}
+
+/** Letreiro precisa do conteúdo duplicado para o loop não dar salto. */
+function iniciarLetreiro() {
+  const trilha = document.querySelector("[data-ticker]");
+  if (!trilha || semMovimento) return;
+  trilha.innerHTML += trilha.innerHTML;
+}
+
+/** Parallax discreto da foto do hero. */
+function iniciarParallax() {
+  const media = document.querySelector(".hero__media");
+  if (!media || semMovimento) return;
+  aoRolar(() => {
+    const y = Math.min(window.scrollY, 600);
+    media.style.transform = `translateY(${y * 0.06}px)`;
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  iniciarNavFlutuante();
+  iniciarContadores();
+  iniciarGrafico();
+  iniciarRoadmap();
+  iniciarPerfis();
+  iniciarLetreiro();
+  iniciarParallax();
+
   // CTAs — todos os botões .js-cta levam ao formulário
   document.querySelectorAll(".js-cta").forEach((el) => {
     el.setAttribute("href", "#interesse");
@@ -229,24 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => el.classList.add("is-visible"));
   }
 
-  // Colunas do repasse — sobem em cascata quando o gráfico entra na tela
-  const fee = document.querySelector("[data-fee]");
-  if (fee && "IntersectionObserver" in window) {
-    const feeIo = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.setAttribute("data-on", "");
-            feeIo.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.45 }
-    );
-    feeIo.observe(fee);
-  } else if (fee) {
-    fee.setAttribute("data-on", "");
-  }
 
   // Ano do rodapé
   const year = document.querySelector("[data-year]");

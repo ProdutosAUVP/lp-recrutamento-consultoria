@@ -58,9 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => el.classList.add("is-visible"));
   }
 
-  // Barra de progressão do repasse — anima quando entra na tela
-  const feeFill = document.querySelector("[data-fee-fill]");
-  if (feeFill && "IntersectionObserver" in window) {
+  // Colunas do repasse — sobem em cascata quando o gráfico entra na tela
+  const fee = document.querySelector("[data-fee]");
+  if (fee && "IntersectionObserver" in window) {
     const feeIo = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -70,11 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.45 }
     );
-    feeIo.observe(feeFill);
-  } else if (feeFill) {
-    feeFill.setAttribute("data-on", "");
+    feeIo.observe(fee);
+  } else if (fee) {
+    fee.setAttribute("data-on", "");
   }
 
   // Ano do rodapé

@@ -170,16 +170,35 @@
               em 50% e aumenta progressivamente conforme critérios definidos pela AUVP.
               Quanto mais valor você gera dentro do ecossistema, maior pode ser o seu percentual.
             </p>
-            <div class="fee" role="img" aria-label="Progressão do repasse: começa em 50 por cento e pode chegar a 80 por cento">
-              <div class="fee__track">
-                <div class="fee__fill" data-fee-fill></div>
-                <div class="fee__milestones">
-                  <span class="fee__m" style="--pos:0%"><b>50%</b><i>repasse inicial</i></span>
-                  <span class="fee__m" style="--pos:33.3%"><b>60%</b></span>
-                  <span class="fee__m" style="--pos:66.6%"><b>70%</b></span>
-                  <span class="fee__m fee__m--max" style="--pos:100%"><b>80%</b><i>repasse máximo</i></span>
+            <div class="fee" data-fee role="img" aria-label="Progressão do repasse sobre o fee do cliente: 50% no início, subindo para 60%, 70% e até 80% no máximo. O restante de cada coluna fica com a AUVP.">
+              <div class="fee__chart" aria-hidden="true">
+                <div class="fee__col" style="--pct:50%; --d:0s">
+                  <span class="fee__pct">50%</span>
+                  <span class="fee__track"><span class="fee__fill"></span></span>
+                  <span class="fee__cap">inicial</span>
+                </div>
+                <div class="fee__col" style="--pct:60%; --d:0.12s">
+                  <span class="fee__pct">60%</span>
+                  <span class="fee__track"><span class="fee__fill"></span></span>
+                  <span class="fee__cap"></span>
+                </div>
+                <div class="fee__col" style="--pct:70%; --d:0.24s">
+                  <span class="fee__pct">70%</span>
+                  <span class="fee__track"><span class="fee__fill"></span></span>
+                  <span class="fee__cap"></span>
+                </div>
+                <div class="fee__col fee__col--max" style="--pct:80%; --d:0.36s">
+                  <span class="fee__pct">80%</span>
+                  <span class="fee__track"><span class="fee__fill"></span></span>
+                  <span class="fee__cap">máximo</span>
                 </div>
               </div>
+
+              <p class="fee__legend" aria-hidden="true">
+                <span><i class="fee__key fee__key--you"></i>sua parte do fee</span>
+                <span><i class="fee__key fee__key--auvp"></i>AUVP</span>
+                <span class="fee__legend-note">cada coluna representa o fee de um cliente</span>
+              </p>
             </div>
             <p class="card__fine">Progressão conforme critérios definidos pela AUVP.</p>
           </article>

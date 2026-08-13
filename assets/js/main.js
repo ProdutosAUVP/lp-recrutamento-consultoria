@@ -172,6 +172,14 @@ function aplicarVideo() {
   if (!secao || !frame || !VIDEO_URL) return;
   frame.setAttribute("src", VIDEO_URL);
   secao.hidden = false;
+
+  // Com o vídeo no ar entra mais uma dobra branca antes do CTA, que também
+  // é branco. Empurrar o CTA para o cinza mantém a alternância.
+  const cta = document.querySelector(".cta-final");
+  if (cta) {
+    cta.classList.remove("surface-white");
+    cta.classList.add("surface-gray");
+  }
 }
 
 /* ==========================================================================

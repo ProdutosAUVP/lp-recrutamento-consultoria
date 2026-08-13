@@ -1,7 +1,7 @@
 /* ==========================================================================
    AUVP Advisors — LP de recrutamento de consultores
    Tema claro institucional: creme + verde AUVP Capital + dourado do olho.
-   Fontes: Fraunces (display serifada) · Roboto (corpo) · Sora (UI)
+   Fontes: Anek Latin (display) · Roboto (corpo) · Sora (UI)
    ========================================================================== */
 
 :root {
@@ -27,7 +27,7 @@
   --gold-deep: #A8791A;
 
   /* Tipografia */
-  --font-display: 'Fraunces', serif;
+  --font-display: 'Anek Latin', sans-serif;
   --font-body: 'Roboto', sans-serif;
   --font-ui: 'Sora', sans-serif;
 
@@ -81,15 +81,14 @@ ul, ol { list-style: none; }
 .section__title {
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 5vw, 3.625rem);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.04;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.025em;
   margin-bottom: 1.25rem;
   text-wrap: balance;
 }
 .section__title em {
-  font-style: italic;
-  font-weight: 400;
+  font-style: normal;
   color: var(--green-deep);
 }
 
@@ -166,28 +165,14 @@ ul, ol { list-style: none; }
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   text-decoration: none;
 }
 
-.nav__eye { width: 2.875rem; height: auto; }
-
-.nav__wordmark {
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  line-height: 1.15;
-  display: flex;
-  flex-direction: column;
+/* Logo oficial AUVP Capital (horizontal) — viewBox 400×152 */
+.nav__logo {
+  width: auto;
+  height: 3.25rem;
 }
-.nav__wordmark strong { font-weight: 700; }
-.nav__wordmark em {
-  font-style: normal;
-  font-size: 0.625rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-.nav__wordmark--light { color: #fff; }
 
 .nav__links {
   display: flex;
@@ -257,16 +242,15 @@ ul, ol { list-style: none; }
 
 .hero__title {
   font-family: var(--font-display);
-  font-size: clamp(2.75rem, 5.5vw, 4.375rem);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.99;
+  letter-spacing: -0.03em;
   margin-bottom: 1.5rem;
   text-wrap: balance;
 }
 .hero__title em {
-  font-style: italic;
-  font-weight: 400;
+  font-style: normal;
   color: var(--green-deep);
 }
 
@@ -450,7 +434,7 @@ ul, ol { list-style: none; }
 .stat__value {
   font-family: var(--font-display);
   font-size: 1.375rem;
-  font-weight: 400;
+  font-weight: 500;
   display: block;
   color: var(--ink-muted);
   line-height: 1.1;
@@ -458,9 +442,9 @@ ul, ol { list-style: none; }
 }
 .stat__value strong {
   font-size: 2.375rem;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--green-deep);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .stat__label {
@@ -514,13 +498,12 @@ ul, ol { list-style: none; }
 .card__title {
   font-family: var(--font-display);
   font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.12;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 .card__title em {
-  font-style: italic;
-  font-weight: 400;
+  font-style: normal;
   color: var(--green-deep);
 }
 .card--featured .card__title em { color: var(--gold-deep); }
@@ -530,11 +513,11 @@ ul, ol { list-style: none; }
 .card__punch {
   margin-top: auto;
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 1.1875rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--green-deep);
   line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .card__fine {
@@ -590,8 +573,9 @@ ul, ol { list-style: none; }
 .card__photo-caption {
   font-family: var(--font-display);
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.15;
+  letter-spacing: -0.02em;
   color: #fff;
   text-wrap: balance;
 }
@@ -616,8 +600,8 @@ ul, ol { list-style: none; }
 .checklist--conditions li::before { content: "→"; color: var(--gold-deep); }
 .checklist--no li::before { content: "✕"; color: #B4432E; }
 
-/* Fee progression */
-.fee { margin: 1.5rem 0 2.75rem; }
+/* Fee progression — centra na sobra de altura quando o card estica na linha */
+.fee { margin: auto 0; padding: 1.5rem 0 2.75rem; }
 
 .fee__track {
   position: relative;
@@ -810,9 +794,10 @@ ul, ol { list-style: none; }
 .score__value {
   font-family: var(--font-display);
   font-size: 1.375rem;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
   color: var(--green-deep);
+  letter-spacing: -0.02em;
 }
 .score__label { font-size: 0.71875rem; color: var(--ink-faint); }
 
@@ -866,20 +851,19 @@ ul, ol { list-style: none; }
 
 .step__num {
   font-family: var(--font-display);
-  font-style: italic;
   font-size: 2.75rem;
   font-weight: 300;
   line-height: 1;
   color: var(--green-deep);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .step__title {
   font-family: var(--font-display);
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .step__text { color: var(--ink-muted); max-width: 40rem; }
@@ -948,7 +932,8 @@ ul, ol { list-style: none; }
 .fit__title {
   font-family: var(--font-display);
   font-size: 1.375rem;
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   margin-bottom: 1.375rem;
 }
 
@@ -971,14 +956,13 @@ ul, ol { list-style: none; }
 .cta-final__title {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6.5vw, 4.5rem);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
   margin-bottom: 1.25rem;
 }
 .cta-final__title em {
-  font-style: italic;
-  font-weight: 400;
+  font-style: normal;
   color: var(--green-deep);
 }
 
@@ -1008,8 +992,6 @@ ul, ol { list-style: none; }
   padding-bottom: 2.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 }
-
-.footer .nav__wordmark em { color: rgba(255, 255, 255, 0.55); }
 
 .footer__tagline {
   margin-top: 0.875rem;

@@ -30,7 +30,8 @@ python3 -m http.server 8000
 
 ## Design
 
-- **Fontes:** Fraunces (display serifada), Roboto (corpo), Sora (UI/labels)
+- **Logo:** AUVP Capital horizontal (versão preferencial do design system), preta na navegação e branca no rodapé. Os SVGs vêm de [armandocustodio-ds/designsystemauvp](https://github.com/armandocustodio-ds/designsystemauvp) — o manifesto C2PA embutido foi removido para reduzir o arquivo de ~22 KB para ~4 KB
+- **Fontes:** Anek Latin (display), Roboto (corpo), Sora (UI/labels) — todas sem serifa, iguais às do design system
 - **Cores:** paleta clara institucional — creme `#F6F3EC`, verde AUVP Capital `hsl(155 93% 11%)` como cor primária (botões, títulos em itálico, banda "Sua carteira" e rodapé) e dourado do olho `#F0BF4F` em destaques
 - **Componentes:** hero em duas colunas com foto em frame arqueado e chips/cards flutuantes, bento grid de benefícios com card fotográfico, mock de perfil do catálogo e etapas numeradas — com base nas referências visuais do briefing
 - **Compliance:** condições do incentivo de R$ 10 mil explícitas, vinculação BTG sinalizada como sujeita a critérios, suporte jurídico diferenciado de garantia de registro, e disclaimers da Resolução CVM 19/2021 no hero, no CTA final e no rodapé

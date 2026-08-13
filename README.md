@@ -50,11 +50,11 @@ Tudo que depende de terceiros está no bloco de configuração no topo de `asset
 
 ### Formulário de interesse
 
-Coleta exatamente os cinco campos definidos no escopo — WhatsApp, e-mail, registro na CVM, metodologias e anos de experiência — mais o consentimento de LGPD. O `POST` envia JSON com as chaves `whatsapp`, `email`, `registro`, `metodologias`, `experiencia`, `consentimento` e `origem`.
+Coleta os cinco campos definidos no escopo — WhatsApp, e-mail, registro na CVM, metodologias e anos de experiência — mais o **nome completo** e o consentimento de LGPD. O `POST` envia JSON com as chaves `nome`, `whatsapp`, `email`, `registro`, `metodologias`, `experiencia`, `consentimento` e `origem`.
+
+O nome não consta da lista do escopo; foi acrescentado porque sem ele o time não tem como abrir o primeiro contato. É o único campo além do que o documento especifica.
 
 Quem responde "sem registro na CVM" recebe na hora uma mensagem dizendo que ainda pode se cadastrar e que o time envia o tutorial de registro — a pergunta qualifica o lead sem descartá-lo.
-
-O escopo não pede o nome do consultor, então o formulário não o coleta. Se o time quiser, é um campo a mais no HTML e no JSON.
 
 ## Outros pontos de atenção
 

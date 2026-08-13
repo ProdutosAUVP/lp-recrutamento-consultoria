@@ -24,6 +24,7 @@ const VIDEO_URL = "";
 /* ========================================================================== */
 
 const MSG = {
+  nome: "Informe seu nome completo.",
   whatsapp: "Informe um WhatsApp com DDD.",
   email: "Informe um e-mail válido.",
   registro: "Selecione uma das opções.",
@@ -47,6 +48,8 @@ function validarCampo(campo) {
   if (nome === "consentimento") return campo.checked;
   if (nome === "whatsapp") return whatsappValido(campo.value);
   if (nome === "email") return emailValido(campo.value);
+  // Uma letra solta não é nome; evita "a" passar como preenchimento válido.
+  if (nome === "nome") return campo.value.trim().length >= 2;
   return campo.value.trim() !== "";
 }
 

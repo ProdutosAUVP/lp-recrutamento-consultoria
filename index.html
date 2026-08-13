@@ -29,8 +29,8 @@
       </a>
 
       <nav class="nav__links" aria-label="Navegação principal">
-        <a href="#beneficios">Benefícios</a>
         <a href="#vitrine">Vitrine</a>
+        <a href="#beneficios">Benefícios</a>
         <a href="#validacao">Como entrar</a>
         <a href="#carteira">Sua carteira</a>
         <a href="#para-quem">Para quem é</a>
@@ -45,8 +45,8 @@
     </div>
 
     <div class="nav__mobile" data-menu hidden>
-      <a href="#beneficios">Benefícios</a>
       <a href="#vitrine">Vitrine</a>
+      <a href="#beneficios">Benefícios</a>
       <a href="#validacao">Como entrar</a>
       <a href="#carteira">Sua carteira</a>
       <a href="#para-quem">Para quem é</a>
@@ -147,8 +147,102 @@
       -->
     </section>
 
+    <!-- ============ VITRINE ============ -->
+    <section class="section surface-white" id="vitrine">
+      <div class="container vitrine">
+        <div class="vitrine__copy">
+          <h2 class="section__title reveal">Por que o cliente<br />escolhe <em>você</em>?</h2>
+          <p class="section__sub reveal">
+            O catálogo transforma a sua competência em informação visível. O cliente não recebe
+            um consultor escolhido pela AUVP: ele compara perfis, conhece seu trabalho e decide
+            quem deseja contatar.
+          </p>
+
+          <div class="equation reveal" role="img" aria-label="Nota técnica, mais certificações, mais avaliações, mais metodologia, é igual à sua reputação">
+            <span class="equation__item">nota técnica</span>
+            <span class="equation__op">+</span>
+            <span class="equation__item">certificações</span>
+            <span class="equation__op">+</span>
+            <span class="equation__item">avaliações</span>
+            <span class="equation__op">+</span>
+            <span class="equation__item">metodologia</span>
+            <span class="equation__op">=</span>
+            <span class="equation__result">reputação</span>
+          </div>
+
+          <ul class="checklist reveal">
+            <li>Sua posição no catálogo é definida por nota técnica e avaliação de clientes</li>
+            <li>Pedidos chegam com patrimônio, objetivos e frequência de acompanhamento desejada</li>
+            <li>Você decide quais pedidos aceitar — e responde dentro do prazo</li>
+            <li>Cada cliente mantém apenas um pedido em aberto por vez</li>
+          </ul>
+        </div>
+
+        <!-- Perfis do catálogo — trocáveis, para o visitante experimentar o que
+             o cliente faz: comparar. Perfis ilustrativos, fotos placeholder. -->
+        <div class="vitrine__card reveal" data-profiles>
+          <p class="switcher__label" id="switcher-label">Compare os perfis, como o cliente faz</p>
+          <div class="switcher" role="tablist" aria-labelledby="switcher-label">
+            <button type="button" class="switcher__btn is-active" role="tab" aria-selected="true" data-profile="0">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
+              <span>Mariana</span>
+            </button>
+            <button type="button" class="switcher__btn" role="tab" aria-selected="false" data-profile="1">
+              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
+              <span>Rafael</span>
+            </button>
+            <button type="button" class="switcher__btn" role="tab" aria-selected="false" data-profile="2">
+              <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
+              <span>Beatriz</span>
+            </button>
+          </div>
+
+          <div class="profile" role="tabpanel" aria-live="polite" data-profile-card>
+            <div class="profile__header">
+              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop&crop=faces" alt="" class="profile__avatar" data-field="foto" />
+              <div>
+                <p class="profile__name" data-field="nome">Mariana Ribeiro</p>
+                <p class="profile__loc" data-field="local">São Paulo, SP · Atende todo o Brasil</p>
+              </div>
+              <span class="profile__badge">Validada AUVP</span>
+            </div>
+
+            <div class="profile__scores">
+              <div class="score">
+                <span class="score__value" data-field="nota">9,4</span>
+                <span class="score__label">Nota técnica</span>
+              </div>
+              <div class="score">
+                <span class="score__value" data-field="avaliacao">★ 4,9</span>
+                <span class="score__label">Avaliação de clientes</span>
+              </div>
+              <div class="score">
+                <span class="score__value" data-field="cert">CNPI-P</span>
+                <span class="score__label" data-field="certs">CPA · CGE</span>
+              </div>
+            </div>
+
+            <div class="profile__section">
+              <p class="profile__section-label">Metodologia</p>
+              <p class="profile__section-text" data-field="metodologia">Acompanhamento mensal com rebalanceamento por metas. Transparência total sobre o processo.</p>
+            </div>
+
+            <div class="profile__request">
+              <p class="profile__request-label">Pedido recebido</p>
+              <p class="profile__request-text" data-field="pedido">Patrimônio R$ 1,2M · Objetivo: aposentadoria · Acompanhamento trimestral</p>
+              <div class="profile__request-actions">
+                <span class="btn btn--primary btn--sm">Aceitar</span>
+                <span class="btn btn--ghost btn--sm">Recusar</span>
+              </div>
+            </div>
+          </div>
+          <p class="vitrine__card-note">Perfis ilustrativos — fotos: placeholder</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ BENEFÍCIOS ============ -->
-    <section class="section surface-white" id="beneficios">
+    <section class="section surface-gray" id="beneficios">
       <div class="container">
         <h2 class="section__title reveal">Estrutura de ecossistema.<br /><em>Resultado de consultor.</em></h2>
         <p class="section__sub reveal">
@@ -351,100 +445,6 @@
             </div>
           </article>
 
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ VITRINE ============ -->
-    <section class="section surface-gray" id="vitrine">
-      <div class="container vitrine">
-        <div class="vitrine__copy">
-          <h2 class="section__title reveal">Por que o cliente<br />escolhe <em>você</em>?</h2>
-          <p class="section__sub reveal">
-            O catálogo transforma a sua competência em informação visível. O cliente não recebe
-            um consultor escolhido pela AUVP: ele compara perfis, conhece seu trabalho e decide
-            quem deseja contatar.
-          </p>
-
-          <div class="equation reveal" role="img" aria-label="Nota técnica, mais certificações, mais avaliações, mais metodologia, é igual à sua reputação">
-            <span class="equation__item">nota técnica</span>
-            <span class="equation__op">+</span>
-            <span class="equation__item">certificações</span>
-            <span class="equation__op">+</span>
-            <span class="equation__item">avaliações</span>
-            <span class="equation__op">+</span>
-            <span class="equation__item">metodologia</span>
-            <span class="equation__op">=</span>
-            <span class="equation__result">reputação</span>
-          </div>
-
-          <ul class="checklist reveal">
-            <li>Sua posição no catálogo é definida por nota técnica e avaliação de clientes</li>
-            <li>Pedidos chegam com patrimônio, objetivos e frequência de acompanhamento desejada</li>
-            <li>Você decide quais pedidos aceitar — e responde dentro do prazo</li>
-            <li>Cada cliente mantém apenas um pedido em aberto por vez</li>
-          </ul>
-        </div>
-
-        <!-- Perfis do catálogo — trocáveis, para o visitante experimentar o que
-             o cliente faz: comparar. Perfis ilustrativos, fotos placeholder. -->
-        <div class="vitrine__card reveal" data-profiles>
-          <p class="switcher__label" id="switcher-label">Compare os perfis, como o cliente faz</p>
-          <div class="switcher" role="tablist" aria-labelledby="switcher-label">
-            <button type="button" class="switcher__btn is-active" role="tab" aria-selected="true" data-profile="0">
-              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
-              <span>Mariana</span>
-            </button>
-            <button type="button" class="switcher__btn" role="tab" aria-selected="false" data-profile="1">
-              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
-              <span>Rafael</span>
-            </button>
-            <button type="button" class="switcher__btn" role="tab" aria-selected="false" data-profile="2">
-              <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=120&auto=format&fit=crop&crop=faces" alt="" />
-              <span>Beatriz</span>
-            </button>
-          </div>
-
-          <div class="profile" role="tabpanel" aria-live="polite" data-profile-card>
-            <div class="profile__header">
-              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop&crop=faces" alt="" class="profile__avatar" data-field="foto" />
-              <div>
-                <p class="profile__name" data-field="nome">Mariana Ribeiro</p>
-                <p class="profile__loc" data-field="local">São Paulo, SP · Atende todo o Brasil</p>
-              </div>
-              <span class="profile__badge">Validada AUVP</span>
-            </div>
-
-            <div class="profile__scores">
-              <div class="score">
-                <span class="score__value" data-field="nota">9,4</span>
-                <span class="score__label">Nota técnica</span>
-              </div>
-              <div class="score">
-                <span class="score__value" data-field="avaliacao">★ 4,9</span>
-                <span class="score__label">Avaliação de clientes</span>
-              </div>
-              <div class="score">
-                <span class="score__value" data-field="cert">CNPI-P</span>
-                <span class="score__label" data-field="certs">CPA · CGE</span>
-              </div>
-            </div>
-
-            <div class="profile__section">
-              <p class="profile__section-label">Metodologia</p>
-              <p class="profile__section-text" data-field="metodologia">Acompanhamento mensal com rebalanceamento por metas. Transparência total sobre o processo.</p>
-            </div>
-
-            <div class="profile__request">
-              <p class="profile__request-label">Pedido recebido</p>
-              <p class="profile__request-text" data-field="pedido">Patrimônio R$ 1,2M · Objetivo: aposentadoria · Acompanhamento trimestral</p>
-              <div class="profile__request-actions">
-                <span class="btn btn--primary btn--sm">Aceitar</span>
-                <span class="btn btn--ghost btn--sm">Recusar</span>
-              </div>
-            </div>
-          </div>
-          <p class="vitrine__card-note">Perfis ilustrativos — fotos: placeholder</p>
         </div>
       </div>
     </section>
@@ -720,8 +720,8 @@
       </div>
 
       <nav class="footer__links" aria-label="Links do rodapé">
-        <a href="#beneficios">Benefícios</a>
         <a href="#vitrine">Vitrine</a>
+        <a href="#beneficios">Benefícios</a>
         <a href="#validacao">Como entrar</a>
         <a href="#carteira">Sua carteira</a>
         <a href="#para-quem">Para quem é</a>

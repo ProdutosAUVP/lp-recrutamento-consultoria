@@ -26,12 +26,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Exige que o Pages já esteja ligado em Settings → Pages com
+      # Source: GitHub Actions. Não adianta usar `enablement: true` aqui: o
+      # GITHUB_TOKEN publica no Pages, mas não tem permissão para criar o
+      # site ("Resource not accessible by integration").
       - name: Configurar Pages
         uses: actions/configure-pages@v5
-        with:
-          # Habilita o Pages no repositório na primeira execução, em vez de
-          # exigir que alguém ligue na mão em Settings → Pages.
-          enablement: true
 
       - name: Montar o site
         # A LP é estática: vai tudo do topo do repositório, menos o que não

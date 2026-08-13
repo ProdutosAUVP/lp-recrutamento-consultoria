@@ -33,7 +33,9 @@ Para publicar uma alteração, basta commitar na `main`. O andamento aparece na 
 
 ### Habilitação (uma vez só)
 
-Em **Settings → Pages**, defina **Source: GitHub Actions**. Sem isso o workflow falha no passo `configure-pages`.
+Em **Settings → Pages**, defina **Source: GitHub Actions**. Sem isso o workflow falha no passo `configure-pages` com `Get Pages site failed … Not Found`.
+
+Esse passo não dá para automatizar: o `GITHUB_TOKEN` do workflow publica no Pages, mas não tem permissão para criar o site (`enablement: true` na action retorna `Resource not accessible by integration`). Depois de ligado uma vez, nunca mais é preciso mexer.
 
 ## Pontos de atenção antes de publicar
 

@@ -21,6 +21,20 @@ npx serve .
 python3 -m http.server 8000
 ```
 
+## Deploy (GitHub Pages)
+
+O deploy é automático: todo push na `main` dispara `.github/workflows/deploy.yml`, que monta o site e publica no GitHub Pages.
+
+**URL:** https://produtosauvp.github.io/lp-recrutamento-consultoria/
+
+O workflow copia tudo do topo do repositório para `_site/`, exceto `README.md` e os arquivos ocultos (`.git`, `.github`), e cria um `.nojekyll` para o Pages servir os arquivos como estão. Não há build — arquivos novos na raiz entram na publicação automaticamente.
+
+Para publicar uma alteração, basta commitar na `main`. O andamento aparece na aba **Actions**; a URL final também fica em **Settings → Pages**.
+
+### Habilitação (uma vez só)
+
+Em **Settings → Pages**, defina **Source: GitHub Actions**. Sem isso o workflow falha no passo `configure-pages`.
+
 ## Pontos de atenção antes de publicar
 
 1. **URL do CTA** — definir em `assets/js/main.js` (`SIGNUP_URL`). Enquanto for `#interesse`, os botões rolam até a seção final.

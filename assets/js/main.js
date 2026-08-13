@@ -285,28 +285,31 @@ function iniciarGrafico() {
   });
 }
 
-/** Roadmap: trilho preenche e as etapas acendem conforme a rolagem. */
+/**
+ * Roadmap: como as cinco etapas ficam lado a lado, elas entram na tela
+ * praticamente juntas — amarrar o preenchimento à posição do scroll dava
+ * um trilho que ia e voltava. Aqui o bloco anima uma vez, ao aparecer.
+ */
 function iniciarRoadmap() {
-  const lista = document.querySelector("[data-roadmap]");
-  const trilho = document.querySelector("[data-rail]");
-  if (!lista || !trilho) return;
+  const bloco = document.querySelector("[data-roadmap]");
+  if (!bloco) return;
 
-  const etapas = Array.from(lista.querySelectorAll(".roadmap__step"));
-  const horizontal = () => window.matchMedia("(min-width: 68.0625rem)").matches;
+  if (!("IntersectionObserver" in window)) {
+    bloco.classList.add("is-on");
+    return;
+  }
 
-  aoRolar(() => {
-    const r = lista.getBoundingClientRect();
-    const alvo = window.innerHeight * 0.72;
-    // 0 quando o topo da lista cruza a linha de leitura, 1 quando o fim cruza
-    const bruto = (alvo - r.top) / Math.max(r.height, 1);
-    const p = Math.min(Math.max(bruto, 0), 1);
-
-    trilho.style[horizontal() ? "width" : "height"] = `${p * 100}%`;
-
-    etapas.forEach((etapa, i) => {
-      etapa.classList.toggle("is-reached", p >= i / etapas.length);
-    });
-  });
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("is-on");
+        io.unobserve(e.target);
+      });
+    },
+    { threshold: 0.25 }
+  );
+  io.observe(bloco);
 }
 
 /** Perfis do catálogo — o visitante compara, como o cliente faz. */
@@ -381,13 +384,6 @@ function iniciarPerfis() {
   });
 }
 
-/** Letreiro precisa do conteúdo duplicado para o loop não dar salto. */
-function iniciarLetreiro() {
-  const trilha = document.querySelector("[data-ticker]");
-  if (!trilha || semMovimento) return;
-  trilha.innerHTML += trilha.innerHTML;
-}
-
 /** Parallax discreto da foto do hero. */
 function iniciarParallax() {
   const media = document.querySelector(".hero__media");
@@ -404,7 +400,6 @@ document.addEventListener("DOMContentLoaded", () => {
   iniciarGrafico();
   iniciarRoadmap();
   iniciarPerfis();
-  iniciarLetreiro();
   iniciarParallax();
 
   // CTAs — todos os botões .js-cta levam ao formulário

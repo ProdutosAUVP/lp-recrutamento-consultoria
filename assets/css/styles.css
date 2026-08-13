@@ -203,9 +203,11 @@ ul, ol { list-style: none; }
   bottom: -0.625rem;
   left: calc(-50vw + 50%);
   right: calc(-50vw + 50%);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  /* O blur só aparece se o fundo deixar passar: a 0.92 ele era calculado e
+     não era visto. A saturação devolve a cor que o desfoque lava. */
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
   border-radius: 0;
   box-shadow: 0 1px 0 var(--border);
   transition:
@@ -250,9 +252,11 @@ ul, ol { list-style: none; }
   font-family: var(--font-ui);
   font-size: 0.875rem;
 }
+/* Sobre as dobras pretas o vidro compõe um cinza claro; com --ink-muted o
+   texto ficava em 3,7:1. Este tom dá 7:1 no pior caso e mantém o vidro. */
 .nav__links a {
   text-decoration: none;
-  color: var(--ink-muted);
+  color: #2E2E2E;
   transition: color 0.2s ease;
 }
 .nav__links a:hover { color: var(--ink); }
@@ -1295,8 +1299,10 @@ button:focus-visible {
    Movimento e interação — tudo abaixo respeita prefers-reduced-motion
    ========================================================================== */
 
-/* ---------- Gráfico do repasse ---------- */
-.fee { margin: auto 0; padding: 1.25rem 0 0; }
+/* ---------- Gráfico do repasse (linhas) ----------
+   As duas retas são a própria proporção do repasse: y = 0,7x e y = 0,8x.
+   Não há dado estimado — a leitura vale para qualquer volume de fee. */
+.fee { margin: auto 0; padding: var(--sp-4) 0 0; }
 
 .chart { margin: 0; }
 
@@ -1307,7 +1313,7 @@ button:focus-visible {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--sp-2);
 }
 
 .chart__svg { width: 100%; height: auto; display: block; overflow: visible; }
@@ -1317,73 +1323,74 @@ button:focus-visible {
 
 .chart__ticks text {
   font-family: var(--font-ui);
-  font-size: 10px;
+  font-size: 11px;
   fill: var(--ink-faint);
-  text-anchor: end;
 }
+.chart__ticks--y text { text-anchor: end; }
+.chart__ticks--x text { text-anchor: middle; }
 
-.chart__hit { fill: transparent; }
-.chart__track { fill: var(--tint); }
-
-.chart__fill {
-  fill: var(--green-deep);
-  transform-box: fill-box;
-  transform-origin: bottom;
-  transform: scaleY(0);
-  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--delay, 0s);
-}
-.chart__col--max .chart__fill { fill: var(--gold-deep); --delay: 0.16s; }
-.fee[data-on] .chart__fill { transform: scaleY(1); }
-
-.chart__marker {
-  stroke: var(--ink);
-  stroke-width: 1.5;
-  opacity: 0;
-  transition: opacity 0.3s ease 1s;
-}
-.fee[data-on] .chart__marker { opacity: 1; }
-
-.chart__value {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 800;
-  fill: var(--ink);
-  text-anchor: middle;
-  opacity: 0;
-  transition: opacity 0.4s ease 0.9s;
-}
-.fee[data-on] .chart__value { opacity: 1; }
-
-.chart__label {
+.chart__axis-label {
   font-family: var(--font-ui);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   fill: var(--ink-faint);
   text-anchor: middle;
 }
 
-/* Coluna é interativa: reage a cursor e a teclado */
-.chart__col { cursor: pointer; }
-.chart__col .chart__track,
-.chart__col .chart__fill { transition-property: transform, fill, opacity; }
-.chart__col:hover .chart__track,
-.chart__col:focus-visible .chart__track { fill: var(--border); }
-.chart__col:focus-visible { outline: none; }
-.chart__col:focus-visible .chart__hit {
+/* Faixa entre as retas — o quanto os 20 primeiros ganham a mais */
+.chart__band {
+  fill: var(--gold);
+  opacity: 0.16;
+  transform-box: fill-box;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.fee[data-on] .chart__band { transform: scaleX(1); }
+
+.chart__line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.chart__line--base { stroke: var(--green-deep); }
+.chart__line--max { stroke: var(--gold-deep); transition-delay: 0.12s; }
+.fee[data-on] .chart__line { stroke-dashoffset: 0; }
+
+.chart__end {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.4s ease 1s;
+}
+.chart__end--base { fill: var(--green-deep); }
+.chart__end--max { fill: var(--gold-deep); }
+.fee[data-on] .chart__end { opacity: 1; }
+
+/* Leitura sob o cursor */
+.chart__hit { fill: transparent; cursor: crosshair; }
+.chart__hit:focus-visible {
+  outline: none;
   fill: none;
   stroke: var(--green-deep);
   stroke-width: 2;
   stroke-dasharray: 4 3;
 }
+.chart__guide { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart__dot { stroke: var(--surface-raised); stroke-width: 2; }
+.chart__dot--base { fill: var(--green-deep); }
+.chart__dot--max { fill: var(--gold-deep); }
 
 .chart__readout {
   font-family: var(--font-ui);
   font-size: 0.8125rem;
   color: var(--ink);
-  margin-top: 0.75rem;
+  margin-top: var(--sp-3);
   min-height: 1.5rem;
 }
 .chart__readout-hint { color: var(--ink-faint); }
@@ -1391,146 +1398,29 @@ button:focus-visible {
 
 .chart__legend {
   display: flex;
-  gap: 1.25rem;
-  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-5);
+  margin-top: var(--sp-2);
   font-family: var(--font-ui);
   font-size: 0.75rem;
   color: var(--ink-faint);
 }
 .chart__key {
   display: inline-block;
-  width: 0.6875rem;
-  height: 0.6875rem;
-  border-radius: 1px;
+  width: 1.125rem;
+  height: 2px;
   margin-right: 0.4375rem;
-  vertical-align: -0.0625rem;
+  vertical-align: 0.25rem;
 }
-.chart__key--you { background: var(--green-deep); }
-.chart__key--auvp { background: var(--tint); border: 1px solid var(--border-strong); }
-
-/* ---------- Equação em uma linha só ---------- */
-/* A soma nunca pode cortar. A fonte é medida em cqi (percentual da largura
-   do container), então encolhe junto com a coluna e cabe numa linha só em
-   qualquer tela de leitura confortável. O piso de 10px protege a
-   legibilidade: abaixo dele — telefones bem estreitos — a soma prefere
-   quebrar em duas linhas a encolher mais. Recuos e espaços estão em em
-   para escalarem no mesmo passo da fonte. */
-.vitrine__copy,
-.band__copy { container-type: inline-size; }
-
-.equation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45em;
-  margin: var(--sp-6) 0;
-  font-family: var(--font-ui);
-  font-size: clamp(0.625rem, 1.95cqi, 0.8125rem);
-}
-.equation__item,
-.equation__result {
-  white-space: nowrap;
-  font-size: 1em;
-  padding: 0.5em 0.85em;
-  flex-shrink: 0;
-}
-.equation__op { font-size: 1.05em; flex-shrink: 0; }
-
-/* ---------- Troca de perfis na vitrine ---------- */
-.switcher__label {
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--ink-faint);
-  margin-bottom: 0.625rem;
-}
-
-.switcher { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-
-.switcher__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 0.3125rem 0.875rem 0.3125rem 0.3125rem;
-  font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--ink-muted);
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-.switcher__btn img { width: 1.625rem; height: 1.625rem; border-radius: 50%; object-fit: cover; }
-.switcher__btn:hover { border-color: var(--ink); color: var(--ink); }
-.switcher__btn.is-active {
-  background: var(--green-deep);
-  border-color: var(--green-deep);
-  color: #fff;
-}
-
-.profile { transition: opacity 0.25s ease; }
-.profile.is-swapping { opacity: 0.35; }
-
-/* ---------- Contagem dos números ---------- */
-.stat__value strong { font-variant-numeric: tabular-nums; }
-
-/* ---------- Parallax suave do hero ---------- */
-.hero__media { will-change: transform; }
-
-/* ---------- Logo co-brand AUVP + BTG ---------- */
-.card__cobrand {
-  width: 100%;
-  max-width: 11rem;
-  height: auto;
-  margin-bottom: 0.25rem;
-}
+.chart__key--base { background: var(--green-deep); }
+.chart__key--max { background: var(--gold-deep); }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticker__track { animation: none; }
-  .chart__fill,
-  .chart__value,
-  .chart__marker,
-  .roadmap__card,
-  .roadmap__node,
-  .nav,
-  .nav__inner { transition: none; }
-  .roadmap__card { opacity: 1; transform: none; }
-  .hero__media { transform: none !important; }
+  .chart__line, .chart__band, .chart__end { transition: none; }
+  .chart__line { stroke-dashoffset: 0; }
+  .chart__band { transform: scaleX(1); }
+  .chart__end { opacity: 1; }
 }
-
-/* ---------- Responsivo dos componentes novos ---------- */
-@media (max-width: 68rem) {
-  .roadmap { grid-template-columns: 1fr; gap: 0; }
-  .roadmap__rail { left: 1.5rem; right: auto; top: 0; bottom: 0; width: 2px; height: auto; }
-  .roadmap__rail-fill { width: 100%; height: 0%; transition: height 0.25s linear; }
-  .roadmap__step {
-    grid-template-rows: auto;
-    grid-template-columns: 3rem 1fr;
-    justify-items: start;
-    align-items: start;
-    min-height: 0;
-    column-gap: 1.25rem;
-    padding-bottom: 1.5rem;
-  }
-  .roadmap__step--acima .roadmap__card,
-  .roadmap__step--abaixo .roadmap__card { grid-row: 1; grid-column: 2; align-self: start; }
-  .roadmap__step--acima .roadmap__node,
-  .roadmap__step--abaixo .roadmap__node { grid-row: 1; grid-column: 1; }
-}
-
-@media (max-width: 48rem) {
-  .chart__value { font-size: 26px; }
-  .chart__ticks text { font-size: 12px; }
-}
-
-/* Âncoras não devem parar debaixo do menu fixo. */
-section[id] { scroll-margin-top: 6.5rem; }
-
-/* ==========================================================================
-   Roadmap, "para quem é", co-brand e responsivo
-   ========================================================================== */
 
 /* ---------- Roadmap: cinco cartões numa linha, sem células vazias ---------- */
 .roadmap-wrap { position: relative; }
@@ -1624,7 +1514,7 @@ section[id] { scroll-margin-top: 6.5rem; }
 
 .fit__col {
   border-radius: var(--radius-lg);
-  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  padding: var(--sp-6);
   border: 1px solid var(--border);
   background: var(--surface-raised);
   display: flex;
@@ -1632,10 +1522,17 @@ section[id] { scroll-margin-top: 6.5rem; }
   gap: var(--sp-4);
 }
 
+/* Marca e título na mesma linha */
+.fit__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
 /* Marca redonda no topo — substitui o filete de um lado só */
 .fit__mark {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -1654,6 +1551,7 @@ section[id] { scroll-margin-top: 6.5rem; }
   font-size: 1.375rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
 .fit__col .checklist { flex: 1; }

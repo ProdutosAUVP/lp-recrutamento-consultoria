@@ -1,28 +1,32 @@
 /* ==========================================================================
    AUVP Advisors — LP de recrutamento de consultores
-   Tema claro institucional: creme + verde AUVP Capital + dourado do olho.
+   Dobras alternando branco e #F6F6F6, dobras escuras em preto.
+   Verde AUVP Capital e dourado do olho ficam como acento.
    Fontes: Anek Latin (display) · Roboto (corpo) · Sora (UI)
    ========================================================================== */
 
 :root {
-  /* Superfícies — creme institucional */
-  --bg: #F6F3EC;
-  --bg-card: #FFFFFF;
-  --bg-tint: #EEE9DE;
-  --sage: #E2EAE0;              /* Verde-claro editorial (ref. 2) */
-  --sage-deep: #D3DFD1;
+  /* Superfícies — as dobras alternam entre estes dois tons.
+     `--surface` é o fundo da dobra atual e `--surface-raised` é o tom
+     oposto, usado pelos cartões, para que sempre haja contraste. */
+  --white: #FFFFFF;
+  --gray: #F6F6F6;
+  --surface: var(--white);
+  --surface-raised: var(--gray);
+
+  --black: #0A0A0A;             /* Dobras escuras */
+  --tint: #EAEAEA;              /* Trilhos e placeholders */
 
   /* Tinta */
-  --ink: #12251B;
-  --ink-muted: #53645A;
-  --ink-faint: #84928A;
-  --border: #E2DDD1;
-  --border-strong: #CFC9BA;
+  --ink: #111111;
+  --ink-muted: #575757;
+  --ink-faint: #8A8A8A;
+  --border: #E6E6E6;
+  --border-strong: #D0D0D0;
 
   /* Marca */
   --green-deep: hsl(155 93% 11%);   /* Verde AUVP Capital #023621 */
   --green-hover: hsl(155 80% 15%);
-  --green-soft: hsl(150 25% 92%);
   --gold: #F0BF4F;
   --gold-deep: #A8791A;
 
@@ -38,8 +42,8 @@
   --container: 74rem;
   --nav-h: 4.75rem;
 
-  --shadow-soft: 0 14px 32px -20px rgba(18, 37, 27, 0.28);
-  --shadow-chip: 0 8px 20px -10px rgba(18, 37, 27, 0.26);
+  --shadow-soft: 0 14px 32px -20px rgba(0, 0, 0, 0.22);
+  --shadow-chip: 0 8px 20px -10px rgba(0, 0, 0, 0.20);
 }
 
 /* ---------- Reset ---------- */
@@ -48,7 +52,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background: var(--white);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 1.0625rem;
@@ -104,9 +108,19 @@ ul, ol { list-style: none; }
 
 .section { padding: clamp(5rem, 10vw, 8rem) 0; }
 
-.section--alt {
-  background: var(--sage);
-  border-block: 1px solid var(--sage-deep);
+/* ---------- Fundo das dobras ----------
+   As dobras alternam entre branco e cinza; os cartões sempre assumem o tom
+   oposto ao da dobra em que estão, então nunca somem no fundo. */
+.surface-white {
+  background: var(--white);
+  --surface: var(--white);
+  --surface-raised: var(--gray);
+}
+
+.surface-gray {
+  background: var(--gray);
+  --surface: var(--gray);
+  --surface-raised: var(--white);
 }
 
 /* ---------- Botões ---------- */
@@ -148,7 +162,7 @@ ul, ol { list-style: none; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(246, 243, 236, 0.86);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
@@ -213,7 +227,7 @@ ul, ol { list-style: none; }
   gap: 0.25rem;
   padding: 1rem 1.5rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(246, 243, 236, 0.98);
+  background: rgba(255, 255, 255, 0.98);
 }
 .nav__mobile a {
   text-decoration: none;
@@ -282,7 +296,7 @@ ul, ol { list-style: none; }
   height: 2.375rem;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--bg);
+  border: 2px solid var(--surface);
   margin-left: -0.625rem;
 }
 .avatar-stack img:first-child { margin-left: 0; }
@@ -310,7 +324,7 @@ ul, ol { list-style: none; }
   border-radius: 999px 999px 0 0;
   overflow: hidden;
   aspect-ratio: 4 / 4.6;
-  background: var(--bg-tint);
+  background: var(--tint);
   box-shadow: var(--shadow-soft);
 }
 .hero__frame::after {
@@ -318,7 +332,7 @@ ul, ol { list-style: none; }
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(18, 37, 27, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.07);
   pointer-events: none;
 }
 
@@ -333,10 +347,11 @@ ul, ol { list-style: none; }
   content: "";
   position: absolute;
   inset: 22% -9% 12% 74%;
-  background: var(--gold);
-  opacity: 0.24;
+  background: var(--gray);
+  border: 1px solid var(--border);
   z-index: -1;
 }
+.surface-gray .hero__media::before { background: var(--white); }
 
 /* Chips flutuantes */
 /* Único componente em pílula — o chip de consultor sobre a foto. */
@@ -382,7 +397,7 @@ ul, ol { list-style: none; }
   left: -3rem;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(6px);
-  border: 1px solid rgba(18, 37, 27, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: var(--radius);
   padding: 1.125rem 1.25rem;
   box-shadow: var(--shadow-chip);
@@ -408,9 +423,9 @@ ul, ol { list-style: none; }
 .float-card__actions .btn { cursor: default; }
 
 /* ---------- Stats ---------- */
+/* O fundo vem da classe de superfície da dobra (.surface-gray no HTML). */
 .stats {
   border-block: 1px solid var(--border);
-  background: var(--bg-card);
   padding: 2.75rem 0;
 }
 
@@ -459,7 +474,7 @@ ul, ol { list-style: none; }
 
 .card {
   grid-column: span 2;
-  background: var(--bg-card);
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 2rem;
@@ -472,15 +487,16 @@ ul, ol { list-style: none; }
 
 .card--wide { grid-column: span 4; }
 
+/* Destaque comercial — bloco preto, o mesmo recurso das dobras escuras. */
 .card--featured {
-  background: linear-gradient(150deg, #FBEFD3 0%, #F7E6BC 100%);
-  border-color: #E8D194;
+  background: var(--black);
+  border-color: var(--black);
 }
-
-.card--sage {
-  background: var(--sage);
-  border-color: var(--sage-deep);
-}
+.card--featured .card__tag { color: var(--gold); }
+.card--featured .card__title { color: #fff; }
+.card--featured .card__text,
+.card--featured .checklist li { color: rgba(255, 255, 255, 0.72); }
+.card--featured .checklist li::before { color: var(--gold); }
 
 .card__tag {
   font-family: var(--font-ui);
@@ -502,7 +518,7 @@ ul, ol { list-style: none; }
   font-style: normal;
   color: var(--green-deep);
 }
-.card--featured .card__title em { color: var(--gold-deep); }
+.card--featured .card__title em { color: var(--gold); }
 
 .card__text { color: var(--ink-muted); font-size: 0.9843rem; }
 
@@ -523,7 +539,10 @@ ul, ol { list-style: none; }
   border-top: 1px dashed var(--border-strong);
   padding-top: 0.875rem;
 }
-.card--featured .card__fine { border-top-color: #DDC181; color: #7A6636; }
+.card--featured .card__fine {
+  border-top-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.55);
+}
 
 /* Card com foto */
 .card--photo {
@@ -551,7 +570,7 @@ ul, ol { list-style: none; }
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
-  background: linear-gradient(180deg, transparent 0%, rgba(10, 24, 17, 0.72) 55%, rgba(10, 24, 17, 0.85) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.62) 55%, rgba(0, 0, 0, 0.82) 100%);
 }
 
 .pill {
@@ -630,7 +649,7 @@ ul, ol { list-style: none; }
   width: 100%;
   height: clamp(6.5rem, 14vw, 9rem);
   border-radius: var(--radius);
-  background: var(--bg-tint);
+  background: var(--tint);
   border: 1px solid var(--border);
   overflow: hidden;
   display: flex;
@@ -684,7 +703,7 @@ ul, ol { list-style: none; }
   vertical-align: -0.0625rem;
 }
 .fee__key--you { background: var(--green-deep); }
-.fee__key--auvp { background: var(--bg-tint); border: 1px solid var(--border-strong); }
+.fee__key--auvp { background: var(--tint); border: 1px solid var(--border-strong); }
 
 .fee__legend-note { margin-left: auto; font-style: italic; }
 
@@ -728,14 +747,14 @@ ul, ol { list-style: none; }
 }
 
 .equation__item {
-  background: var(--bg-card);
+  background: var(--surface-raised);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
 }
-.equation__item--gold { border-color: var(--gold); background: #FBEFD3; color: var(--gold-deep); }
+.equation__item--gold { border-color: var(--gold); background: var(--surface-raised); color: var(--gold-deep); }
 
 .equation__op {
   color: var(--ink-faint);
@@ -769,7 +788,7 @@ ul, ol { list-style: none; }
 .vitrine__card { position: relative; }
 
 .profile {
-  background: var(--bg-card);
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
@@ -817,7 +836,7 @@ ul, ol { list-style: none; }
 }
 
 .score {
-  background: var(--bg);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 0.875rem;
@@ -848,8 +867,9 @@ ul, ol { list-style: none; }
 .profile__section-text { font-size: 0.9063rem; color: var(--ink-muted); }
 
 .profile__request {
-  background: #FBEFD3;
-  border: 1px solid #E8D194;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
   border-radius: var(--radius);
   padding: 1.125rem 1.25rem;
 }
@@ -901,11 +921,9 @@ ul, ol { list-style: none; }
 
 .step__text { color: var(--ink-muted); max-width: 40rem; }
 
-/* ---------- Banda carteira (verde institucional) ---------- */
+/* ---------- Banda carteira (dobra escura) ---------- */
 .band {
-  background:
-    radial-gradient(50rem 30rem at 90% -20%, hsl(150 60% 18% / 0.65), transparent 60%),
-    var(--green-deep);
+  background: var(--black);
   color: #fff;
   padding: clamp(5rem, 10vw, 7.5rem) 0;
   overflow: hidden;
@@ -957,11 +975,11 @@ ul, ol { list-style: none; }
 }
 
 .fit__col--yes {
-  background: var(--sage);
-  border-color: var(--sage-deep);
+  background: var(--surface-raised);
+  border-top: 3px solid var(--green-deep);
 }
 
-.fit__col--no { background: var(--bg-card); }
+.fit__col--no { background: var(--surface-raised); }
 
 .fit__title {
   font-family: var(--font-display);
@@ -976,9 +994,6 @@ ul, ol { list-style: none; }
   position: relative;
   text-align: center;
   padding: clamp(6rem, 12vw, 9rem) 0;
-  background:
-    radial-gradient(40rem 22rem at 50% 115%, rgba(240, 191, 79, 0.28), transparent 65%),
-    var(--bg);
   border-top: 1px solid var(--border);
   overflow: hidden;
 }
@@ -1012,7 +1027,7 @@ ul, ol { list-style: none; }
 
 /* ---------- Footer ---------- */
 .footer {
-  background: var(--green-deep);
+  background: var(--black);
   color: rgba(255, 255, 255, 0.85);
   padding: 3.5rem 0 2.5rem;
 }

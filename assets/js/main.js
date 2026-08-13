@@ -195,11 +195,22 @@ function aoRolar(fn) {
   handler();
 }
 
-/** Menu vira pílula flutuante depois do topo. */
+/**
+ * O menu vira pílula só a partir da segunda dobra: enquanto o hero ainda
+ * estiver passando atrás dele, segue como barra cheia. A troca é só de
+ * pintura — a geometria é a mesma nos dois estados.
+ */
 function iniciarNavFlutuante() {
   const nav = document.querySelector(".nav");
+  const hero = document.querySelector(".hero");
   if (!nav) return;
-  aoRolar(() => nav.classList.toggle("is-floating", window.scrollY > 80));
+
+  aoRolar(() => {
+    const limite = hero
+      ? hero.getBoundingClientRect().bottom <= nav.offsetHeight
+      : window.scrollY > 80;
+    nav.classList.toggle("is-floating", limite);
+  });
 }
 
 /** Números da faixa de prova contam até o valor final ao entrar na tela. */

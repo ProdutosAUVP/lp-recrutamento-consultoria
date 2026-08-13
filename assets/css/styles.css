@@ -1299,127 +1299,190 @@ button:focus-visible {
    Movimento e interação — tudo abaixo respeita prefers-reduced-motion
    ========================================================================== */
 
-/* ---------- Gráfico do repasse (linhas) ----------
-   As duas retas são a própria proporção do repasse: y = 0,7x e y = 0,8x.
-   Não há dado estimado — a leitura vale para qualquer volume de fee. */
+/* ---------- Divisão do fee ----------
+   Duas barras na mesma escala, cada uma valendo R$ 100 de fee. O que muda
+   entre elas é só o quanto sobra para você, e o pedaço a mais dos 20
+   primeiros ganha cor própria — é ele que a dobra está vendendo. */
 .fee { margin: auto 0; padding: var(--sp-4) 0 0; }
 
-.chart { margin: 0; }
+.divisao { margin: 0; }
 
-.chart__caption {
+.divisao__caption {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin-bottom: var(--sp-2);
+  margin-bottom: var(--sp-3);
 }
 
-.chart__svg { width: 100%; height: auto; display: block; overflow: visible; }
+.divisao__svg { width: 100%; height: auto; display: block; overflow: visible; }
 
-.chart__grid line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 4; }
-.chart__axis { stroke: var(--border-strong); stroke-width: 1; }
-
-.chart__ticks text {
+.divisao__row-label {
   font-family: var(--font-ui);
-  font-size: 11px;
-  fill: var(--ink-faint);
-}
-.chart__ticks--y text { text-anchor: end; }
-.chart__ticks--x text { text-anchor: middle; }
-
-.chart__axis-label {
-  font-family: var(--font-ui);
-  font-size: 10px;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   fill: var(--ink-faint);
-  text-anchor: middle;
 }
 
-/* Faixa entre as retas — o quanto os 20 primeiros ganham a mais */
-.chart__band {
-  fill: var(--gold);
-  opacity: 0.16;
+.divisao__track { fill: var(--tint); }
+
+.divisao__mine {
+  fill: var(--green-deep);
   transform-box: fill-box;
   transform-origin: left;
   transform: scaleX(0);
-  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.fee[data-on] .chart__band { transform: scaleX(1); }
+.divisao__mine--max { fill: var(--gold-deep); transition-delay: 0.12s; }
+.fee[data-on] .divisao__mine { transform: scaleX(1); }
 
-.chart__line {
-  fill: none;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+/* O pedaço a mais: entra depois das barras, para ser notado sozinho */
+.divisao__gain {
+  fill: var(--gold);
+  transform-box: fill-box;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.85s;
 }
-.chart__line--base { stroke: var(--green-deep); }
-.chart__line--max { stroke: var(--gold-deep); transition-delay: 0.12s; }
-.fee[data-on] .chart__line { stroke-dashoffset: 0; }
+.fee[data-on] .divisao__gain { transform: scaleX(1); }
 
-.chart__end {
+.divisao__in {
   font-family: var(--font-display);
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 800;
-  opacity: 0;
-  transition: opacity 0.4s ease 1s;
+  fill: #fff;
 }
-.chart__end--base { fill: var(--green-deep); }
-.chart__end--max { fill: var(--gold-deep); }
-.fee[data-on] .chart__end { opacity: 1; }
-
-/* Leitura sob o cursor */
-.chart__hit { fill: transparent; cursor: crosshair; }
-.chart__hit:focus-visible {
-  outline: none;
-  fill: none;
-  stroke: var(--green-deep);
-  stroke-width: 2;
-  stroke-dasharray: 4 3;
-}
-.chart__guide { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3 3; }
-.chart__dot { stroke: var(--surface-raised); stroke-width: 2; }
-.chart__dot--base { fill: var(--green-deep); }
-.chart__dot--max { fill: var(--gold-deep); }
-
-.chart__readout {
+.divisao__out {
   font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  color: var(--ink);
-  margin-top: var(--sp-3);
-  min-height: 1.5rem;
+  font-size: 12px;
+  fill: var(--ink-muted);
 }
-.chart__readout-hint { color: var(--ink-faint); }
-.chart__readout b { font-weight: 700; }
 
-.chart__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-5);
-  margin-top: var(--sp-2);
+.divisao__tick {
+  stroke: var(--ink-faint);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0;
+  transition: opacity 0.3s ease 1.2s;
+}
+.fee[data-on] .divisao__tick { opacity: 1; }
+
+.divisao__gain-label {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  fill: var(--gold-deep);
+  text-anchor: middle;
+  opacity: 0;
+  transition: opacity 0.3s ease 1.25s;
+}
+.fee[data-on] .divisao__gain-label { opacity: 1; }
+
+.divisao__punch {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-top: var(--sp-4);
+}
+.divisao__punch strong { font-weight: 800; }
+
+/* ---------- Simulador ---------- */
+.sim {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border);
+}
+
+.sim__label {
+  display: block;
   font-family: var(--font-ui);
   font-size: 0.75rem;
+  font-weight: 600;
   color: var(--ink-faint);
+  margin-bottom: var(--sp-2);
 }
-.chart__key {
+
+.sim__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.sim__value {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 7ch;
+  text-align: right;
+}
+
+.sim__range {
+  flex: 1;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--tint);
+  cursor: pointer;
+}
+.sim__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--green-deep);
+  border: 3px solid var(--surface-raised);
+  box-shadow: var(--shadow-chip);
+  cursor: grab;
+}
+.sim__range::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid var(--surface-raised);
+  border-radius: 50%;
+  background: var(--green-deep);
+  box-shadow: var(--shadow-chip);
+  cursor: grab;
+}
+.sim__range:focus-visible { outline: 2px solid var(--green-deep); outline-offset: 4px; }
+
+.sim__out {
+  margin-top: var(--sp-3);
+  font-size: 0.9063rem;
+  color: var(--ink-muted);
+  min-height: 2.75rem;
+}
+.sim__out b { color: var(--ink); font-weight: 700; }
+.sim__out .sim__delta {
   display: inline-block;
-  width: 1.125rem;
-  height: 2px;
-  margin-right: 0.4375rem;
-  vertical-align: 0.25rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  padding: 0.0625rem 0.375rem;
 }
-.chart__key--base { background: var(--green-deep); }
-.chart__key--max { background: var(--gold-deep); }
 
 @media (prefers-reduced-motion: reduce) {
-  .chart__line, .chart__band, .chart__end { transition: none; }
-  .chart__line { stroke-dashoffset: 0; }
-  .chart__band { transform: scaleX(1); }
-  .chart__end { opacity: 1; }
+  .divisao__mine, .divisao__gain, .divisao__tick, .divisao__gain-label { transition: none; }
+  .divisao__mine, .divisao__gain { transform: scaleX(1); }
+  .divisao__tick, .divisao__gain-label { opacity: 1; }
+}
+
+@media (max-width: 40rem) {
+  .divisao__in { font-size: 22px; }
+  .divisao__out, .divisao__row-label { font-size: 14px; }
+  .divisao__gain-label { font-size: 18px; }
+  .sim__row { flex-wrap: wrap; }
+  .sim__value { min-width: 0; text-align: left; }
 }
 
 /* ---------- Roadmap: cinco cartões numa linha, sem células vazias ---------- */

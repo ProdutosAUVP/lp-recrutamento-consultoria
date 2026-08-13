@@ -56,6 +56,16 @@ O nome não consta da lista do escopo; foi acrescentado porque sem ele o time n�
 
 Quem responde "sem registro na CVM" recebe na hora uma mensagem dizendo que ainda pode se cadastrar e que o time envia o tutorial de registro — a pergunta qualifica o lead sem descartá-lo.
 
+## Conferindo o CSS
+
+```bash
+node scripts/auditar-classes.js
+```
+
+Compara as classes usadas no `index.html` (mais as que o JS adiciona em tempo de execução) com as que têm regra no `styles.css`, e aponta os dois lados: classe usada sem estilo e regra sem uso. Sai com código 1 se achar a primeira.
+
+Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla demais pode levar junto um bloco vizinho — foi assim que os estilos das abas de perfil sumiram uma vez, deixando as fotos em tamanho natural.
+
 ## Outros pontos de atenção
 
 1. **Fotos** — as fotos de pessoas são **placeholders do Unsplash referenciados por URL** (hotlink). Substituir por fotos próprias (hospedadas em `assets/img/`) antes do lançamento. O ambiente de desenvolvimento remoto bloqueia esses hosts, mas no navegador dos visitantes elas carregam normalmente.

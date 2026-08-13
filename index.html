@@ -264,58 +264,63 @@
             <div class="fee" data-fee>
               <figure class="chart">
                 <figcaption class="chart__caption">
-                  Divisão de cada R$ 100 de fee pago pelo cliente
+                  Quanto fica com você conforme o fee dos seus clientes cresce
                 </figcaption>
 
-                <svg class="chart__svg" viewBox="0 0 520 268" role="img"
-                     aria-label="Gráfico da divisão do fee. No modelo padrão o consultor recebe 70% e a AUVP 30%. Para os 20 primeiros consultores, o consultor recebe 80% e a AUVP 20%.">
-                  <!-- Grade e eixo -->
+                <svg class="chart__svg" viewBox="0 0 640 288" role="img"
+                     aria-label="Gráfico de linhas: quanto do fee fica com o consultor. No modelo padrão a linha sobe a 70% do fee gerado; para os 20 primeiros consultores, a 80%. A cada R$ 100 mil de fee, são R$ 70 mil no padrão e R$ 80 mil no primeiro grupo.">
                   <g class="chart__grid" aria-hidden="true">
-                    <line x1="72" y1="30"  x2="500" y2="30" />
-                    <line x1="72" y1="80"  x2="500" y2="80" />
-                    <line x1="72" y1="130" x2="500" y2="130" />
-                    <line x1="72" y1="180" x2="500" y2="180" />
+                    <line x1="60" y1="30"  x2="560" y2="30" />
+                    <line x1="60" y1="96"  x2="560" y2="96" />
+                    <line x1="60" y1="163" x2="560" y2="163" />
                   </g>
-                  <line class="chart__axis" x1="72" y1="230" x2="500" y2="230" aria-hidden="true" />
+                  <line class="chart__axis" x1="60" y1="230" x2="560" y2="230" aria-hidden="true" />
+                  <line class="chart__axis" x1="60" y1="30" x2="60" y2="230" aria-hidden="true" />
 
-                  <g class="chart__ticks" aria-hidden="true">
-                    <text x="62" y="34">R$ 100</text>
-                    <text x="62" y="84">75</text>
-                    <text x="62" y="134">50</text>
-                    <text x="62" y="184">25</text>
-                    <text x="62" y="234">0</text>
+                  <g class="chart__ticks chart__ticks--y" aria-hidden="true">
+                    <text x="50" y="34">90</text>
+                    <text x="50" y="100">60</text>
+                    <text x="50" y="167">30</text>
+                    <text x="50" y="234">0</text>
                   </g>
-
-                  <!-- Coluna 1 — modelo padrão -->
-                  <g class="chart__col" data-col data-voce="70" data-auvp="30" tabindex="0"
-                     role="button" aria-label="Modelo padrão: 70% para o consultor, 30% para a AUVP">
-                    <rect class="chart__hit" x="112" y="30" width="140" height="200" />
-                    <rect class="chart__track" x="132" y="30" width="100" height="200" />
-                    <rect class="chart__fill" x="132" y="90" width="100" height="140" style="--h:140" />
-                    <line class="chart__marker" x1="126" y1="90" x2="238" y2="90" />
-                    <text class="chart__value" x="182" y="76">70%</text>
-                    <text class="chart__label" x="182" y="252">padrão</text>
+                  <g class="chart__ticks chart__ticks--x" aria-hidden="true">
+                    <text x="60"  y="252">0</text>
+                    <text x="185" y="252">25</text>
+                    <text x="310" y="252">50</text>
+                    <text x="435" y="252">75</text>
+                    <text x="560" y="252">100</text>
                   </g>
 
-                  <!-- Coluna 2 — 20 primeiros -->
-                  <g class="chart__col chart__col--max" data-col data-voce="80" data-auvp="20" tabindex="0"
-                     role="button" aria-label="20 primeiros consultores: 80% para o consultor, 20% para a AUVP">
-                    <rect class="chart__hit" x="300" y="30" width="140" height="200" />
-                    <rect class="chart__track" x="320" y="30" width="100" height="200" />
-                    <rect class="chart__fill" x="320" y="70" width="100" height="160" style="--h:160" />
-                    <line class="chart__marker" x1="314" y1="70" x2="426" y2="70" />
-                    <text class="chart__value" x="370" y="56">80%</text>
-                    <text class="chart__label" x="370" y="252">20 primeiros</text>
+                  <text class="chart__axis-label" x="310" y="275" aria-hidden="true">fee gerado pelos seus clientes (R$ mil)</text>
+                  <text class="chart__axis-label chart__axis-label--y" x="0" y="0" transform="translate(16,130) rotate(-90)" aria-hidden="true">fica com você (R$ mil)</text>
+
+                  <!-- Faixa entre as duas linhas: o ganho a mais dos 20 primeiros -->
+                  <polygon class="chart__band" points="60,230 560,52.2 560,74.4" aria-hidden="true" />
+
+                  <line class="chart__line chart__line--base" x1="60" y1="230" x2="560" y2="74.4" pathLength="1" aria-hidden="true" />
+                  <line class="chart__line chart__line--max"  x1="60" y1="230" x2="560" y2="52.2" pathLength="1" aria-hidden="true" />
+
+                  <text class="chart__end chart__end--max"  x="572" y="56">80%</text>
+                  <text class="chart__end chart__end--base" x="572" y="78">70%</text>
+
+                  <!-- Camada de leitura -->
+                  <g class="chart__cursor" data-cursor hidden aria-hidden="true">
+                    <line class="chart__guide" x1="0" y1="30" x2="0" y2="230" />
+                    <circle class="chart__dot chart__dot--max"  r="4.5" cx="0" cy="0" />
+                    <circle class="chart__dot chart__dot--base" r="4.5" cx="0" cy="0" />
                   </g>
+                  <rect class="chart__hit" data-hit x="60" y="30" width="500" height="200"
+                        tabindex="0" role="button"
+                        aria-label="Explorar o gráfico: mostra quanto fica com você para cada valor de fee" />
                 </svg>
 
                 <p class="chart__readout" data-readout aria-live="polite">
-                  <span class="chart__readout-hint">Passe o cursor sobre uma coluna para ver a divisão</span>
+                  <span class="chart__readout-hint">Passe o cursor sobre o gráfico para ver os valores</span>
                 </p>
 
                 <p class="chart__legend" aria-hidden="true">
-                  <span><i class="chart__key chart__key--you"></i>você</span>
-                  <span><i class="chart__key chart__key--auvp"></i>AUVP</span>
+                  <span><i class="chart__key chart__key--base"></i>padrão · 70%</span>
+                  <span><i class="chart__key chart__key--max"></i>20 primeiros · 80%</span>
                 </p>
               </figure>
             </div>
@@ -540,8 +545,10 @@
 
         <div class="fit">
           <div class="fit__col fit__col--yes reveal">
-            <span class="fit__mark" aria-hidden="true">✓</span>
-            <h3 class="fit__title">É para você se…</h3>
+            <div class="fit__head">
+              <span class="fit__mark" aria-hidden="true">✓</span>
+              <h3 class="fit__title">É para você se…</h3>
+            </div>
             <ul class="checklist">
               <li>Já atua ou deseja atuar como consultor de valores mobiliários</li>
               <li>Possui registro e documentação necessários</li>
@@ -554,8 +561,10 @@
             <p class="fit__foot">Se você se reconheceu aqui, o cadastro leva poucos minutos.</p>
           </div>
           <div class="fit__col fit__col--no reveal">
-            <span class="fit__mark" aria-hidden="true">✕</span>
-            <h3 class="fit__title">Não é para você se…</h3>
+            <div class="fit__head">
+              <span class="fit__mark" aria-hidden="true">✕</span>
+              <h3 class="fit__title">Não é para você se…</h3>
+            </div>
             <ul class="checklist checklist--no">
               <li>Procura apenas uma plataforma para divulgar seu nome</li>
               <li>Não deseja passar por validação técnica</li>

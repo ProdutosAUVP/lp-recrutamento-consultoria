@@ -275,21 +275,79 @@ function iniciarGrafico() {
     fee.setAttribute("data-on", "");
   }
 
+  ligarLeituraDoGrafico(fee);
+}
+
+/**
+ * Leitura do gráfico sob o cursor. As coordenadas do SVG são fixas
+ * (viewBox), então basta converter a posição do ponteiro para o sistema do
+ * SVG e daí para reais — nada depende do tamanho renderizado.
+ */
+function ligarLeituraDoGrafico(fee) {
+  const svg = fee.querySelector(".chart__svg");
+  const hit = fee.querySelector("[data-hit]");
+  const cursor = fee.querySelector("[data-cursor]");
   const leitura = fee.querySelector("[data-readout]");
-  const padrao = leitura ? leitura.innerHTML : "";
-  fee.querySelectorAll("[data-col]").forEach((col) => {
-    const mostrar = () => {
-      if (!leitura) return;
-      const voce = col.dataset.voce;
-      const auvp = col.dataset.auvp;
-      leitura.innerHTML =
-        `Em cada R$ 100 de fee: <b>R$ ${voce},00 para você</b> e R$ ${auvp},00 para a AUVP.`;
-    };
-    const limpar = () => { if (leitura) leitura.innerHTML = padrao; };
-    col.addEventListener("mouseenter", mostrar);
-    col.addEventListener("mouseleave", limpar);
-    col.addEventListener("focus", mostrar);
-    col.addEventListener("blur", limpar);
+  if (!svg || !hit || !cursor || !leitura) return;
+
+  // Mesmos números do markup: eixo x de 60 a 560 cobre R$ 0 a 100 mil.
+  const X0 = 60, X1 = 560, Y0 = 230, FEE_MAX = 100;
+  const PX_POR_MIL = (X1 - X0) / FEE_MAX;
+  const PX_POR_MIL_Y = (Y0 - 52.2) / 80;
+
+  const guia = cursor.querySelector(".chart__guide");
+  const pontoBase = cursor.querySelector(".chart__dot--base");
+  const pontoMax = cursor.querySelector(".chart__dot--max");
+  const padrao = leitura.innerHTML;
+
+  const emReais = (mil) =>
+    mil >= 1
+      ? `R$ ${mil.toFixed(mil % 1 ? 1 : 0).replace(".", ",")} mil`
+      : `R$ ${Math.round(mil * 1000)}`;
+
+  function mostrarEm(feeMil) {
+    const x = X0 + feeMil * PX_POR_MIL;
+    const yBase = Y0 - feeMil * 0.7 * PX_POR_MIL_Y;
+    const yMax = Y0 - feeMil * 0.8 * PX_POR_MIL_Y;
+
+    guia.setAttribute("x1", x);
+    guia.setAttribute("x2", x);
+    pontoBase.setAttribute("cx", x);
+    pontoBase.setAttribute("cy", yBase);
+    pontoMax.setAttribute("cx", x);
+    pontoMax.setAttribute("cy", yMax);
+    cursor.hidden = false;
+
+    leitura.innerHTML =
+      `Com ${emReais(feeMil)} de fee no ano: ` +
+      `<b>${emReais(feeMil * 0.7)} para você</b> no padrão, ` +
+      `<b>${emReais(feeMil * 0.8)}</b> nos 20 primeiros.`;
+  }
+
+  function esconder() {
+    cursor.hidden = true;
+    leitura.innerHTML = padrao;
+  }
+
+  hit.addEventListener("mousemove", (e) => {
+    const caixa = svg.getBoundingClientRect();
+    const escala = 640 / caixa.width; // viewBox / tamanho renderizado
+    const xSvg = (e.clientX - caixa.left) * escala;
+    const feeMil = Math.min(Math.max((xSvg - X0) / PX_POR_MIL, 0), FEE_MAX);
+    mostrarEm(feeMil);
+  });
+  hit.addEventListener("mouseleave", esconder);
+
+  // No teclado, as setas percorrem a linha de 10 em 10 mil.
+  let foco = 50;
+  hit.addEventListener("focus", () => mostrarEm(foco));
+  hit.addEventListener("blur", esconder);
+  hit.addEventListener("keydown", (e) => {
+    const passo = e.key === "ArrowRight" ? 10 : e.key === "ArrowLeft" ? -10 : 0;
+    if (!passo) return;
+    e.preventDefault();
+    foco = Math.min(Math.max(foco + passo, 0), FEE_MAX);
+    mostrarEm(foco);
   });
 }
 

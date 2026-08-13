@@ -28,6 +28,10 @@ jobs:
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
+        with:
+          # Habilita o Pages no repositório na primeira execução, em vez de
+          # exigir que alguém ligue na mão em Settings → Pages.
+          enablement: true
 
       - name: Montar o site
         # A LP é estática: vai tudo do topo do repositório, menos o que não

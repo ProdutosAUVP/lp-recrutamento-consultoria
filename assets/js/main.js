@@ -336,50 +336,6 @@ function ligarSimulador(fee) {
 }
 
 /**
- * Abas dos benefícios. Os tópicos ficam numa linha horizontal e a troca
- * substitui o painel abaixo — sem recarregar a página e sem levar o
- * visitante para outro lugar da rolagem.
- */
-function iniciarAbas() {
-  const bloco = document.querySelector("[data-tabs]");
-  if (!bloco) return;
-
-  const botoes = Array.from(bloco.querySelectorAll("[role='tab']"));
-  const paineis = Array.from(bloco.querySelectorAll("[role='tabpanel']"));
-  if (!botoes.length || botoes.length !== paineis.length) return;
-
-  function ativar(indice) {
-    botoes.forEach((botao, i) => {
-      const ativo = i === indice;
-      botao.classList.toggle("is-active", ativo);
-      botao.setAttribute("aria-selected", String(ativo));
-      // Só a aba ativa entra na ordem de tabulação; as outras vêm pelas setas.
-      botao.tabIndex = ativo ? 0 : -1;
-    });
-    paineis.forEach((painel, i) => {
-      const ativo = i === indice;
-      painel.classList.toggle("is-active", ativo);
-      painel.hidden = !ativo;
-    });
-  }
-
-  botoes.forEach((botao, i) => {
-    botao.addEventListener("click", () => ativar(i));
-    botao.addEventListener("keydown", (evento) => {
-      const passo =
-        evento.key === "ArrowRight" ? 1 : evento.key === "ArrowLeft" ? -1 : 0;
-      if (!passo) return;
-      evento.preventDefault();
-      const proximo = (i + passo + botoes.length) % botoes.length;
-      ativar(proximo);
-      botoes[proximo].focus();
-    });
-  });
-
-  ativar(0);
-}
-
-/**
  * Timeline do caminho de entrada. Como as cinco etapas ficam lado a lado,
  * elas entram na tela praticamente juntas — amarrar o preenchimento à
  * posição do scroll dava um trilho que ia e voltava. Aqui o bloco anima uma
@@ -420,7 +376,6 @@ function iniciarParallax() {
 document.addEventListener("DOMContentLoaded", () => {
   iniciarNavFlutuante();
   iniciarContadores();
-  iniciarAbas();
   iniciarGrafico();
   iniciarTimeline();
   iniciarParallax();

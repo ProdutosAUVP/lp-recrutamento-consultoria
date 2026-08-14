@@ -181,159 +181,133 @@
           estrutura validada que valoriza seu repasse e blinda o seu tempo.
         </p>
 
-        <!-- Abas horizontais: o tópico troca o bloco de conteúdo abaixo, sem recarregar. -->
-        <div class="tabs reveal" data-tabs>
-          <div class="tabs__nav" role="tablist" aria-label="Benefícios da AUVP Advisors">
-            <button type="button" class="tabs__btn" role="tab" id="aba-repasse" aria-controls="painel-repasse">
-              <span class="tabs__num">01</span>Repasse justo
-            </button>
-            <button type="button" class="tabs__btn" role="tab" id="aba-autonomia" aria-controls="painel-autonomia">
-              <span class="tabs__num">02</span>Autonomia intelectual
-            </button>
-            <button type="button" class="tabs__btn" role="tab" id="aba-alinhamento" aria-controls="painel-alinhamento">
-              <span class="tabs__num">03</span>Alinhamento de interesses
-            </button>
-            <button type="button" class="tabs__btn" role="tab" id="aba-competencia" aria-controls="painel-competencia">
-              <span class="tabs__num">04</span>O espelho da competência
-            </button>
-            <button type="button" class="tabs__btn" role="tab" id="aba-ecossistema" aria-controls="painel-ecossistema">
-              <span class="tabs__num">05</span>Ecossistema
-            </button>
-            <button type="button" class="tabs__btn" role="tab" id="aba-ranking" aria-controls="painel-ranking">
-              <span class="tabs__num">06</span>Ranking e premiações
-            </button>
-          </div>
+        <!-- Seis benefícios, todos abertos: grid de três colunas no desktop,
+             uma no celular. Sem carrossel, sanfona ou "ver mais". -->
+        <div class="beneficios">
 
-          <div>
+          <!-- Repasse — o escopo define comissionamento da AUVP de ATÉ 30%,
+               logo o advisor fica com 70% ou mais. Os 80% são a condição
+               fixa dos 20 primeiros, não o topo de uma progressão aberta. -->
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">01</span>
+            <h3 class="beneficio__title">Repasse justo e <em>acima do mercado</em></h3>
+            <p class="beneficio__text">
+              Retenha até 80% do fee e garanta que o resultado do seu esforço vá para o seu
+              próprio bolso.
+            </p>
+            <p class="beneficio__fine">
+              Comissionamento da AUVP de até 30% do fee pago pelo cliente.
+            </p>
+          </article>
 
-            <!-- Repasse — o escopo define comissionamento da AUVP de ATÉ 30%,
-                 logo o advisor fica com 70% ou mais. Os 80% são a condição
-                 fixa dos 20 primeiros, não o topo de uma progressão aberta. -->
-            <div class="tabs__panel" role="tabpanel" id="painel-repasse" aria-labelledby="aba-repasse" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">Repasse justo e <em>acima do mercado</em></h3>
-                <p class="tabs__text">
-                  Retenha até 80% do fee e garanta que o resultado do seu esforço vá para o seu
-                  próprio bolso.
-                </p>
-                <p class="tabs__fine">
-                  Comissionamento da AUVP de até 30% do fee pago pelo cliente.
-                </p>
-              </div>
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">02</span>
+            <h3 class="beneficio__title">Autonomia <em>intelectual</em></h3>
+            <p class="beneficio__text">
+              Esqueça a pressão para empurrar produtos e a dependência de chefes. Você tem
+              controle total sobre sua agenda, sua rotina e a metodologia de alocação que faz
+              sentido para o cliente.
+            </p>
+          </article>
 
-              <div class="fee" data-fee>
-                <figure class="divisao">
-                  <figcaption class="divisao__caption">
-                    Divisão de cada R$ 10.000 de fee pago pelo cliente
-                  </figcaption>
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">03</span>
+            <h3 class="beneficio__title">Alinhamento real <em>de interesses</em></h3>
+            <p class="beneficio__text">
+              Relacionamento limpo, sem conflito de interesses e sem letras miúdas. Aqui a
+              transparência radical é regra, construindo uma confiança inabalável com quem
+              você atende.
+            </p>
+          </article>
 
-                  <svg class="divisao__svg" viewBox="0 0 640 182" role="img"
-                       aria-label="Comparação da divisão do fee. No modelo padrão, R$ 7.000 ficam com o advisor e R$ 3.000 com a AUVP. Para os 20 primeiros advisors, R$ 8.000 ficam com o advisor e R$ 2.000 com a AUVP: são R$ 1.000 a mais por cada R$ 10.000, e a parte da AUVP cai um terço.">
-                    <!-- Padrão -->
-                    <text class="divisao__row-label" x="0" y="14">Padrão</text>
-                    <g class="divisao__row">
-                      <rect class="divisao__track" x="0" y="24" width="520" height="36" rx="3" />
-                      <rect class="divisao__mine" x="0" y="24" width="364" height="36" rx="3" style="--w:364" />
-                      <text class="divisao__in" x="14" y="47">R$ 7.000</text>
-                      <text class="divisao__out" x="378" y="47">R$ 3.000 para a AUVP</text>
-                    </g>
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">04</span>
+            <h3 class="beneficio__title">O espelho da <em>sua competência</em></h3>
+            <p class="beneficio__text">
+              Crie sua autoridade pública sem precisar fazer marketing apelativo. Sua página
+              oficial na AUVP Advisors transforma nota técnica e certificações em um ímã para
+              clientes qualificados.
+            </p>
+          </article>
 
-                    <!-- 20 primeiros -->
-                    <text class="divisao__row-label" x="0" y="96">20 primeiros advisors</text>
-                    <g class="divisao__row">
-                      <rect class="divisao__track" x="0" y="106" width="520" height="36" rx="3" />
-                      <rect class="divisao__mine divisao__mine--max" x="0" y="106" width="364" height="36" style="--w:364" />
-                      <rect class="divisao__gain" x="364" y="106" width="52" height="36" style="--w:52" />
-                      <text class="divisao__in" x="14" y="129">R$ 8.000</text>
-                      <text class="divisao__out" x="430" y="129">R$ 2.000</text>
-                    </g>
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">05</span>
+            <h3 class="beneficio__title">Ecossistema que <em>joga com você</em></h3>
+            <p class="beneficio__text">
+              Entregue o acesso completo à estrutura da AUVP para seus clientes. Você lidera a
+              estratégia, e a nossa máquina trabalha nos bastidores para fortalecer a sua
+              entrega.
+            </p>
+          </article>
 
-                    <!-- Marcação do ganho -->
-                    <line class="divisao__tick" x1="364" y1="24" x2="364" y2="160" />
-                    <text class="divisao__gain-label" x="396" y="174">+R$ 1.000</text>
-                  </svg>
+          <article class="beneficio reveal">
+            <span class="beneficio__num" aria-hidden="true">06</span>
+            <h3 class="beneficio__title">Ranking de <em>premiações exclusivas</em></h3>
+            <p class="beneficio__text">
+              Seu desempenho técnico e a satisfação dos seus clientes colocam você no topo do
+              nosso ranking interno. Dispute premiações, viagens e o destaque máximo na plataforma.
+            </p>
+            <p class="beneficio__fine">
+              Regras e periodicidade do ranking divulgadas na ativação do seu perfil.
+            </p>
+          </article>
 
-                  <p class="divisao__punch">
-                    A parte da AUVP cai de R$ 3.000 para R$ 2.000: <strong>um terço a menos</strong>.
-                  </p>
+        </div>
 
-                  <!-- Simulador: o tamanho da carteira é informado pelo próprio
-                       advisor; o fee anual é derivado dele pela taxa declarada
-                       em TAXA_FEE_ANUAL (assets/js/main.js). -->
-                  <div class="sim">
-                    <label class="sim__label" for="sim-carteira">
-                      Simule com a sua carteira — patrimônio sob consultoria
-                    </label>
-                    <div class="sim__row">
-                      <input class="sim__range" type="range" id="sim-carteira"
-                             min="1" max="250" step="1" value="20"
-                             aria-describedby="sim-saida" data-sim />
-                      <output class="sim__value" for="sim-carteira" data-sim-valor>R$ 20 milhões</output>
-                    </div>
-                    <p class="sim__out" id="sim-saida" aria-live="polite" data-sim-saida></p>
-                    <p class="sim__obs" data-sim-obs></p>
-                  </div>
-                </figure>
-              </div>
+        <!-- A divisão do fee e o simulador saem da grade dos cartões: em um
+             terço da largura o gráfico ficaria ilegível. -->
+        <div class="repasse reveal" data-fee>
+          <figure class="divisao">
+            <figcaption class="divisao__caption">
+              Divisão de cada R$ 10.000 de fee pago pelo cliente
+            </figcaption>
+
+            <svg class="divisao__svg" viewBox="0 0 640 182" role="img"
+                 aria-label="Comparação da divisão do fee. No modelo padrão, R$ 7.000 ficam com o advisor e R$ 3.000 com a AUVP. Para os 20 primeiros advisors, R$ 8.000 ficam com o advisor e R$ 2.000 com a AUVP: são R$ 1.000 a mais por cada R$ 10.000, e a parte da AUVP cai um terço.">
+              <!-- Padrão -->
+              <text class="divisao__row-label" x="0" y="14">Padrão</text>
+              <g class="divisao__row">
+                <rect class="divisao__track" x="0" y="24" width="520" height="36" rx="3" />
+                <rect class="divisao__mine" x="0" y="24" width="364" height="36" rx="3" style="--w:364" />
+                <text class="divisao__in" x="14" y="47">R$ 7.000</text>
+                <text class="divisao__out" x="378" y="47">R$ 3.000 para a AUVP</text>
+              </g>
+
+              <!-- 20 primeiros -->
+              <text class="divisao__row-label" x="0" y="96">20 primeiros advisors</text>
+              <g class="divisao__row">
+                <rect class="divisao__track" x="0" y="106" width="520" height="36" rx="3" />
+                <rect class="divisao__mine divisao__mine--max" x="0" y="106" width="364" height="36" style="--w:364" />
+                <rect class="divisao__gain" x="364" y="106" width="52" height="36" style="--w:52" />
+                <text class="divisao__in" x="14" y="129">R$ 8.000</text>
+                <text class="divisao__out" x="430" y="129">R$ 2.000</text>
+              </g>
+
+              <!-- Marcação do ganho -->
+              <line class="divisao__tick" x1="364" y1="24" x2="364" y2="160" />
+              <text class="divisao__gain-label" x="396" y="174">+R$ 1.000</text>
+            </svg>
+
+            <p class="divisao__punch">
+              A parte da AUVP cai de R$ 3.000 para R$ 2.000: <strong>um terço a menos</strong>.
+            </p>
+          </figure>
+
+          <!-- Simulador: o tamanho da carteira é informado pelo próprio
+               advisor; o fee anual é derivado dele pela taxa declarada
+               em TAXA_FEE_ANUAL (assets/js/main.js). -->
+          <div class="sim">
+            <label class="sim__label" for="sim-carteira">
+              Simule com a sua carteira — patrimônio sob consultoria
+            </label>
+            <div class="sim__row">
+              <input class="sim__range" type="range" id="sim-carteira"
+                     min="1" max="250" step="1" value="20"
+                     aria-describedby="sim-saida" data-sim />
+              <output class="sim__value" for="sim-carteira" data-sim-valor>R$ 20 milhões</output>
             </div>
-
-            <div class="tabs__panel tabs__panel--solo" role="tabpanel" id="painel-autonomia" aria-labelledby="aba-autonomia" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">Autonomia <em>intelectual</em></h3>
-                <p class="tabs__text">
-                  Esqueça a pressão para empurrar produtos e a dependência de chefes. Você tem
-                  controle total sobre sua agenda, sua rotina e a metodologia de alocação que faz
-                  sentido para o cliente.
-                </p>
-              </div>
-            </div>
-
-            <div class="tabs__panel tabs__panel--solo" role="tabpanel" id="painel-alinhamento" aria-labelledby="aba-alinhamento" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">Alinhamento real <em>de interesses</em></h3>
-                <p class="tabs__text">
-                  Relacionamento limpo, sem conflito de interesses e sem letras miúdas. Aqui a
-                  transparência radical é regra, construindo uma confiança inabalável com quem
-                  você atende.
-                </p>
-              </div>
-            </div>
-
-            <div class="tabs__panel tabs__panel--solo" role="tabpanel" id="painel-competencia" aria-labelledby="aba-competencia" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">O espelho da <em>sua competência</em></h3>
-                <p class="tabs__text">
-                  Crie sua autoridade pública sem precisar fazer marketing apelativo. Sua página
-                  oficial na AUVP Advisors transforma nota técnica e certificações em um ímã para
-                  clientes qualificados.
-                </p>
-              </div>
-            </div>
-
-            <div class="tabs__panel tabs__panel--solo" role="tabpanel" id="painel-ecossistema" aria-labelledby="aba-ecossistema" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">Ecossistema que <em>joga com você</em></h3>
-                <p class="tabs__text">
-                  Entregue o acesso completo à estrutura da AUVP para seus clientes. Você lidera a
-                  estratégia, e a nossa máquina trabalha nos bastidores para fortalecer a sua
-                  entrega.
-                </p>
-              </div>
-            </div>
-
-            <div class="tabs__panel tabs__panel--solo" role="tabpanel" id="painel-ranking" aria-labelledby="aba-ranking" tabindex="0">
-              <div class="tabs__copy">
-                <h3 class="tabs__title">Ranking de <em>premiações exclusivas</em></h3>
-                <p class="tabs__text">
-                  Seu desempenho técnico e a satisfação dos seus clientes colocam você no topo do
-                  nosso ranking interno. Dispute premiações, viagens e o destaque máximo na plataforma.
-                </p>
-                <p class="tabs__fine">
-                  Regras e periodicidade do ranking divulgadas na ativação do seu perfil.
-                </p>
-              </div>
-            </div>
-
+            <p class="sim__out" id="sim-saida" aria-live="polite" data-sim-saida></p>
+            <p class="sim__obs" data-sim-obs></p>
           </div>
         </div>
 

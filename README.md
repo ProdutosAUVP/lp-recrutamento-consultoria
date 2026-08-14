@@ -18,7 +18,7 @@ Página estática, sem build e sem dependências:
 
 - `index.html` — todo o conteúdo, em seções semânticas
 - `assets/css/styles.css` — estilos (paleta clara institucional derivada do design system AUVP)
-- `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, abas dos benefícios, timeline de entrada, contadores e animação do gráfico de repasse
+- `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, contadores e animação do gráfico de repasse
 - `assets/img/` — logos "olho" AUVP (SVG, vindos de [ProdutosAUVP/central](https://github.com/ProdutosAUVP/central))
 
 Para rodar localmente, basta abrir o `index.html` ou servir a pasta:
@@ -82,7 +82,8 @@ Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla dema
 2. **Números do ecossistema** — a faixa de destaques exibe +1 Mi de investidores alcançados por mês, +45 mil contas abertas e ativas e +60 mil alunos formados. São dados de comunicação institucional: confirmar com marketing a data-base antes de publicar.
 3. **Razão social no rodapé** — o escopo prevê uma PJ específica para a AUVP Advisors. Quando ela existir, o rodapé precisa da razão social e do CNPJ.
 4. **Taxa do simulador** — o simulador parte do tamanho da carteira, não do fee. A conversão de patrimônio em receita usa `TAXA_FEE_ANUAL`, hoje em 1% ao ano; enquanto o número não for confirmado, a obs. abaixo do controle deixa a premissa visível para o visitante.
-5. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
+5. **Benefícios sem interação escondida** — os seis cartões renderizam abertos, em grade de três colunas no desktop. Nada de carrossel, sanfona ou "ver mais": se um benefício novo entrar, ele vira o sétimo cartão e a grade reflui sozinha (o ideal é manter múltiplos de três para fechar as linhas).
+6. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
 
 ## Decisões adotadas a partir do documento de escopo
 
@@ -103,6 +104,6 @@ A página foi originalmente construída a partir do briefing de comunicação. O
 - **Superfícies:** cada dobra declara `.surface-white` ou `.surface-gray`, que definem as variáveis `--surface` (fundo da dobra) e `--surface-raised` (tom oposto). Os cartões usam `--surface-raised`, então sempre contrastam com a dobra em que estão — inverta a classe da dobra e os cartões se ajustam sozinhos
 - **Formas:** raios contidos (3–6px) na interface — leitura sóbria e institucional. Duas exceções deliberadas: o **arco da foto do hero**, em um lado só (topo) e com os outros três retos; e os **nós da timeline**, circulares
 - **Espaçamento:** escala única em `--sp-1` … `--sp-8` mais `--sp-section` (o respiro vertical das dobras). Todo padding, gap e margem sai daí — não há valores soltos
-- **Responsivo:** verificado sem rolagem horizontal nem estouro de elemento em 320, 390, 834 e 1440px. Os pontos de quebra seguem o conteúdo, não o dispositivo: a linha de tópicos das abas vai de 6 para 3 e depois 2 por linha, sem nunca cortar um item; a timeline vai de 5 para 3 e depois 1 coluna; os destaques numéricos vão de 3 para 1 coluna; abaixo de 26rem os botões grandes ocupam a largura toda
-- **Componentes:** hero em duas colunas com foto em frame arqueado, faixa de destaques numéricos, dobra escura de operação com o co-brand BTG, abas horizontais de benefícios com o simulador de repasse no primeiro painel, timeline horizontal do processo de entrada com o bloco de apoio à regularização e formulário de interesse
+- **Responsivo:** verificado sem rolagem horizontal nem estouro de elemento em 320, 390, 834, 1100, 1280 e 1440px. Os pontos de quebra seguem o conteúdo, não o dispositivo: os benefícios ficam em 3 colunas exatas no desktop, 2 no tablet e 1 no celular; a timeline vai de 5 para 3 e depois 1 coluna; os destaques numéricos vão de 3 para 1 coluna; abaixo de 26rem os botões grandes ocupam a largura toda
+- **Componentes:** hero em duas colunas com foto em frame arqueado, faixa de destaques numéricos, dobra escura de operação com o co-brand BTG, grade de seis benefícios sempre abertos com a divisão do fee e o simulador logo abaixo, timeline horizontal do processo de entrada com o bloco de apoio à regularização e formulário de interesse
 - **Compliance:** benefícios de lançamento marcados como limitados aos 20 primeiros e sujeitos a critérios, comissionamento da AUVP de até 30% declarado junto ao simulador, premissa de fee do simulador exposta abaixo do controle, vinculação ao BTG sinalizada como sujeita ao compliance da instituição, suporte à regularização diferenciado de garantia de registro, e disclaimers da Resolução CVM 19/2021 no hero, no formulário e no rodapé

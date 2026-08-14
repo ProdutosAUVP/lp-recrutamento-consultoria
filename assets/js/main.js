@@ -289,8 +289,19 @@ function ligarSimulador(fee) {
   const saida = fee.querySelector("[data-sim-saida]");
   if (!range || !valor || !saida) return;
 
-  const emMil = (n) =>
-    "R$ " + n.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " mil";
+  /* O simulador vai até R$ 2,4 milhões no ano; acima de mil o número passa
+     a ser lido em milhões, para não virar "R$ 1.680 mil". */
+  const emMil = (n) => {
+    if (n < 1000) {
+      return "R$ " + n.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " mil";
+    }
+    const milhoes = n / 1000;
+    return (
+      "R$ " +
+      milhoes.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) +
+      (milhoes === 1 ? " milhão" : " milhões")
+    );
+  };
 
   function atualizar() {
     const anual = Number(range.value);
@@ -310,101 +321,89 @@ function ligarSimulador(fee) {
 }
 
 /**
- * Roadmap: como as cinco etapas ficam lado a lado, elas entram na tela
- * praticamente juntas — amarrar o preenchimento à posição do scroll dava
- * um trilho que ia e voltava. Aqui o bloco anima uma vez, ao aparecer.
+ * Abas dos benefícios. Os tópicos ficam numa linha horizontal e a troca
+ * substitui o painel abaixo — sem recarregar a página e sem levar o
+ * visitante para outro lugar da rolagem.
  */
-function iniciarRoadmap() {
-  const bloco = document.querySelector("[data-roadmap]");
+function iniciarAbas() {
+  const bloco = document.querySelector("[data-tabs]");
   if (!bloco) return;
 
-  if (!("IntersectionObserver" in window)) {
-    bloco.classList.add("is-on");
+  const botoes = Array.from(bloco.querySelectorAll("[role='tab']"));
+  const paineis = Array.from(bloco.querySelectorAll("[role='tabpanel']"));
+  if (!botoes.length || botoes.length !== paineis.length) return;
+
+  function ativar(indice) {
+    botoes.forEach((botao, i) => {
+      const ativo = i === indice;
+      botao.classList.toggle("is-active", ativo);
+      botao.setAttribute("aria-selected", String(ativo));
+      // Só a aba ativa entra na ordem de tabulação; as outras vêm pelas setas.
+      botao.tabIndex = ativo ? 0 : -1;
+    });
+    paineis.forEach((painel, i) => {
+      const ativo = i === indice;
+      painel.classList.toggle("is-active", ativo);
+      painel.hidden = !ativo;
+    });
+  }
+
+  botoes.forEach((botao, i) => {
+    botao.addEventListener("click", () => ativar(i));
+    botao.addEventListener("keydown", (evento) => {
+      const passo =
+        evento.key === "ArrowRight" ? 1 : evento.key === "ArrowLeft" ? -1 : 0;
+      if (!passo) return;
+      evento.preventDefault();
+      const proximo = (i + passo + botoes.length) % botoes.length;
+      ativar(proximo);
+      botoes[proximo].focus();
+    });
+  });
+
+  ativar(0);
+}
+
+/**
+ * Timeline do caminho de entrada: cada cartão entra ao aparecer e o trilho
+ * preenche conforme a rolagem, marcando em que ponto do processo a leitura
+ * está.
+ */
+function iniciarTimeline() {
+  const bloco = document.querySelector("[data-timeline]");
+  if (!bloco) return;
+
+  const passos = Array.from(bloco.querySelectorAll(".timeline__step"));
+  const trilho = bloco.querySelector("[data-timeline-fill]");
+
+  if ("IntersectionObserver" in window && !semMovimento) {
+    const io = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("is-on");
+          io.unobserve(e.target);
+        });
+      },
+      { threshold: 0.3, rootMargin: "0px 0px -8% 0px" }
+    );
+    passos.forEach((passo) => io.observe(passo));
+  } else {
+    passos.forEach((passo) => passo.classList.add("is-on"));
+  }
+
+  if (!trilho) return;
+  if (semMovimento) {
+    trilho.style.height = "100%";
     return;
   }
 
-  const io = new IntersectionObserver(
-    (entradas) => {
-      entradas.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("is-on");
-        io.unobserve(e.target);
-      });
-    },
-    { threshold: 0.25 }
-  );
-  io.observe(bloco);
-}
-
-/** Perfis do catálogo — o visitante compara, como o cliente faz. */
-const PERFIS = [
-  {
-    foto: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=300&auto=format&fit=crop&crop=faces",
-    nome: "Mariana Ribeiro",
-    local: "São Paulo, SP · Atende todo o Brasil",
-    nota: "9,4",
-    avaliacao: "★ 4,9",
-    cert: "CNPI-P",
-    certs: "CPA · CGE",
-    metodologia: "Acompanhamento mensal com rebalanceamento por metas. Transparência total sobre o processo.",
-    pedido: "Patrimônio R$ 1,2M · Objetivo: aposentadoria · Acompanhamento trimestral",
-  },
-  {
-    foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=300&auto=format&fit=crop&crop=faces",
-    nome: "Rafael Ferraz",
-    local: "Curitiba, PR · Atende todo o Brasil",
-    nota: "9,1",
-    avaliacao: "★ 4,8",
-    cert: "CPRO-I",
-    certs: "CPA · CNPI-T",
-    metodologia: "Construção de renda passiva com revisão semestral e relatório aberto de cada movimentação.",
-    pedido: "Patrimônio R$ 850 mil · Objetivo: renda mensal · Acompanhamento semestral",
-  },
-  {
-    foto: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=300&auto=format&fit=crop&crop=faces",
-    nome: "Beatriz Nunes",
-    local: "Recife, PE · Atende todo o Brasil",
-    nota: "9,7",
-    avaliacao: "★ 5,0",
-    cert: "CGE",
-    certs: "CPRO-R · CNPI-P",
-    metodologia: "Planejamento sucessório e estruturação fiscal para famílias, com revisão anual do plano.",
-    pedido: "Patrimônio R$ 4,5M · Objetivo: sucessão familiar · Acompanhamento trimestral",
-  },
-];
-
-function iniciarPerfis() {
-  const bloco = document.querySelector("[data-profiles]");
-  const card = document.querySelector("[data-profile-card]");
-  if (!bloco || !card) return;
-
-  const botoes = Array.from(bloco.querySelectorAll("[data-profile]"));
-
-  botoes.forEach((botao) => {
-    botao.addEventListener("click", () => {
-      const perfil = PERFIS[Number(botao.dataset.profile)];
-      if (!perfil) return;
-
-      botoes.forEach((b) => {
-        const ativo = b === botao;
-        b.classList.toggle("is-active", ativo);
-        b.setAttribute("aria-selected", String(ativo));
-      });
-
-      const aplicar = () => {
-        Object.entries(perfil).forEach(([chave, valor]) => {
-          const campo = card.querySelector(`[data-field="${chave}"]`);
-          if (!campo) return;
-          if (campo.tagName === "IMG") campo.src = valor;
-          else campo.textContent = valor;
-        });
-        card.classList.remove("is-swapping");
-      };
-
-      if (semMovimento) return aplicar();
-      card.classList.add("is-swapping");
-      setTimeout(aplicar, 160);
-    });
+  aoRolar(() => {
+    const caixa = bloco.getBoundingClientRect();
+    // A linha acompanha o ponto de leitura, um pouco acima do meio da tela.
+    const leitura = window.innerHeight * 0.55 - caixa.top;
+    const progresso = Math.max(0, Math.min(1, leitura / caixa.height));
+    trilho.style.height = `${progresso * 100}%`;
   });
 }
 
@@ -421,9 +420,9 @@ function iniciarParallax() {
 document.addEventListener("DOMContentLoaded", () => {
   iniciarNavFlutuante();
   iniciarContadores();
+  iniciarAbas();
   iniciarGrafico();
-  iniciarRoadmap();
-  iniciarPerfis();
+  iniciarTimeline();
   iniciarParallax();
 
   // CTAs — todos os botões .js-cta levam ao formulário

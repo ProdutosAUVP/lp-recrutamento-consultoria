@@ -21,6 +21,14 @@ const PRIVACY_URL = "";
  */
 const VIDEO_URL = "";
 
+/**
+ * Fee anual médio cobrado sobre o patrimônio sob consultoria, usado para
+ * transformar o tamanho da carteira em receita no simulador de repasse.
+ * 0.01 = 1% ao ano. A observação exibida abaixo do simulador é escrita a
+ * partir daqui, então mudar este número mantém texto e conta alinhados.
+ */
+const TAXA_FEE_ANUAL = 0.01;
+
 /* ========================================================================== */
 
 const MSG = {
@@ -232,10 +240,13 @@ function iniciarContadores() {
         if (!e.isIntersecting) return;
         io.unobserve(e.target);
 
-        const texto = e.target.textContent;
-        const numero = parseInt(texto.replace(/\D/g, ""), 10);
+        // O número pode vir com prefixo e sufixo ("+45 mil"): os dois ficam
+        // parados enquanto só o miolo conta.
+        const partes = e.target.textContent.match(/^(\D*)(\d+)(.*)$/);
+        if (!partes) return;
+        const [, prefixo, digitos, sufixo] = partes;
+        const numero = parseInt(digitos, 10);
         if (!Number.isFinite(numero)) return;
-        const sufixo = texto.replace(/[\d]/g, "");
 
         const duracao = 900;
         const inicio = performance.now();
@@ -243,7 +254,7 @@ function iniciarContadores() {
           const p = Math.min((agora - inicio) / duracao, 1);
           // easeOutCubic: rápido no começo, assenta no fim
           const valor = Math.round(numero * (1 - Math.pow(1 - p, 3)));
-          e.target.textContent = valor + sufixo;
+          e.target.textContent = prefixo + valor + sufixo;
           if (p < 1) requestAnimationFrame(passo);
         };
         requestAnimationFrame(passo);
@@ -279,41 +290,45 @@ function iniciarGrafico() {
 }
 
 /**
- * Simulador do repasse. O volume é informado pelo próprio consultor, então
- * nada aqui é estimativa nossa: as contas são a proporção de 70% e 80%
- * aplicadas ao número que ele escolheu.
+ * Simulador do repasse. O tamanho da carteira é informado pelo próprio
+ * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, as
+ * proporções de 70% e 80%. Nenhum número aqui é promessa de faturamento.
  */
 function ligarSimulador(fee) {
   const range = fee.querySelector("[data-sim]");
   const valor = fee.querySelector("[data-sim-valor]");
   const saida = fee.querySelector("[data-sim-saida]");
+  const obs = fee.querySelector("[data-sim-obs]");
   if (!range || !valor || !saida) return;
 
-  /* O simulador vai até R$ 2,4 milhões no ano; acima de mil o número passa
-     a ser lido em milhões, para não virar "R$ 1.680 mil". */
-  const emMil = (n) => {
-    if (n < 1000) {
-      return "R$ " + n.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) + " mil";
-    }
-    const milhoes = n / 1000;
-    return (
-      "R$ " +
-      milhoes.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) +
-      (milhoes === 1 ? " milhão" : " milhões")
-    );
-  };
+  /** O controle anda em milhões de reais de patrimônio. */
+  const emMilhoes = (mi) =>
+    "R$ " +
+    mi.toLocaleString("pt-BR", { maximumFractionDigits: 0 }) +
+    (mi === 1 ? " milhão" : " milhões");
+
+  const emReais = (n) =>
+    "R$ " + Math.round(n).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
 
   function atualizar() {
-    const anual = Number(range.value);
-    const padrao = anual * 0.7;
-    const primeiros = anual * 0.8;
-    const diferenca = primeiros - padrao;
+    const carteira = Number(range.value) * 1e6;
+    const feeAnual = carteira * TAXA_FEE_ANUAL;
+    const padrao = feeAnual * 0.7;
+    const primeiros = feeAnual * 0.8;
 
-    valor.textContent = emMil(anual);
+    valor.textContent = emMilhoes(Number(range.value));
     saida.innerHTML =
-      `Com esse volume você fica com <b>${emMil(padrao)}</b> no repasse padrão ` +
-      `e <b>${emMil(primeiros)}</b> como um dos 20 primeiros — ` +
-      `<span class="sim__delta">${emMil(diferenca)} a mais por ano</span>.`;
+      `Uma carteira desse tamanho gera <b>${emReais(feeAnual)}</b> de fee no ano: ` +
+      `você fica com <b>${emReais(padrao)}</b> no repasse padrão e ` +
+      `<b>${emReais(primeiros)}</b> como um dos 20 primeiros — ` +
+      `<span class="sim__delta">${emReais(primeiros - padrao)} a mais por ano</span>.`;
+  }
+
+  if (obs) {
+    const taxa = (TAXA_FEE_ANUAL * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
+    obs.textContent =
+      `Obs.: os valores levam em conta o patrimônio líquido sob consultoria, ` +
+      `considerando um fee de ${taxa}% ao ano.`;
   }
 
   range.addEventListener("input", atualizar);
@@ -365,46 +380,31 @@ function iniciarAbas() {
 }
 
 /**
- * Timeline do caminho de entrada: cada cartão entra ao aparecer e o trilho
- * preenche conforme a rolagem, marcando em que ponto do processo a leitura
- * está.
+ * Timeline do caminho de entrada. Como as cinco etapas ficam lado a lado,
+ * elas entram na tela praticamente juntas — amarrar o preenchimento à
+ * posição do scroll dava um trilho que ia e voltava. Aqui o bloco anima uma
+ * vez, ao aparecer, e os cartões entram em sequência.
  */
 function iniciarTimeline() {
   const bloco = document.querySelector("[data-timeline]");
   if (!bloco) return;
 
-  const passos = Array.from(bloco.querySelectorAll(".timeline__step"));
-  const trilho = bloco.querySelector("[data-timeline-fill]");
-
-  if ("IntersectionObserver" in window && !semMovimento) {
-    const io = new IntersectionObserver(
-      (entradas) => {
-        entradas.forEach((e) => {
-          if (!e.isIntersecting) return;
-          e.target.classList.add("is-on");
-          io.unobserve(e.target);
-        });
-      },
-      { threshold: 0.3, rootMargin: "0px 0px -8% 0px" }
-    );
-    passos.forEach((passo) => io.observe(passo));
-  } else {
-    passos.forEach((passo) => passo.classList.add("is-on"));
-  }
-
-  if (!trilho) return;
-  if (semMovimento) {
-    trilho.style.height = "100%";
+  if (!("IntersectionObserver" in window) || semMovimento) {
+    bloco.classList.add("is-on");
     return;
   }
 
-  aoRolar(() => {
-    const caixa = bloco.getBoundingClientRect();
-    // A linha acompanha o ponto de leitura, um pouco acima do meio da tela.
-    const leitura = window.innerHeight * 0.55 - caixa.top;
-    const progresso = Math.max(0, Math.min(1, leitura / caixa.height));
-    trilho.style.height = `${progresso * 100}%`;
-  });
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("is-on");
+        io.unobserve(e.target);
+      });
+    },
+    { threshold: 0.25 }
+  );
+  io.observe(bloco);
 }
 
 /** Parallax discreto da foto do hero. */

@@ -534,15 +534,6 @@ ul, ol { list-style: none; }
 
 .tabs__text { color: var(--ink-muted); font-size: 1rem; }
 
-.tabs__punch {
-  font-family: var(--font-display);
-  font-size: 1.375rem;
-  font-weight: 600;
-  color: var(--green-deep);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-}
-
 .tabs__fine {
   margin-top: auto;
   font-size: 0.78125rem;
@@ -550,10 +541,6 @@ ul, ol { list-style: none; }
   border-top: 1px dashed var(--border-strong);
   padding-top: 0.875rem;
 }
-
-.tabs__aside { container-type: inline-size; }
-/* A soma tem mais largura aqui do que na coluna da dobra "O que é". */
-.tabs__aside .equation { margin-top: 0; font-size: clamp(0.75rem, 3.4cqi, 1.0625rem); }
 
 /* ---------- Destaque dos 20 primeiros ---------- */
 .destaque {
@@ -590,6 +577,67 @@ ul, ol { list-style: none; }
 }
 .destaque__fine::before { content: "→ "; color: var(--gold); }
 
+/* ---------- Operação: BTG e suporte (dobra escura) ---------- */
+.operacao {
+  background: var(--black);
+  color: #fff;
+  padding: var(--sp-section) 0;
+}
+
+.operacao .section__title { color: #fff; }
+
+.operacao__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.operacao__card {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.operacao__cobrand {
+  width: 100%;
+  max-width: 13rem;
+  height: auto;
+  margin-bottom: var(--sp-2);
+}
+
+.operacao__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.operacao__text { color: rgba(255, 255, 255, 0.78); font-size: 0.9843rem; }
+
+.operacao__fine {
+  margin-top: auto;
+  padding-top: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.78125rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.operacao__fine strong { color: var(--gold); font-weight: 700; }
+
+/* Sobre o preto o verde da marca some: aqui o botão inverte para branco. */
+.operacao__cta { margin-top: var(--sp-6); }
+.operacao__cta .btn--primary { background: #fff; color: var(--ink); }
+.operacao__cta .btn--primary:hover { background: var(--gold); }
+
+/* Sobre preto o verde da marca desaparece: o traço vira dourado e o texto,
+   branco lavado. */
+.checklist--light li { color: rgba(255, 255, 255, 0.78); }
+.checklist--light li::before { color: var(--gold); }
+
 /* Checklists */
 .checklist { display: flex; flex-direction: column; gap: 0.625rem; }
 .checklist li {
@@ -620,51 +668,9 @@ ul, ol { list-style: none; }
 .modelo__body .section__sub { margin-bottom: var(--sp-4); }
 .modelo__body .section__sub:last-of-type { margin-bottom: 0; }
 
-/* A soma nunca pode cortar. A fonte é medida em cqi (percentual da largura
-   do container declarado logo abaixo), então encolhe junto com a coluna e
-   cabe numa linha só em qualquer tela de leitura confortável. O piso de
-   10px protege a legibilidade: abaixo dele a soma prefere quebrar em duas
-   linhas a encolher mais. Recuos e espaços estão em em, no mesmo passo. */
+/* A coluna de texto do "O que é" mede a si mesma para os blocos que
+   dependem da própria largura. */
 .modelo__body { container-type: inline-size; }
-
-.equation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45em;
-  margin: var(--sp-6) 0;
-  font-family: var(--font-ui);
-  font-size: clamp(0.625rem, 1.95cqi, 0.8125rem);
-}
-
-.equation__item {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  padding: 0.5em 0.85em;
-  font-size: 1em;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.equation__op {
-  color: var(--ink-faint);
-  font-weight: 600;
-  font-size: 1.05em;
-  flex-shrink: 0;
-}
-
-.equation__result {
-  background: var(--green-deep);
-  color: #fff;
-  border-radius: var(--radius-sm);
-  padding: 0.5em 0.85em;
-  font-size: 1em;
-  font-weight: 700;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
 
 /* ---------- CTA final ---------- */
 .cta-final {
@@ -764,6 +770,8 @@ ul, ol { list-style: none; }
 
   .modelo { grid-template-columns: 1fr; }
 
+  .operacao__grid { grid-template-columns: 1fr; }
+
   .tabs__panel { grid-template-columns: 1fr; }
 }
 
@@ -772,8 +780,6 @@ ul, ol { list-style: none; }
   .nav__toggle { display: flex; }
   .nav__actions .btn { display: none; }
   .nav__mobile[data-open] { display: flex; }
-
-  .fit { grid-template-columns: 1fr; }
 
   .stats__grid { grid-template-columns: 1fr; gap: var(--sp-3); }
 
@@ -1100,6 +1106,12 @@ button:focus-visible {
   min-height: 2.75rem;
 }
 .sim__out b { color: var(--ink); font-weight: 700; }
+
+.sim__obs {
+  margin-top: var(--sp-2);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
 .sim__out .sim__delta {
   display: inline-block;
   background: var(--gold);
@@ -1124,43 +1136,50 @@ button:focus-visible {
 }
 
 /* ---------- Timeline: o caminho para fazer parte ----------
-   Trilho vertical que preenche com a rolagem; cada cartão entra ao aparecer. */
+   As cinco etapas ficam lado a lado sobre um trilho que preenche quando o
+   bloco entra na tela; os cartões entram em sequência. */
 .timeline {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-5);
-  padding-left: 4.5rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
 }
 
 .timeline__rail {
   position: absolute;
-  left: 1.375rem;
-  top: 1rem;
-  bottom: 1rem;
-  width: 2px;
+  left: 10%;
+  right: 10%;
+  top: 1.375rem;
+  height: 2px;
   background: var(--border);
 }
 .timeline__rail-fill {
   display: block;
-  width: 100%;
-  height: 0%;
+  height: 100%;
+  width: 0%;
   background: var(--green-deep);
-  transition: height 0.2s linear;
+  transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
+.timeline.is-on .timeline__rail-fill { width: 100%; }
 
 .timeline__step {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-4);
+  text-align: center;
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: calc(var(--i) * 0.09s);
 }
-.timeline__step.is-on { opacity: 1; transform: none; }
+.timeline.is-on .timeline__step { opacity: 1; transform: none; }
 
 .timeline__node {
-  position: absolute;
-  left: -4.5rem;
-  top: 0.375rem;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
@@ -1173,8 +1192,9 @@ button:focus-visible {
   font-weight: 700;
   color: var(--ink-faint);
   transition: background 0.4s ease, box-shadow 0.4s ease, color 0.4s ease;
+  transition-delay: calc(var(--i) * 0.09s + 0.2s);
 }
-.timeline__step.is-on .timeline__node {
+.timeline.is-on .timeline__node {
   background: var(--green-deep);
   box-shadow: 0 0 0 2px var(--green-deep);
   color: #fff;
@@ -1184,7 +1204,9 @@ button:focus-visible {
   background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--sp-5);
+  padding: var(--sp-5) var(--sp-4);
+  width: 100%;
+  flex: 1;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .timeline__card:hover {
@@ -1197,7 +1219,7 @@ button:focus-visible {
   display: inline-block;
   margin-bottom: var(--sp-2);
   font-family: var(--font-ui);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1209,28 +1231,80 @@ button:focus-visible {
 
 .timeline__title {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.015em;
   margin-bottom: var(--sp-2);
 }
-.timeline__text { font-size: 0.9843rem; color: var(--ink-muted); }
+.timeline__text { font-size: 0.84375rem; color: var(--ink-muted); line-height: 1.5; }
+
+/* Fora da linha única o trilho some: ele só faz sentido ligando cinco nós. */
+@media (max-width: 68rem) {
+  .timeline { grid-template-columns: repeat(3, 1fr); gap: var(--sp-5) var(--sp-4); }
+  .timeline__rail { display: none; }
+}
+
+@media (max-width: 40rem) {
+  .timeline { grid-template-columns: 1fr; gap: var(--sp-3); }
+  .timeline__step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: var(--sp-4);
+  }
+  .timeline__node { margin-top: var(--sp-2); width: 2.25rem; height: 2.25rem; font-size: 0.78125rem; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .timeline__step, .timeline__node, .timeline__card, .timeline__rail-fill { transition: none; }
   .timeline__step { opacity: 1; transform: none; }
+  .timeline .timeline__rail-fill { width: 100%; }
 }
 
-@media (max-width: 40rem) {
-  .timeline { padding-left: 3.25rem; }
-  .timeline__rail { left: 1rem; }
-  .timeline__node {
-    left: -3.25rem;
-    width: 2rem;
-    height: 2rem;
-    font-size: 0.75rem;
-  }
-  .timeline__card { padding: var(--sp-4); }
+/* ---------- Apoio à regularização ----------
+   Bloco centrado que fecha a dobra do processo de entrada. */
+.apoio {
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-7);
+  border-top: 1px solid var(--border);
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.apoio__icone {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  color: var(--green-deep);
+}
+.apoio__icone svg { width: 1.5rem; height: 1.5rem; }
+
+.apoio__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.apoio__text { color: var(--ink-muted); font-size: 1rem; }
+
+/* A lista fica centrada em bloco, mas cada item segue alinhado à esquerda. */
+.apoio__lista { text-align: left; margin-top: var(--sp-2); }
+
+.apoio__fine {
+  margin-top: var(--sp-2);
+  font-size: 0.78125rem;
+  color: var(--ink-faint);
 }
 
 /* ---------- Para quem é ---------- */
@@ -1238,6 +1312,12 @@ button:focus-visible {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--sp-4);
+}
+
+/* Precisa vir depois da regra acima: mesma especificidade, quem estiver
+   por último vence. Empilhado antes, o bloco não descia no celular. */
+@media (max-width: 48rem) {
+  .fit { grid-template-columns: 1fr; }
 }
 
 .fit__col {
@@ -1284,13 +1364,6 @@ button:focus-visible {
 
 .fit__col .checklist { flex: 1; }
 
-.fit__foot {
-  font-size: 0.84375rem;
-  color: var(--ink-faint);
-  border-top: 1px solid var(--border);
-  padding-top: var(--sp-4);
-}
-
 /* ==========================================================================
    Responsivo — pontos de quebra por conteúdo, não por dispositivo
    ========================================================================== */
@@ -1316,7 +1389,9 @@ button:focus-visible {
    Zerar o mínimo deixa a coluna respeitar o container. */
 .hero__grid > *,
 .modelo > *,
+.operacao__grid > *,
 .tabs__panel > *,
+.timeline > *,
 .fit > *,
 .stats__inner > *,
 .stats__grid > * { min-width: 0; }

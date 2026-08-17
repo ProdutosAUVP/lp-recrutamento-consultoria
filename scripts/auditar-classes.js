@@ -22,7 +22,7 @@ for (const m of cssLimpo.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) noCss.add(m[1]);
 // Divs estruturais e ganchos de JS não precisam de regra própria
 const SEM_ESTILO_OK = new Set([
   'js-cta', 'hero__copy', 'vitrine__copy', 'band__copy', 'footer__brand',
-  'profile__section', 'field--consent',
+  'profile__section', 'field--consent', 'lista__corpo',
 ]);
 
 const semEstilo = [...noHtml].filter(c => !noCss.has(c) && !SEM_ESTILO_OK.has(c)).sort();

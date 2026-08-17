@@ -100,7 +100,7 @@ ul, ol { list-style: none; }
   font-weight: 400;
   line-height: 1.04;
   letter-spacing: -0.025em;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--sp-5);
   text-wrap: balance;
 }
 /* Ênfase por peso, nunca por cor. */
@@ -297,7 +297,7 @@ ul, ol { list-style: none; }
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(3.5rem, 7vw, 5.5rem);
+  padding: var(--sp-section) 0;
   overflow: hidden;
 }
 
@@ -323,14 +323,14 @@ ul, ol { list-style: none; }
   font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
   color: var(--ink-muted);
   max-width: 34rem;
-  margin-bottom: 2.25rem;
+  margin-bottom: var(--sp-6);
 }
 
 .hero__ctas {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: var(--sp-6);
 }
 
 .hero__compliance {
@@ -365,17 +365,6 @@ ul, ol { list-style: none; }
   height: 100%;
   object-fit: cover;
 }
-
-/* Bloco de apoio deslocado atrás da foto — profundidade sem ornamento */
-.hero__media::before {
-  content: "";
-  position: absolute;
-  inset: 22% -9% 12% 74%;
-  background: var(--gray);
-  border: 1px solid var(--border);
-  z-index: -1;
-}
-.surface-gray .hero__media::before { background: var(--white); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -441,60 +430,112 @@ ul, ol { list-style: none; }
   line-height: 1.45;
 }
 
-/* ---------- Benefícios: seis cartões, todos abertos ----------
-   Bento de 3×3 no desktop: o repasse ocupa um bloco 2×2 e os outros cinco
-   fecham exatamente as células restantes (4 + 5 = 9). No tablet cai para
-   duas colunas, no celular para uma. Nenhum conteúdo fica atrás de clique. */
+/* ---------- Benefícios: coluna fixa + lista ----------
+   Título e resumo ficam presos à esquerda enquanto os seis benefícios rolam
+   à direita. O movimento vem da própria leitura: o item que cruza o meio da
+   tela acende o número. Nada fica atrás de clique. */
 .beneficios {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-4);
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
 }
 
-.beneficio {
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-6);
+.beneficios__intro {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-5));
+}
+.beneficios__intro .section__title { margin-bottom: var(--sp-4); }
+.beneficios__intro .section__sub { margin-bottom: var(--sp-6); }
+
+.beneficios__passo {
   display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-.beneficio:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-soft);
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--border-strong);
 }
 
-/* Ícone à esquerda, número à direita: a linha superior dá um ponto de
-   entrada visual ao cartão e evita que ele comece direto em texto. */
-.beneficio__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-}
-
-.beneficio__icone {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: var(--radius);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
+.beneficios__passo-atual {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
   color: var(--green-deep);
+  font-variant-numeric: tabular-nums;
 }
-.beneficio__icone svg { width: 1.375rem; height: 1.375rem; }
 
-.beneficio__num {
+.beneficios__passo-total {
   font-family: var(--font-ui);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--gold-deep);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Os itens se separam por filete, não por caixa: seis cartões lado a lado
+   viravam seis blocos de texto: aqui o que organiza é o ritmo da lista. */
+.lista { display: flex; flex-direction: column; }
+
+.lista__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--sp-5);
+  align-items: start;
+  padding: var(--sp-6) 0;
+  border-top: 1px solid var(--border);
+}
+.lista__item:first-child { border-top: 0; padding-top: 0; }
+.lista__item:last-child { padding-bottom: 0; }
+
+/* Número vazado que preenche quando o item entra na faixa central da tela.
+   Sem suporte a text-stroke ele nasce sólido no tom da borda, então nunca
+   depende do efeito para ser lido. */
+.lista__num {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--border-strong);
+  transition: color 0.45s ease;
+}
+.lista__item.is-ativo .lista__num { color: var(--green-deep); }
+
+@supports (-webkit-text-stroke: 1px #000) {
+  .lista__num {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--border-strong);
+    transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease;
+  }
+  .lista__item.is-ativo .lista__num {
+    color: var(--green-deep);
+    -webkit-text-stroke-color: var(--green-deep);
+  }
+}
+
+.lista__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--sp-2);
+}
+.lista__title em,
+.lista__title strong { font-style: normal; font-weight: 800; }
+
+.lista__text { color: var(--ink-muted); font-size: 0.9843rem; }
+.lista__text strong { color: var(--ink); font-weight: 700; }
+
+.lista__fine {
+  margin-top: var(--sp-3);
+  font-size: 0.78125rem;
+  color: var(--ink-faint);
 }
 
 /* Palavras-chave do benefício: leitura em varredura, sem parágrafo. */
@@ -502,131 +543,33 @@ ul, ol { list-style: none; }
   display: flex;
   flex-wrap: wrap;
   gap: 0.375rem;
-  margin-top: auto;
-  padding-top: var(--sp-2);
+  margin-top: var(--sp-3);
 }
 .tags li {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
   font-weight: 600;
   color: var(--ink-muted);
-  background: var(--surface);
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 0.25rem 0.5rem;
 }
 
-/* Só o primeiro bloco flexível empurra: com dois, a folga se dividiria. */
-.tags ~ .beneficio__fine { margin-top: 0; }
-
-.beneficio--destaque .tags li {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.24);
-  color: rgba(255, 255, 255, 0.75);
-}
-
-.beneficio__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
-  font-weight: 400;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-.beneficio__title em,
-.beneficio__title strong { font-style: normal; font-weight: 800; }
-
-.beneficio__text { color: var(--ink-muted); font-size: 0.9843rem; }
-
-/* Empurrada para a base, a nota alinha entre cartões da mesma linha. */
-.beneficio__fine {
-  margin-top: auto;
-  padding-top: 0.875rem;
-  border-top: 1px dashed var(--border-strong);
-  font-size: 0.78125rem;
-  color: var(--ink-faint);
-}
-
-/* O repasse é o argumento que sustenta a dobra: ocupa quatro células e é o
-   único cartão escuro, então a hierarquia se lê antes da leitura do texto. */
-.beneficio--destaque {
-  grid-column: span 2;
-  grid-row: span 2;
-  background: var(--black);
-  border-color: var(--black);
-  justify-content: flex-start;
-}
-
-/* No bloco 2×2 a folga é grande: o miolo fica centrado entre o cabeçalho e o
-   rodapé do cartão, em vez de deixar um vão só embaixo. */
-.beneficio--destaque .beneficio__corpo { margin-block: auto; }
-.beneficio--destaque .tags { margin-top: 0; }
-.beneficio--destaque:hover { border-color: var(--black); }
-.beneficio--destaque .beneficio__icone {
-  background: rgba(240, 191, 79, 0.12);
-  border-color: rgba(240, 191, 79, 0.38);
-  color: var(--gold);
-}
-.beneficio--destaque .beneficio__num { color: var(--gold); }
-.beneficio--destaque .beneficio__title { color: #fff; }
-.beneficio--destaque .beneficio__text { color: rgba(255, 255, 255, 0.78); }
-/* Sem o empurrão para a base, a folga do bloco 2×2 se distribui entre todos
-   os elementos em vez de virar um vazio antes da nota. */
-.beneficio--destaque .beneficio__fine {
-  margin-top: 0;
-  border-top-color: rgba(255, 255, 255, 0.22);
-  color: rgba(255, 255, 255, 0.55);
-}
-.beneficio--destaque .beneficio__fine::before { content: "→ "; color: var(--gold); }
-
-/* Agrupa título, número e frase num bloco só: com eles soltos, o
-   space-between do cartão 2×2 abriria uma folga entre cada um. */
-.beneficio__corpo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-/* O número grande é o argumento em uma olhada; o "até" e a legenda entram
-   pequenos para que o percentual nunca seja lido fora de contexto. */
-.beneficio__figure {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  margin-block: var(--sp-2);
-}
-
-.beneficio__figure-pre,
-.beneficio__figure-suf {
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.beneficio__figure-num {
-  font-family: var(--font-display);
-  font-size: clamp(3.5rem, 12vw, 10rem);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  color: var(--gold);
-  font-variant-numeric: tabular-nums;
-}
-
 @media (max-width: 64rem) {
-  .beneficios { grid-template-columns: repeat(2, 1fr); }
-  /* Sem a terceira coluna o bloco 2×2 não fecha a grade: o destaque passa a
-     ocupar uma linha inteira e o último cartão fecha a linha ímpar. */
-  .beneficio--destaque { grid-row: span 1; }
-  .beneficios .beneficio:last-child { grid-column: span 2; }
+  .beneficios { grid-template-columns: 1fr; gap: var(--sp-7); }
+  /* Fora das duas colunas a coluna fixa não tem o que acompanhar. */
+  .beneficios__intro { position: static; }
+  /* Sem coluna fixa não há o que contar: a lista fica logo abaixo. */
+  .beneficios__passo { display: none; }
 }
 
-@media (max-width: 48rem) {
-  .beneficios { grid-template-columns: 1fr; }
-  .beneficio--destaque,
-  .beneficios .beneficio:last-child { grid-column: span 1; }
+@media (max-width: 40rem) {
+  .lista__item { gap: var(--sp-4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lista__num { transition: none; }
 }
 
 /* ---------- Operação: BTG e suporte (dobra escura) ---------- */
@@ -673,7 +616,7 @@ ul, ol { list-style: none; }
 
 .operacao__fine {
   margin-top: auto;
-  padding-top: 0.875rem;
+  padding-top: var(--sp-3);
   border-top: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 0.78125rem;
   color: rgba(255, 255, 255, 0.55);
@@ -681,7 +624,10 @@ ul, ol { list-style: none; }
 .operacao__fine strong { color: var(--gold); font-weight: 700; }
 
 /* Sobre o preto o verde da marca some: aqui o botão inverte para branco. */
-.operacao__cta { margin-top: var(--sp-6); }
+.operacao__cta {
+  margin-top: auto;
+  padding-top: var(--sp-5);
+}
 .operacao__cta .btn--primary { background: #fff; color: var(--ink); }
 .operacao__cta .btn--primary:hover { background: var(--gold); }
 
@@ -735,7 +681,7 @@ ul, ol { list-style: none; }
 
 .cta-final__inner { position: relative; }
 
-.cta-final__eye { margin: 0 auto 2rem; width: 5.25rem; }
+.cta-final__eye { margin: 0 auto var(--sp-6); width: 5.25rem; }
 
 .cta-final__title {
   font-family: var(--font-display);
@@ -743,7 +689,7 @@ ul, ol { list-style: none; }
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.03em;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--sp-5);
 }
 .cta-final__title em,
 .cta-final__title strong { font-style: normal; font-weight: 800; }
@@ -752,7 +698,7 @@ ul, ol { list-style: none; }
   color: var(--ink-muted);
   font-size: 1.125rem;
   max-width: 38rem;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto var(--sp-7);
 }
 
 .cta-final .hero__ctas { justify-content: center; margin-bottom: 1.5rem; }
@@ -771,12 +717,12 @@ ul, ol { list-style: none; }
   align-items: flex-start;
   gap: 2rem;
   flex-wrap: wrap;
-  padding-bottom: 2.5rem;
+  padding-bottom: var(--sp-7);
   border-bottom: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .footer__tagline {
-  margin-top: 0.875rem;
+  margin-top: var(--sp-3);
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.6);
   max-width: 22rem;
@@ -792,7 +738,7 @@ ul, ol { list-style: none; }
 .footer__links a { text-decoration: none; color: rgba(255, 255, 255, 0.72); }
 .footer__links a:hover { color: #fff; }
 
-.footer__legal { padding-top: 2rem; }
+.footer__legal { padding-top: var(--sp-6); }
 .footer__legal p {
   font-size: 0.78125rem;
   color: rgba(255, 255, 255, 0.55);
@@ -848,7 +794,7 @@ ul, ol { list-style: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-top: 2rem;
+  margin-top: var(--sp-6);
 }
 .video__frame iframe {
   position: absolute;
@@ -861,7 +807,7 @@ ul, ol { list-style: none; }
 /* ---------- Formulário de interesse ---------- */
 .form {
   max-width: 40rem;
-  margin: 0 auto 1.75rem;
+  margin: 0 auto var(--sp-6);
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -991,7 +937,7 @@ button:focus-visible {
    custódia), à direita o resultado num painel escuro — o mesmo preto das
    outras dobras, para o número não competir com os cartões de benefício. */
 .calc {
-  margin-top: var(--sp-4);
+  margin-top: var(--sp-8);
   background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1250,12 +1196,16 @@ button:focus-visible {
 /* ---------- Timeline: o caminho para fazer parte ----------
    As cinco etapas ficam lado a lado sobre um trilho que preenche quando o
    bloco entra na tela; os cartões entram em sequência. */
+/* `stretch` (e não `start`) é o que iguala a altura dos cinco cartões: cada
+   etapa ocupa a linha inteira e o cartão, com flex: 1, preenche o que sobra
+   abaixo do nó. Sem isso o cartão media o próprio texto e a fileira ficava
+   com cinco alturas diferentes. */
 .timeline {
   position: relative;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: var(--sp-4);
-  align-items: start;
+  align-items: stretch;
 }
 
 .timeline__rail {
@@ -1398,18 +1348,6 @@ button:focus-visible {
   align-items: center;
   gap: var(--sp-3);
 }
-
-.apoio__icone {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  color: var(--green-deep);
-}
-.apoio__icone svg { width: 1.5rem; height: 1.5rem; }
 
 .apoio__title {
   font-family: var(--font-display);

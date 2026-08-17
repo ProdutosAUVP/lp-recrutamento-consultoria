@@ -386,6 +386,39 @@ function iniciarTimeline() {
   io.observe(bloco);
 }
 
+/**
+ * Lista de benefícios. O item que estiver cruzando a faixa central da tela
+ * recebe `is-ativo` e tem o número preenchido — é o que dá movimento à dobra
+ * sem esconder nada atrás de clique. Sem observer, todos ficam legíveis do
+ * mesmo jeito: o estado só troca a cor do número.
+ */
+function iniciarLista() {
+  const lista = document.querySelector("[data-lista]");
+  if (!lista || !("IntersectionObserver" in window)) return;
+
+  const itens = [...lista.querySelectorAll(".lista__item")];
+  if (!itens.length) return;
+
+  const contador = document.querySelector("[data-lista-atual]");
+
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        e.target.classList.toggle("is-ativo", e.isIntersecting);
+      });
+
+      // O contador segue o primeiro item ativo; se a faixa central ficar
+      // vazia entre dois itens, o número anterior permanece.
+      if (!contador) return;
+      const ativo = itens.findIndex((i) => i.classList.contains("is-ativo"));
+      if (ativo >= 0) contador.textContent = String(ativo + 1).padStart(2, "0");
+    },
+    // Faixa de ~10% da altura no meio da tela: só um ou dois itens por vez.
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
+  itens.forEach((item) => io.observe(item));
+}
+
 /** Parallax discreto da foto do hero. */
 function iniciarParallax() {
   const media = document.querySelector(".hero__media");
@@ -400,6 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
   iniciarNavFlutuante();
   iniciarContadores();
   iniciarGrafico();
+  iniciarLista();
   iniciarTimeline();
   iniciarParallax();
 

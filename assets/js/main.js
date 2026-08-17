@@ -309,7 +309,9 @@ function ligarSimulador(fee) {
     obs.textContent =
       `Projeção sobre o patrimônio sob custódia informado por você, considerando um fee de ` +
       `${emPorcento(TAXA_FEE_ANUAL)} ao ano e repasse de ${emPorcento(REPASSE_MIN)} a ` +
-      `${emPorcento(REPASSE_MAX)} do fee. Não é estimativa de faturamento nem promessa de resultado.`;
+      `${emPorcento(REPASSE_MAX)} do fee. Os valores são brutos: não descontam nenhum tipo de ` +
+      `tributação, e por isso os valores reais podem variar. Não é estimativa de faturamento ` +
+      `nem promessa de resultado.`;
   }
 
   range.addEventListener("input", atualizar);

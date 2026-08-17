@@ -1236,6 +1236,83 @@ button:focus-visible {
   text-wrap: balance;
 }
 
+/* ---------- Verba de marketing dos primeiros advisors ----------
+   Único bloco da página com fundo de acento: é uma oferta com prazo, não
+   mais um argumento da lista, e precisa se separar do que está em volta. */
+.verba {
+  margin-top: var(--sp-6);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-lg);
+  padding: clamp(var(--sp-5), 3vw, var(--sp-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.verba__label {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-legivel, var(--accent));
+}
+
+/* Os dois benefícios lado a lado, cada um com a própria cifra. */
+.verba__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5) var(--sp-7);
+}
+
+.verba__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.verba__valor {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-3);
+}
+
+.verba__cifra {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.verba__unidade {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.7vw, 1.1875rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.verba__texto {
+  color: var(--ink-muted);
+  font-size: 0.9063rem;
+}
+
+@media (max-width: 48rem) {
+  .verba__grid { grid-template-columns: 1fr; }
+}
+
+.verba__fine {
+  font-size: 0.78125rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+  padding-top: var(--sp-3);
+}
+
 /* ---------- Barra da divisão do fee ----------
    Uma barra só, na escala de R$ 100: o claro é seu, o dourado é a faixa que
    leva o repasse a 80% e o apagado é o comissionamento da AUVP. */

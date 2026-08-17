@@ -593,54 +593,170 @@ ul, ol { list-style: none; }
 /* A cor vem de .surface-dark no HTML; aqui fica só o respiro da dobra. */
 .operacao { padding: var(--sp-section) 0; }
 
-/* `start`, e não o `stretch` padrão: sem o co-brand o primeiro cartão ficou
-   com metade da massa do segundo, e esticá-lo abria um vão de quase 200px
-   entre o texto e a nota. Cartão lado a lado só fecha na mesma linha de base
-   quando os dois têm conteúdo comparável — aqui, alinhar pelo topo e deixar
-   cada um com a própria altura é o que não inventa espaço. */
-.operacao__grid {
+/* ---------- O fluxo da operação ----------
+   Quatro nós numa linha só. As três setas contam a história: BTG entra em
+   você, você entrega ao cliente, e a AUVP chega no cliente pela outra ponta
+   — a última seta aponta para trás justamente para mostrar que o ecossistema
+   não passa pelo advisor. Em dois cartões de texto essa diferença só existia
+   para quem lesse tudo. */
+.fluxo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: var(--sp-4);
-  margin-top: var(--sp-6);
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-6);
+  align-items: stretch;
+  margin-top: var(--sp-7);
 }
 
-.operacao__card {
+.fluxo__no {
+  position: relative;
+  background: var(--surface-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--sp-6);
+  padding: var(--sp-5);
   display: flex;
   flex-direction: column;
-  gap: var(--sp-3);
+  gap: var(--sp-2);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition-delay: calc(var(--i) * 0.12s);
+}
+.fluxo[data-on] .fluxo__no { opacity: 1; transform: none; }
+
+/* Os dois nós do meio são as pessoas do fluxo; o traço no topo destaca a
+   dupla sem precisar de mais uma cor. */
+.fluxo__no--voce,
+.fluxo__no--cliente { border-top: 2px solid var(--accent); }
+
+.fluxo__papel {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-legivel, var(--accent));
 }
 
-.operacao__title {
+.fluxo__nome {
   font-family: var(--font-display);
-  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
   font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
-.operacao__text { color: var(--ink-muted); font-size: 0.9843rem; }
+.fluxo__texto { color: var(--ink-muted); font-size: 0.9063rem; }
 
-.operacao__fine {
-  margin-top: auto;
-  padding-top: var(--sp-3);
+/* ---- Conectores ----
+   Cada nó desenha a seta que sai dele para o vão à direita. O último não
+   desenha nada, e o terceiro desenha ao contrário: é a AUVP chegando no
+   cliente. A linha (::after) cresce e a ponta (::before) acende depois. */
+.fluxo__no::after,
+.fluxo__no::before {
+  content: "";
+  position: absolute;
+  top: 2.5rem;
+  pointer-events: none;
+}
+
+.fluxo__no::after {
+  left: 100%;
+  width: var(--sp-6);
+  height: 2px;
+  background: var(--border-strong);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 0.12s + 0.3s);
+}
+.fluxo[data-on] .fluxo__no::after { transform: scaleX(1); }
+
+/* Ponta da seta: quadrado girado com dois lados, encostado no fim da linha */
+.fluxo__no::before {
+  left: calc(100% + var(--sp-6) - 7px);
+  width: 7px;
+  height: 7px;
+  margin-top: -2.5px;
+  border-top: 2px solid var(--border-strong);
+  border-right: 2px solid var(--border-strong);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  transition-delay: calc(var(--i) * 0.12s + 0.7s);
+}
+.fluxo[data-on] .fluxo__no::before { opacity: 1; }
+
+/* A via da AUVP não passa pelo advisor: a seta vem da direita para a
+   esquerda e é a única em laranja. */
+.fluxo__no--cliente::after {
+  background: var(--accent);
+  transform-origin: right;
+}
+.fluxo__no--cliente::before {
+  left: calc(100% + 1px);
+  border-color: var(--accent);
+  transform: rotate(225deg);
+}
+
+/* O último nó fecha a fileira: não há vão à direita para desenhar. */
+.fluxo__no:last-child::after,
+.fluxo__no:last-child::before { content: none; }
+
+.fluxo__notas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5) var(--sp-6);
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-5);
   border-top: 1px solid var(--border);
+}
+
+.fluxo__nota {
   font-size: 0.78125rem;
   color: var(--ink-faint);
+  line-height: 1.55;
 }
-.operacao__fine strong { color: var(--accent); font-weight: 700; }
+.fluxo__nota strong { color: var(--accent); font-weight: 700; }
 
-.operacao__cta {
-  margin-top: auto;
-  padding-top: var(--sp-5);
+.fluxo__cta { margin-top: var(--sp-6); }
+
+/* Empilhado, o fluxo vira uma coluna: as setas giram para baixo e a da AUVP,
+   para cima — a direção segue sendo a informação. */
+@media (max-width: 64rem) {
+  .fluxo { grid-template-columns: 1fr; gap: var(--sp-7); }
+  .fluxo__notas { grid-template-columns: 1fr; }
+
+  .fluxo__no::after {
+    top: 100%;
+    left: 2.5rem;
+    width: 2px;
+    height: var(--sp-7);
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  .fluxo[data-on] .fluxo__no::after { transform: scaleY(1); }
+
+  .fluxo__no::before {
+    top: calc(100% + var(--sp-7) - 7px);
+    left: 2.5rem;
+    margin-top: 0;
+    margin-left: -2.5px;
+    transform: rotate(135deg);
+  }
+
+  .fluxo__no--cliente::after { transform-origin: bottom; }
+  .fluxo__no--cliente::before {
+    top: calc(100% + 1px);
+    transform: rotate(-45deg);
+  }
 }
-/* Com a nota acima já ancorada na base, a folga não pode ser dividida em
-   duas: quem empurra é a nota, e o botão vem colado nela. */
-.operacao__fine + .operacao__cta { margin-top: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fluxo__no { opacity: 1; transform: none; transition: none; }
+  .fluxo__no::after { transform: scaleX(1); transition: none; }
+  .fluxo__no::before { opacity: 1; transition: none; }
+}
+
 /* Checklists */
 .checklist { display: flex; flex-direction: column; gap: 0.625rem; }
 .checklist li {
@@ -784,9 +900,6 @@ ul, ol { list-style: none; }
   .hero__media { max-width: 30rem; margin-inline: auto; }
 
   .modelo { grid-template-columns: 1fr; }
-
-  .operacao__grid { grid-template-columns: 1fr; }
-
 }
 
 @media (max-width: 48rem) {
@@ -1460,7 +1573,7 @@ button:focus-visible {
      nowrap do botão empurrava a coluna e estourava a página. */
   .btn { white-space: normal; text-align: center; }
   .btn--lg { width: 100%; justify-content: center; }
-  .operacao__cta .btn { width: 100%; justify-content: center; }
+  .fluxo__cta .btn { width: 100%; justify-content: center; }
   .hero__ctas { flex-direction: column; align-items: stretch; }
 }
 
@@ -1469,7 +1582,7 @@ button:focus-visible {
    Zerar o mínimo deixa a coluna respeitar o container. */
 .hero__grid > *,
 .modelo > *,
-.operacao__grid > *,
+.fluxo > *,
 .timeline > *,
 .beneficios > *,
 .lista__item > *,

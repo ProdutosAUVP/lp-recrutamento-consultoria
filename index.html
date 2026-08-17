@@ -84,7 +84,7 @@
             <!-- Foto própria, hospedada no repositório. É a primeira imagem da
                  página: carrega com prioridade, sem lazy. -->
             <img src="assets/img/hero-advisor.jpg" alt="" class="hero__photo"
-                 width="1023" height="1537" fetchpriority="high" decoding="async" />
+                 width="880" height="1012" fetchpriority="high" decoding="async" />
           </div>
         </div>
       </div>
@@ -191,69 +191,156 @@
           <!-- Repasse — o escopo define comissionamento da AUVP de ATÉ 30%,
                logo o advisor fica com 70% no piso e pode chegar a 80%. -->
           <article class="beneficio beneficio--destaque reveal">
-            <span class="beneficio__num" aria-hidden="true">01</span>
-            <h3 class="beneficio__title">Repasse justo e <em>acima do mercado</em></h3>
-            <p class="beneficio__figure">
-              <span class="beneficio__figure-pre">o repasse pode chegar a</span>
-              <strong class="beneficio__figure-num">80%</strong>
-              <span class="beneficio__figure-suf">do fee pago pelo cliente</span>
-            </p>
-            <p class="beneficio__text">
-              Garanta que o resultado do seu esforço vá para o seu próprio bolso: o piso do
-              seu repasse é de 70% e o comissionamento da AUVP não passa de 30%.
-            </p>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3.5 17.5 5.5-6 4 3.5 7.5-8.5" />
+                  <path d="M15 6.5h5.5V12" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">01</span>
+            </div>
+            <!-- Título, número e frase agrupados: no bloco 2×2 o
+                 space-between separaria os três com folgas soltas. -->
+            <div class="beneficio__corpo">
+              <h3 class="beneficio__title">Repasse justo e <em>acima do mercado</em></h3>
+              <p class="beneficio__figure">
+                <span class="beneficio__figure-pre">o repasse pode chegar a</span>
+                <strong class="beneficio__figure-num">80%</strong>
+                <span class="beneficio__figure-suf">do fee pago pelo cliente</span>
+              </p>
+            </div>
+            <ul class="tags">
+              <li>Piso de 70%</li>
+              <li>Teto de 80%</li>
+              <li>AUVP fica com 20% a 30%</li>
+            </ul>
             <p class="beneficio__fine">
               Simule o seu repasse na calculadora logo abaixo.
             </p>
           </article>
 
           <article class="beneficio reveal">
-            <span class="beneficio__num" aria-hidden="true">02</span>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 7h6M14 7h6M4 12h2M10 12h10M4 17h9M17 17h3" />
+                  <circle cx="12" cy="7" r="2" />
+                  <circle cx="8" cy="12" r="2" />
+                  <circle cx="15" cy="17" r="2" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">02</span>
+            </div>
             <h3 class="beneficio__title">Autonomia <em>intelectual</em></h3>
             <p class="beneficio__text">
-              Esqueça a pressão para empurrar produtos e a dependência de chefes. Você tem
-              controle total sobre sua agenda, sua rotina e a metodologia de alocação que faz
-              sentido para o cliente.
+              Você decide a agenda, a rotina e a metodologia de alocação. Sem chefe e sem
+              pressão para empurrar produto.
             </p>
+            <ul class="tags">
+              <li>Sua agenda</li>
+              <li>Sua metodologia</li>
+              <li>Sem meta de venda</li>
+            </ul>
           </article>
 
           <article class="beneficio reveal">
-            <span class="beneficio__num" aria-hidden="true">03</span>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 4.5v15M7.5 19.5h9M4 8.5h16" />
+                  <path d="M4 8.5 1.9 13.2a2.4 2.4 0 0 0 4.2 0L4 8.5Z" />
+                  <path d="M20 8.5l-2.1 4.7a2.4 2.4 0 0 0 4.2 0L20 8.5Z" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">03</span>
+            </div>
             <h3 class="beneficio__title">Alinhamento real <em>de interesses</em></h3>
             <p class="beneficio__text">
-              Relacionamento limpo, sem conflito de interesses e sem letras miúdas. Aqui a
-              transparência radical é regra, construindo uma confiança inabalável com quem
-              você atende.
+              Relacionamento limpo com quem você atende: aqui a transparência radical é regra,
+              não discurso.
             </p>
+            <ul class="tags">
+              <li>Sem conflito de interesses</li>
+              <li>Sem letra miúda</li>
+            </ul>
           </article>
 
           <article class="beneficio reveal">
-            <span class="beneficio__num" aria-hidden="true">04</span>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="9" r="5" />
+                  <path d="m8.6 13.4-1.1 7L12 17.9l4.5 2.5-1.1-7" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">04</span>
+            </div>
             <h3 class="beneficio__title">O espelho da <em>sua competência</em></h3>
             <p class="beneficio__text">
-              Crie sua autoridade pública sem precisar fazer marketing apelativo. Sua página
-              oficial na AUVP Advisors transforma nota técnica e certificações em um ímã para
-              clientes qualificados.
+              Sua página oficial na plataforma vira um ímã de clientes qualificados — sem
+              marketing apelativo.
             </p>
+            <ul class="tags">
+              <li>Perfil público</li>
+              <li>Certificações</li>
+              <li>Nota técnica</li>
+            </ul>
           </article>
 
           <article class="beneficio reveal">
-            <span class="beneficio__num" aria-hidden="true">05</span>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="2.6" />
+                  <circle cx="5" cy="5.5" r="2" />
+                  <circle cx="19" cy="5.5" r="2" />
+                  <circle cx="5" cy="18.5" r="2" />
+                  <circle cx="19" cy="18.5" r="2" />
+                  <path d="M6.5 6.9 10.2 10.2M17.5 6.9 13.8 10.2M6.5 17.1 10.2 13.8M17.5 17.1 13.8 13.8" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">05</span>
+            </div>
             <h3 class="beneficio__title">Ecossistema que <em>joga com você</em></h3>
             <p class="beneficio__text">
-              Entregue o acesso completo à estrutura da AUVP para seus clientes. Você lidera a
-              estratégia, e a nossa máquina trabalha nos bastidores para fortalecer a sua
-              entrega.
+              Você lidera a estratégia e a estrutura da AUVP trabalha nos bastidores para o
+              seu cliente.
             </p>
+            <ul class="tags">
+              <li>Tecnologia</li>
+              <li>Suporte</li>
+              <li>Banking</li>
+            </ul>
           </article>
 
           <article class="beneficio reveal">
-            <span class="beneficio__num" aria-hidden="true">06</span>
+            <div class="beneficio__head">
+              <span class="beneficio__icone" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                     stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7 3.5h10V9a5 5 0 0 1-10 0V3.5Z" />
+                  <path d="M7 5.5H4.5v1.2a3.3 3.3 0 0 0 3.3 3.3M17 5.5h2.5v1.2a3.3 3.3 0 0 1-3.3 3.3" />
+                  <path d="M12 14v3.5M8.6 20.5h6.8l-.7-3H9.3l-.7 3Z" />
+                </svg>
+              </span>
+              <span class="beneficio__num" aria-hidden="true">06</span>
+            </div>
             <h3 class="beneficio__title">Ranking de <em>premiações exclusivas</em></h3>
             <p class="beneficio__text">
-              Seu desempenho técnico e a satisfação dos seus clientes colocam você no topo do
-              nosso ranking interno. Dispute premiações, viagens e o destaque máximo na plataforma.
+              Desempenho técnico e satisfação dos clientes colocam você no topo do ranking
+              interno.
             </p>
+            <ul class="tags">
+              <li>Premiações</li>
+              <li>Viagens</li>
+              <li>Destaque na plataforma</li>
+            </ul>
             <p class="beneficio__fine">
               Regras e periodicidade do ranking divulgadas na ativação do seu perfil.
             </p>

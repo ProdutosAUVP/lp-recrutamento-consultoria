@@ -317,6 +317,33 @@ function ligarSimulador(fee) {
 }
 
 /**
+ * Cadeia da dobra de operação. Os quatro nós entram em sequência e as setas
+ * são desenhadas depois deles — é a ordem que conta a história, com a seta
+ * da AUVP apontando para o cliente sem tocar no advisor. Anima uma vez.
+ */
+function iniciarFluxo() {
+  const bloco = document.querySelector("[data-fluxo]");
+  if (!bloco) return;
+
+  if (!("IntersectionObserver" in window) || semMovimento) {
+    bloco.setAttribute("data-on", "");
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.setAttribute("data-on", "");
+        io.unobserve(e.target);
+      });
+    },
+    { threshold: 0.2 }
+  );
+  io.observe(bloco);
+}
+
+/**
  * Timeline do caminho de entrada. Como as cinco etapas ficam lado a lado,
  * elas entram na tela praticamente juntas — amarrar o preenchimento à
  * posição do scroll dava um trilho que ia e voltava. Aqui o bloco anima uma
@@ -391,6 +418,7 @@ document.addEventListener("DOMContentLoaded", () => {
   iniciarNavFlutuante();
   iniciarGrafico();
   iniciarLista();
+  iniciarFluxo();
   iniciarTimeline();
   iniciarParallax();
 

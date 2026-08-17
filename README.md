@@ -18,7 +18,7 @@ Página estática, sem build e sem dependências:
 
 - `index.html` — todo o conteúdo, em seções semânticas
 - `assets/css/styles.css` — estilos (paleta clara institucional derivada do design system AUVP)
-- `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, contadores e animação do gráfico de repasse
+- `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, contadores e calculadora de repasse
 - `assets/img/` — logos "olho" AUVP (SVG, vindos de [ProdutosAUVP/central](https://github.com/ProdutosAUVP/central))
 
 Para rodar localmente, basta abrir o `index.html` ou servir a pasta:
@@ -56,7 +56,15 @@ Tudo que depende de terceiros está no bloco de configuração no topo de `asset
 | `PRIVACY_URL` | Página de Política de Privacidade | Idem |
 | `VIDEO_URL` | Embed do vídeo de lançamento | A dobra do vídeo fica oculta |
 
-Além dessas, `TAXA_FEE_ANUAL` (no mesmo bloco) é o fee anual médio sobre o patrimônio sob consultoria que o simulador usa para transformar tamanho de carteira em receita. Está em **1% ao ano** — número escolhido como referência de mercado, **a confirmar com o time comercial**. A observação exibida abaixo do simulador é escrita a partir dessa constante, então mudar o valor mantém conta e texto alinhados.
+Além dessas, três constantes no mesmo bloco governam a calculadora de repasse:
+
+| Constante | O que é | Valor atual |
+|---|---|---|
+| `TAXA_FEE_ANUAL` | Fee anual médio sobre o patrimônio sob custódia, usado para transformar tamanho de carteira em receita | `0.01` (1% ao ano) — referência de mercado, **a confirmar com o time comercial** |
+| `REPASSE_MIN` | Piso do repasse ao advisor, derivado do comissionamento máximo da AUVP (30% do fee) | `0.7` (70%) |
+| `REPASSE_MAX` | Teto do repasse ao advisor | `0.8` (80%) |
+
+A observação exibida abaixo do controle é escrita a partir dessas três, então mudar um número mantém conta e texto alinhados. Os percentuais que aparecem na legenda da barra de divisão (70%, +10%, 20% a 30%) estão no HTML e precisam ser ajustados junto se a faixa mudar.
 
 ### Formulário de interesse
 
@@ -78,21 +86,23 @@ Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla dema
 
 ## Outros pontos de atenção
 
-1. **Fotos** — a foto do hero é um **placeholder do Unsplash referenciado por URL** (hotlink). Substituir por foto própria (hospedada em `assets/img/`) antes do lançamento. O ambiente de desenvolvimento remoto bloqueia esse host, mas no navegador dos visitantes ela carrega normalmente.
+1. **Fotos** — a foto do hero é própria e está hospedada no repositório (`assets/img/hero-advisor.jpg`, 1023×1537, ~170 KB). Veio como PNG de 2,3 MB e foi convertida para JPEG de qualidade 84 — o PNG original segue no histórico do Git, caso precise de outro corte. Carrega com `fetchpriority="high"` por ser a primeira imagem da página.
 2. **Números do ecossistema** — a faixa de destaques exibe +1 Mi de investidores alcançados por mês, +45 mil contas abertas e ativas e +60 mil alunos formados. São dados de comunicação institucional: confirmar com marketing a data-base antes de publicar.
 3. **Razão social no rodapé** — o escopo prevê uma PJ específica para a AUVP Advisors. Quando ela existir, o rodapé precisa da razão social e do CNPJ.
-4. **Taxa do simulador** — o simulador parte do tamanho da carteira, não do fee. A conversão de patrimônio em receita usa `TAXA_FEE_ANUAL`, hoje em 1% ao ano; enquanto o número não for confirmado, a obs. abaixo do controle deixa a premissa visível para o visitante.
-5. **Benefícios sem interação escondida** — os seis cartões renderizam abertos, em grade de três colunas no desktop. Nada de carrossel, sanfona ou "ver mais": se um benefício novo entrar, ele vira o sétimo cartão e a grade reflui sozinha (o ideal é manter múltiplos de três para fechar as linhas).
-6. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
+4. **Taxa da calculadora** — a calculadora parte do patrimônio sob custódia, não do fee. A conversão de patrimônio em receita usa `TAXA_FEE_ANUAL`, hoje em 1% ao ano; enquanto o número não for confirmado, a obs. abaixo do controle deixa a premissa visível para o visitante.
+5. **Benefícios sem interação escondida** — os seis cartões renderizam abertos, em bento de 3×3 no desktop (o repasse ocupa um bloco 2×2, os outros cinco fecham as células restantes). Nada de abas, carrossel, sanfona ou "ver mais". A conta que fecha a grade é `4 + 5 = 9`: entrando um sétimo benefício, ou o destaque volta a 1×1 e a grade vira 3×3 comum, ou entram dois de uma vez para fechar a linha.
+6. **O que define o repasse entre 70% e 80%** — a página diz que o repasse vai de 70% a 80% e que o comissionamento da AUVP fica entre 20% e 30%, mas **não diz o que move o percentual dentro dessa faixa** (volume de carteira, tempo de casa, nota técnica?). Enquanto a regra não for definida, a calculadora mostra sempre as duas pontas. Quando existir, vale trocar a faixa por um resultado único — a mudança fica em `REPASSE_MIN`/`REPASSE_MAX` e na legenda da barra.
+7. **Verba de marketing** — o investimento em marketing para os primeiros advisors **não está na página**: segue em validação. Se for confirmado, entra como um bloco próprio e sem vínculo com ordem de chegada.
+8. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
 
 ## Decisões adotadas a partir do documento de escopo
 
 A página foi originalmente construída a partir do briefing de comunicação. Onde o documento *AUVP Advisor: Resumo Completo do Projeto* diverge dele, **o documento prevaleceu**, por ser posterior e por conter as decisões comerciais e jurídicas. As premissas:
 
 - **Repasse de 70% ou mais**, não 50%. O escopo define comissionamento da AUVP de até 30% do fee, o que fixa o piso do consultor em 70%. O briefing dizia "repasse inicial de 50%" — tratado como desatualizado.
-- **Os 80% são a condição fixa dos 20 primeiros**, não o topo de uma progressão aberta a todos. O gráfico mostra as duas condições lado a lado.
-- **Critérios do incentivo não são enumerados.** O escopo registra que ainda não foram definidos (pendência do Matheus Malheiros), então a página diz apenas que existem critérios a divulgar. Os números que estavam no ar (carteira de R$ 10 milhões, média ≥ 8) saíram.
-- **O simulador parte da carteira.** A divisão do fee é demonstrada sobre R$ 10.000 e o controle anda em patrimônio sob consultoria (R$ 1 mi a R$ 250 mi, começando em R$ 20 mi); o fee anual sai daí por `TAXA_FEE_ANUAL`.
+- **Os 80% são o teto do repasse, aberto a todos.** Não existe condição especial para os 20 primeiros: a faixa vai de 70% a 80% e a página trata todo advisor pela mesma régua. As menções ao benefício de quem chegasse primeiro — comissão fixa de 80% e verba de R$ 10 mil em marketing — foram removidas da dobra de benefícios, do texto do processo de entrada e do aviso legal do rodapé.
+- **O que move o repasse dentro da faixa ainda não está definido.** Por isso a calculadora mostra piso e teto juntos, nunca um número só.
+- **A calculadora parte do patrimônio sob custódia.** O controle anda de R$ 1 mi a R$ 250 mi (começando em R$ 20 mi); o fee anual sai daí por `TAXA_FEE_ANUAL` e o repasse, por `REPASSE_MIN`/`REPASSE_MAX`. A barra de divisão é demonstrada sobre R$ 100 de fee.
 - **O BTG voltou à página**, agora na dobra escura "Foque no cliente" junto do suporte operacional, com o co-brand `assets/img/auvp-btg-branco.svg` e o aviso de que a vinculação depende do compliance da instituição.
 - **A exclusividade de marca ficou só no rodapé.** A regra segue definida — quem atende 100% dentro da plataforma usa a chancela "consultor AUVP", quem mantém clientes fora se apresenta como "advisor" —, mas o quadro que a explicava saiu com a reformulação da dobra de benefícios. Hoje ela aparece apenas no aviso legal. **Pendente de validação do jurídico.**
 
@@ -100,10 +110,10 @@ A página foi originalmente construída a partir do briefing de comunicação. O
 
 - **Logo:** AUVP Capital horizontal (versão preferencial do design system), preta na navegação e branca no rodapé. Os SVGs vêm de [armandocustodio-ds/designsystemauvp](https://github.com/armandocustodio-ds/designsystemauvp) — o manifesto C2PA embutido foi removido para reduzir o arquivo de ~22 KB para ~4 KB
 - **Fontes:** Anek Latin (display), Roboto (corpo), Sora (UI/labels) — todas sem serifa, iguais às do design system
-- **Cores:** as dobras alternam entre `#FFFFFF` e `#F6F6F6`; os blocos escuros (dobra "Foque no cliente", destaque dos 20 primeiros e rodapé) são pretos. Verde AUVP Capital `hsl(155 93% 11%)` e dourado do olho `#F0BF4F` ficam como acento (botões, ênfases, gráfico do repasse), nunca como fundo de dobra
+- **Cores:** as dobras alternam entre `#FFFFFF` e `#F6F6F6`; os blocos escuros (dobra "Foque no cliente", cartão do repasse, painel da calculadora e rodapé) são pretos. Verde AUVP Capital `hsl(155 93% 11%)` e dourado do olho `#F0BF4F` ficam como acento (botões, ênfases, número do repasse, barra da divisão), nunca como fundo de dobra
 - **Superfícies:** cada dobra declara `.surface-white` ou `.surface-gray`, que definem as variáveis `--surface` (fundo da dobra) e `--surface-raised` (tom oposto). Os cartões usam `--surface-raised`, então sempre contrastam com a dobra em que estão — inverta a classe da dobra e os cartões se ajustam sozinhos
 - **Formas:** raios contidos (3–6px) na interface — leitura sóbria e institucional. Duas exceções deliberadas: o **arco da foto do hero**, em um lado só (topo) e com os outros três retos; e os **nós da timeline**, circulares
 - **Espaçamento:** escala única em `--sp-1` … `--sp-8` mais `--sp-section` (o respiro vertical das dobras). Todo padding, gap e margem sai daí — não há valores soltos
-- **Responsivo:** verificado sem rolagem horizontal nem estouro de elemento em 320, 390, 834, 1100, 1280 e 1440px. Os pontos de quebra seguem o conteúdo, não o dispositivo: os benefícios ficam em 3 colunas exatas no desktop, 2 no tablet e 1 no celular; a timeline vai de 5 para 3 e depois 1 coluna; os destaques numéricos vão de 3 para 1 coluna; abaixo de 26rem os botões grandes ocupam a largura toda
-- **Componentes:** hero em duas colunas com foto em frame arqueado, faixa de destaques numéricos, dobra escura de operação com o co-brand BTG, grade de seis benefícios sempre abertos com a divisão do fee e o simulador logo abaixo, timeline horizontal do processo de entrada com o bloco de apoio à regularização e formulário de interesse
-- **Compliance:** benefícios de lançamento marcados como limitados aos 20 primeiros e sujeitos a critérios, comissionamento da AUVP de até 30% declarado junto ao simulador, premissa de fee do simulador exposta abaixo do controle, vinculação ao BTG sinalizada como sujeita ao compliance da instituição, suporte à regularização diferenciado de garantia de registro, e disclaimers da Resolução CVM 19/2021 no hero, no formulário e no rodapé
+- **Responsivo:** verificado sem rolagem horizontal nem estouro de elemento em 320, 390, 834, 1100, 1280 e 1440px. Os pontos de quebra seguem o conteúdo, não o dispositivo: os benefícios saem do bento 3×3 para 2 colunas no tablet (o destaque ocupa a linha inteira e o último cartão fecha a linha ímpar) e 1 no celular; a calculadora vai de duas colunas para uma abaixo de 64rem e empilha as três caixas de resultado abaixo de 40rem; a timeline vai de 5 para 3 e depois 1 coluna; os destaques numéricos vão de 3 para 1 coluna; abaixo de 26rem os botões grandes ocupam a largura toda
+- **Componentes:** hero em duas colunas com foto em frame arqueado, faixa de destaques numéricos, dobra escura de operação com o co-brand BTG, bento de seis benefícios sempre abertos com o repasse em destaque, calculadora de repasse logo abaixo (controle à esquerda, painel escuro de resultado à direita), timeline horizontal do processo de entrada com o bloco de apoio à regularização e formulário de interesse
+- **Compliance:** faixa de repasse de 70% a 80% declarada como definida em contrato, comissionamento da AUVP de até 30% declarado junto à calculadora, premissa de fee exposta abaixo do controle, vinculação ao BTG sinalizada como sujeita ao compliance da instituição, suporte à regularização diferenciado de garantia de registro, e disclaimers da Resolução CVM 19/2021 no hero, no formulário e no rodapé

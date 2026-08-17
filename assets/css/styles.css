@@ -433,8 +433,9 @@ ul, ol { list-style: none; }
 }
 
 /* ---------- Benefícios: seis cartões, todos abertos ----------
-   Três colunas exatas no desktop (duas linhas de três), duas no tablet e
-   uma no celular. Nenhum conteúdo fica atrás de clique. */
+   Bento de 3×3 no desktop: o repasse ocupa um bloco 2×2 e os outros cinco
+   fecham exatamente as células restantes (4 + 5 = 9). No tablet cai para
+   duas colunas, no celular para uma. Nenhum conteúdo fica atrás de clique. */
 .beneficios {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -486,63 +487,70 @@ ul, ol { list-style: none; }
   color: var(--ink-faint);
 }
 
-/* ---------- Divisão do fee e simulador ----------
-   Fora da grade dos cartões: em um terço da largura o gráfico não se lê. */
-.repasse {
-  margin-top: var(--sp-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-6);
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
+/* O repasse é o argumento que sustenta a dobra: ocupa quatro células e é o
+   único cartão escuro, então a hierarquia se lê antes da leitura do texto. */
+.beneficio--destaque {
+  grid-column: span 2;
+  grid-row: span 2;
+  background: var(--black);
+  border-color: var(--black);
+  justify-content: space-between;
+}
+.beneficio--destaque:hover { border-color: var(--black); }
+.beneficio--destaque .beneficio__num { color: var(--gold); }
+.beneficio--destaque .beneficio__title { color: #fff; }
+.beneficio--destaque .beneficio__text { color: rgba(255, 255, 255, 0.78); }
+/* Sem o empurrão para a base, a folga do bloco 2×2 se distribui entre todos
+   os elementos em vez de virar um vazio antes da nota. */
+.beneficio--destaque .beneficio__fine {
+  margin-top: 0;
+  border-top-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.55);
+}
+.beneficio--destaque .beneficio__fine::before { content: "→ "; color: var(--gold); }
+
+/* O número grande é o argumento em uma olhada; o "até" e a legenda entram
+   pequenos para que o percentual nunca seja lido fora de contexto. */
+.beneficio__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-block: var(--sp-2);
+}
+
+.beneficio__figure-pre,
+.beneficio__figure-suf {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.beneficio__figure-num {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 64rem) {
   .beneficios { grid-template-columns: repeat(2, 1fr); }
-  .repasse { grid-template-columns: 1fr; }
+  /* Sem a terceira coluna o bloco 2×2 não fecha a grade: o destaque passa a
+     ocupar uma linha inteira e o último cartão fecha a linha ímpar. */
+  .beneficio--destaque { grid-row: span 1; }
+  .beneficios .beneficio:last-child { grid-column: span 2; }
 }
 
 @media (max-width: 48rem) {
   .beneficios { grid-template-columns: 1fr; }
+  .beneficio--destaque,
+  .beneficios .beneficio:last-child { grid-column: span 1; }
 }
-
-/* ---------- Destaque dos 20 primeiros ---------- */
-.destaque {
-  margin-top: var(--sp-5);
-  background: var(--black);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-
-.destaque__label {
-  font-family: var(--font-display);
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  color: #fff;
-}
-
-.destaque__text {
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 1rem;
-  max-width: 52rem;
-}
-.destaque__text strong { color: var(--gold); font-weight: 700; }
-
-.destaque__fine {
-  font-size: 0.78125rem;
-  color: rgba(255, 255, 255, 0.55);
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  padding-top: 0.875rem;
-}
-.destaque__fine::before { content: "→ "; color: var(--gold); }
 
 /* ---------- Operação: BTG e suporte (dobra escura) ---------- */
 .operacao {
@@ -901,193 +909,265 @@ button:focus-visible {
    Movimento e interação — tudo abaixo respeita prefers-reduced-motion
    ========================================================================== */
 
-/* Duas barras na mesma escala, cada uma valendo R$ 10.000 de fee. O que
-   muda entre elas é só o quanto sobra para você, e o pedaço a mais dos 20
-   primeiros ganha cor própria — é ele que a dobra está vendendo. */
-.divisao { margin: 0; }
+/* ---------- Calculadora de repasse ----------
+   Duas colunas: à esquerda o que o visitante controla (o patrimônio sob
+   custódia), à direita o resultado num painel escuro — o mesmo preto das
+   outras dobras, para o número não competir com os cartões de benefício. */
+.calc {
+  margin-top: var(--sp-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(var(--sp-5), 3vw, var(--sp-7));
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(var(--sp-5), 4vw, var(--sp-7));
+  align-items: center;
+}
 
-.divisao__caption {
+.calc__side { display: flex; flex-direction: column; gap: var(--sp-3); }
+
+.calc__eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+.calc__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.8vw, 2.125rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.calc__title em { font-style: normal; font-weight: 800; }
+
+.calc__lead { color: var(--ink-muted); font-size: 0.9843rem; }
+
+/* Rótulo e valor na mesma linha, controle ocupando a largura toda abaixo. */
+.calc__control {
+  margin-top: var(--sp-2);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-3) var(--sp-4);
+}
+
+.calc__label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+.calc__value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* O trilho preenche até o ponto escolhido: a posição do controle vira
+   informação, não só um traço cinza. --pct é escrito pelo JS. */
+.calc__range {
+  --pct: 0%;
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--green-deep) var(--pct),
+    var(--tint) var(--pct)
+  );
+  cursor: pointer;
+}
+.calc__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  background: var(--green-deep);
+  border: 3px solid var(--surface-raised);
+  box-shadow: var(--shadow-chip);
+  cursor: grab;
+}
+.calc__range::-moz-range-thumb {
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 3px solid var(--surface-raised);
+  border-radius: 50%;
+  background: var(--green-deep);
+  box-shadow: var(--shadow-chip);
+  cursor: grab;
+}
+.calc__range:focus-visible { outline: 2px solid var(--green-deep); outline-offset: 4px; }
+
+.calc__scale {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  color: var(--ink-faint);
+}
+
+.calc__fine {
+  margin-top: var(--sp-2);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+/* Painel do resultado */
+.calc__panel {
+  background: var(--black);
+  border-radius: var(--radius-lg);
+  padding: clamp(var(--sp-5), 2.5vw, var(--sp-6));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.calc__results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+.calc__tile {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* O repasse é o número que interessa: linha inteira, primeiro e em dourado. */
+.calc__tile--hero {
+  order: -1;
+  grid-column: 1 / -1;
+  background: rgba(240, 191, 79, 0.08);
+  border-color: rgba(240, 191, 79, 0.38);
+}
+
+.calc__tile-label {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.calc__tile-value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc__tile--hero .calc__tile-value {
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  color: var(--gold);
+  text-wrap: balance;
+}
+
+/* ---------- Barra da divisão do fee ----------
+   Uma barra só, na escala de R$ 100: o claro é seu, o dourado é a faixa que
+   leva o repasse a 80% e o apagado é o comissionamento da AUVP. */
+.split {
+  margin: 0;
+  padding-top: var(--sp-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.split__caption {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: var(--sp-3);
 }
 
-.divisao__svg { width: 100%; height: auto; display: block; overflow: visible; }
-
-.divisao__row-label {
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  fill: var(--ink-faint);
+.split__bar {
+  display: flex;
+  height: 0.875rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.divisao__track { fill: var(--tint); }
-
-.divisao__mine {
-  fill: var(--green-deep);
-  transform-box: fill-box;
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+.split__seg {
+  flex: 0 0 auto;
+  width: 0;
+  height: 100%;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.divisao__mine--max { fill: var(--gold-deep); transition-delay: 0.12s; }
-.repasse[data-on] .divisao__mine { transform: scaleX(1); }
+.calc[data-on] .split__seg { width: var(--w); }
 
-/* O pedaço a mais: entra depois das barras, para ser notado sozinho */
-.divisao__gain {
-  fill: var(--gold);
-  transform-box: fill-box;
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.85s;
-}
-.repasse[data-on] .divisao__gain { transform: scaleX(1); }
+.split__seg--base { background: #fff; }
+.split__seg--extra { background: var(--gold); transition-delay: 0.3s; }
+.split__seg--auvp { background: rgba(255, 255, 255, 0.24); transition-delay: 0.5s; }
 
-.divisao__in {
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 800;
-  fill: #fff;
-}
-.divisao__out {
-  font-family: var(--font-ui);
-  font-size: 12px;
-  fill: var(--ink-muted);
-}
-
-.divisao__tick {
-  stroke: var(--ink-faint);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-  opacity: 0;
-  transition: opacity 0.3s ease 1.2s;
-}
-.repasse[data-on] .divisao__tick { opacity: 1; }
-
-.divisao__gain-label {
-  font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 800;
-  fill: var(--gold-deep);
-  text-anchor: middle;
-  opacity: 0;
-  transition: opacity 0.3s ease 1.25s;
-}
-.repasse[data-on] .divisao__gain-label { opacity: 1; }
-
-.divisao__punch {
-  font-family: var(--font-display);
-  font-size: 1.0625rem;
-  font-weight: 500;
-  color: var(--ink);
+.split__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-top: var(--sp-4);
 }
-.divisao__punch strong { font-weight: 800; }
-
-/* ---------- Simulador ---------- */
-.sim {
-  margin-top: var(--sp-5);
-  padding-top: var(--sp-4);
-  border-top: 1px solid var(--border);
-}
-
-.sim__label {
-  display: block;
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--ink-faint);
-  margin-bottom: var(--sp-2);
-}
-
-.sim__row {
+.split__legend li {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.7);
 }
-
-.sim__value {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 800;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  min-width: 7ch;
-  text-align: right;
-}
-
-.sim__range {
-  flex: 1;
-  min-width: 0;
-  appearance: none;
-  -webkit-appearance: none;
-  height: 4px;
-  border-radius: 999px;
-  background: var(--tint);
-  cursor: pointer;
-}
-.sim__range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 50%;
-  background: var(--green-deep);
-  border: 3px solid var(--surface-raised);
-  box-shadow: var(--shadow-chip);
-  cursor: grab;
-}
-.sim__range::-moz-range-thumb {
-  width: 1.25rem;
-  height: 1.25rem;
-  border: 3px solid var(--surface-raised);
-  border-radius: 50%;
-  background: var(--green-deep);
-  box-shadow: var(--shadow-chip);
-  cursor: grab;
-}
-.sim__range:focus-visible { outline: 2px solid var(--green-deep); outline-offset: 4px; }
-
-.sim__out {
-  margin-top: var(--sp-3);
-  font-size: 0.9063rem;
-  color: var(--ink-muted);
-  min-height: 2.75rem;
-}
-.sim__out b { color: var(--ink); font-weight: 700; }
-
-.sim__obs {
-  margin-top: var(--sp-2);
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-}
-.sim__out .sim__delta {
-  display: inline-block;
-  background: var(--gold);
-  color: var(--ink);
+.split__legend b {
+  font-family: var(--font-ui);
   font-weight: 700;
-  border-radius: var(--radius-sm);
-  padding: 0.0625rem 0.375rem;
+  color: #fff;
+  white-space: nowrap;
 }
+
+.split__key {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.split__key--base { background: #fff; }
+.split__key--extra { background: var(--gold); }
+.split__key--auvp { background: rgba(255, 255, 255, 0.24); }
 
 @media (prefers-reduced-motion: reduce) {
-  .divisao__mine, .divisao__gain, .divisao__tick, .divisao__gain-label { transition: none; }
-  .divisao__mine, .divisao__gain { transform: scaleX(1); }
-  .divisao__tick, .divisao__gain-label { opacity: 1; }
+  .split__seg { transition: none; width: var(--w); }
+}
+
+@media (max-width: 64rem) {
+  .calc { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 40rem) {
-  .divisao__in { font-size: 22px; }
-  .divisao__out, .divisao__row-label { font-size: 14px; }
-  .divisao__gain-label { font-size: 18px; }
-  .sim__row { flex-wrap: wrap; }
-  .sim__value { min-width: 0; text-align: left; }
+  .calc__control { grid-template-columns: 1fr; }
+  .calc__value { text-align: left; }
+  .calc__results { grid-template-columns: 1fr; }
+  .calc__tile--hero { grid-column: 1; }
 }
 
 /* ---------- Timeline: o caminho para fazer parte ----------
@@ -1333,7 +1413,8 @@ button:focus-visible {
   .nav__inner { width: calc(100% - 1rem); padding-inline: var(--sp-3); }
   .nav__logo { height: 2.5rem; }
   .fit__col { padding: var(--sp-5) var(--sp-4); }
-  .destaque { padding: var(--sp-5) var(--sp-4); }
+  .calc,
+  .calc__panel { padding: var(--sp-5) var(--sp-4); }
   .btn--lg { width: 100%; justify-content: center; }
   .hero__ctas { flex-direction: column; align-items: stretch; }
 }

@@ -1,48 +1,60 @@
 /* ==========================================================================
-   AUVP Advisors — LP de recrutamento de consultores
-   Dobras alternando branco e #F6F6F6, dobras escuras em preto.
-   Verde AUVP Capital e dourado do olho ficam como acento.
-   Fontes: Anek Latin (display) · Roboto (corpo) · Sora (UI)
+   AUVP Advisors — LP de recrutamento de advisors
+   Identidade da plataforma: base escura, uma dobra clara de respiro e um
+   único acento quente (laranja) para tudo que é ação ou ênfase.
+   Tipografia: Satoshi (Fontshare/ITF) em toda a página.
    ========================================================================== */
 
 :root {
-  /* Superfícies — as dobras alternam entre estes dois tons.
-     `--surface` é o fundo da dobra atual e `--surface-raised` é o tom
-     oposto, usado pelos cartões, para que sempre haja contraste. */
-  --white: #FFFFFF;
-  --gray: #F6F6F6;
-  --surface: var(--white);
-  --surface-raised: var(--gray);
+  /* ---- Paleta base ----
+     A página é escura por padrão; o osso entra como pausa, não como tema. */
+  --ink-0: #0D0E10;   /* O tom mais fundo: rodapé, tinta sobre o laranja */
+  --ink-1: #121316;   /* Fundo das dobras escuras */
+  --ink-2: #191B1E;   /* Cartão sobre o escuro */
+  --bone: #EFEDE8;    /* Dobra clara */
+  --bone-raised: #FFFFFF;
 
-  --black: #0A0A0A;             /* Dobras escuras */
-  --tint: #EAEAEA;              /* Trilhos e placeholders */
+  /* ---- Acento ----
+     Um só: o laranja da plataforma. Sobre ele o texto é sempre a tinta
+     escura — em branco daria 3,2:1 e reprovaria em qualquer tamanho. */
+  --accent: #D9743F;
+  --accent-hover: #C4632F;
+  --accent-ink: #A8501F;               /* Versão legível sobre o osso */
+  --accent-soft: rgba(217, 116, 63, 0.12);
+  --accent-line: rgba(217, 116, 63, 0.38);
 
-  /* Tinta */
-  --ink: #111111;
-  --ink-muted: #575757;
-  --ink-faint: #8A8A8A;
-  --border: #E6E6E6;
-  --border-strong: #D0D0D0;
+  /* ---- Tokens de superfície ----
+     Os valores abaixo são o padrão (dobra escura). Cada classe .surface-*
+     redeclara o conjunto inteiro, então todo componente segue a dobra em
+     que está sem precisar de variante própria. */
+  --surface: var(--ink-1);
+  --surface-raised: var(--ink-2);
+  --ink: #FFFFFF;
+  --ink-muted: #A9AAAC;
+  --ink-faint: #77797C;
+  --border: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --tint: rgba(255, 255, 255, 0.08);
+  --danger: #E8705A;
+  --logo: #FFFFFF;
 
-  /* Marca */
-  --green-deep: hsl(155 93% 11%);   /* Verde AUVP Capital #023621 */
-  --green-hover: hsl(155 80% 15%);
+  /* Escala do acento para as cinco etapas da timeline: abre lavada e fecha
+     no laranja cheio, que é o tom mais fundo dos cinco. A tinta dentro do nó
+     é a escura em todas — em branco o laranja cheio daria 3,2:1. Os cinco
+     passos vão de 13,6:1 a 6:1 contra --ink-0. */
+  --etapa-1: #F3D2BC;
+  --etapa-2: #ECBA9D;
+  --etapa-3: #E6A37E;
+  --etapa-4: #E08C5E;
+  --etapa-5: var(--accent);
 
-  /* Escala do verde para as cinco etapas da timeline: clareia no começo do
-     caminho e fecha no verde da marca na última. Todos os tons passam de
-     4,5:1 com o branco do número dentro do nó. */
-  --green-1: hsl(155 57% 33%);
-  --green-2: hsl(155 65% 27%);
-  --green-3: hsl(155 74% 21%);
-  --green-4: hsl(155 83% 16%);
-  --green-5: var(--green-deep);
-  --gold: #F0BF4F;
-  --gold-deep: #A8791A;
-
-  /* Tipografia */
-  --font-display: 'Anek Latin', sans-serif;
-  --font-body: 'Roboto', sans-serif;
-  --font-ui: 'Sora', sans-serif;
+  /* Tipografia — Satoshi em toda a página. Os três nomes seguem existindo
+     porque marcam intenção (título, corpo, rótulo de interface); hoje os
+     três apontam para a mesma família. */
+  --font-satoshi: 'Satoshi', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-satoshi);
+  --font-body: var(--font-satoshi);
+  --font-ui: var(--font-satoshi);
 
   /* Escala de espaçamento — todo respiro da página sai daqui */
   --sp-1: 0.25rem;
@@ -62,9 +74,12 @@
   --container: 74rem;
   --nav-h: 4.75rem;
 
-  --shadow-soft: 0 14px 32px -20px rgba(0, 0, 0, 0.22);
-  --shadow-chip: 0 8px 20px -10px rgba(0, 0, 0, 0.20);
+  --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.65);
+  --shadow-chip: 0 8px 20px -10px rgba(0, 0, 0, 0.45);
 }
+
+/* O sprite do logo não ocupa espaço: existe só para o <use> apontar. */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -72,7 +87,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--white);
+  background: var(--ink-1);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 1.0625rem;
@@ -90,7 +105,7 @@ ul, ol { list-style: none; }
   margin-inline: auto;
 }
 
-::selection { background: var(--gold); color: var(--ink); }
+::selection { background: var(--accent); color: var(--ink-0); }
 
 /* ---------- Tipos utilitários ---------- */
 
@@ -103,11 +118,13 @@ ul, ol { list-style: none; }
   margin-bottom: var(--sp-5);
   text-wrap: balance;
 }
-/* Ênfase por peso, nunca por cor. */
+/* Ênfase por peso nos títulos de dobra. A cor é reservada às duas peças
+   que abrem e fecham a página — o título do hero e o do CTA final —, para
+   que o laranja continue significando "aqui" e não vire decoração. */
 .section__title em,
 .section__title strong {
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .section__sub {
@@ -120,24 +137,64 @@ ul, ol { list-style: none; }
 .section { padding: var(--sp-section) 0; }
 
 /* ---------- Fundo das dobras ----------
-   As dobras alternam entre branco e cinza; os cartões sempre assumem o tom
-   oposto ao da dobra em que estão, então nunca somem no fundo. */
-.surface-white {
-  background: var(--white);
-  --surface: var(--white);
-  --surface-raised: var(--gray);
+   Cada dobra declara a superfície e, com ela, o jogo inteiro de tinta e
+   borda. Trocar a classe da dobra reescreve todos os componentes dentro
+   dela — não existe variante "clara" ou "escura" por componente. */
+.surface-dark {
+  background: var(--ink-1);
+  --surface: var(--ink-1);
+  --surface-raised: var(--ink-2);
+  --ink: #FFFFFF;
+  --ink-muted: #A9AAAC;
+  --ink-faint: #77797C;
+  --border: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --tint: rgba(255, 255, 255, 0.08);
+  --accent-legivel: var(--accent);
+  --danger: #E8705A;
+  --logo: #FFFFFF;
+  color: var(--ink);
 }
 
-.surface-gray {
-  background: var(--gray);
-  --surface: var(--gray);
-  --surface-raised: var(--white);
+/* Mais fundo que a dobra padrão: separa blocos escuros vizinhos sem
+   precisar de filete. */
+.surface-deep {
+  background: var(--ink-0);
+  --surface: var(--ink-0);
+  --surface-raised: var(--ink-1);
+  --ink: #FFFFFF;
+  --ink-muted: #A9AAAC;
+  --ink-faint: #77797C;
+  --border: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --tint: rgba(255, 255, 255, 0.08);
+  --accent-legivel: var(--accent);
+  --danger: #E8705A;
+  --logo: #FFFFFF;
+  color: var(--ink);
+}
+
+.surface-bone {
+  background: var(--bone);
+  --surface: var(--bone);
+  --surface-raised: var(--bone-raised);
+  --ink: #14161A;
+  --ink-muted: #4A4D52;
+  --ink-faint: #6E7176;
+  --border: #DEDBD4;
+  --border-strong: #C4C0B8;
+  --tint: #E2DFD8;
+  /* Sobre o osso o laranja cheio cai para 3,4:1: aqui ele escurece. */
+  --accent-legivel: var(--accent-ink);
+  --danger: #A32B18;
+  --logo: #000000;
+  color: var(--ink);
 }
 
 /* ---------- Botões ---------- */
 .btn {
   font-family: var(--font-ui);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9375rem;
   display: inline-flex;
   align-items: center;
@@ -151,8 +208,9 @@ ul, ol { list-style: none; }
   white-space: nowrap;
 }
 
-.btn--primary { background: var(--green-deep); color: #fff; }
-.btn--primary:hover { background: var(--green-hover); }
+/* Tinta escura sobre o laranja: em branco o par daria 3,2:1. */
+.btn--primary { background: var(--accent); color: var(--ink-0); }
+.btn--primary:hover { background: var(--accent-hover); }
 
 .btn--ghost {
   background: transparent;
@@ -199,7 +257,7 @@ ul, ol { list-style: none; }
   right: calc(-50vw + 50%);
   /* O blur só aparece se o fundo deixar passar: a 0.92 ele era calculado e
      não era visto. A saturação devolve a cor que o desfoque lava. */
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(18, 19, 22, 0.72);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   border-radius: 0;
@@ -234,10 +292,14 @@ ul, ol { list-style: none; }
   text-decoration: none;
 }
 
-/* Logo oficial AUVP Capital (horizontal) — viewBox 400×152 */
+/* Logo oficial AUVP Advisors — viewBox 360×82, bem mais largo e baixo que
+   o lockup anterior. O desenho é fill="currentColor": a marca sai sempre em
+   preto ou branco puro, o extremo oposto do fundo em que está, e não na
+   tinta do texto — daí --logo e não --ink. */
 .nav__logo {
   width: auto;
-  height: 3.25rem;
+  height: 2rem;
+  color: var(--logo);
 }
 
 .nav__links {
@@ -246,14 +308,14 @@ ul, ol { list-style: none; }
   font-family: var(--font-ui);
   font-size: 0.875rem;
 }
-/* Sobre as dobras pretas o vidro compõe um cinza claro; com --ink-muted o
-   texto ficava em 3,7:1. Este tom dá 7:1 no pior caso e mantém o vidro. */
+/* O vidro escuro compõe um cinza sobre qualquer dobra; este tom passa de
+   7:1 no pior caso e mantém o desfoque visível. */
 .nav__links a {
   text-decoration: none;
-  color: #2E2E2E;
+  color: #C9CACC;
   transition: color 0.2s ease;
 }
-.nav__links a:hover { color: var(--ink); }
+.nav__links a:hover { color: #FFFFFF; }
 
 .nav__actions { display: flex; align-items: center; gap: 1rem; }
 
@@ -268,7 +330,7 @@ ul, ol { list-style: none; }
 }
 .nav__toggle span {
   width: 22px; height: 2px;
-  background: var(--ink);
+  background: #FFFFFF;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 .nav__toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -281,17 +343,17 @@ ul, ol { list-style: none; }
   gap: 0.25rem;
   padding: 1rem 1.5rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(13, 14, 16, 0.98);
 }
 .nav__mobile a {
   text-decoration: none;
   font-family: var(--font-ui);
   font-size: 1rem;
   padding: 0.75rem 0;
-  color: var(--ink-muted);
+  color: #A9AAAC;
 }
-.nav__mobile a:hover { color: var(--ink); }
-.nav__mobile .btn { justify-content: center; color: #fff; margin-top: 0.75rem; }
+.nav__mobile a:hover { color: #FFFFFF; }
+.nav__mobile .btn { justify-content: center; margin-top: 0.75rem; }
 .nav__mobile[data-open] { display: flex; }
 
 /* ---------- Hero ---------- */
@@ -300,6 +362,21 @@ ul, ol { list-style: none; }
   padding: var(--sp-section) 0;
   overflow: hidden;
 }
+
+/* Pontilhado esmaecido no topo: dá matéria ao fundo escuro sem virar
+   ornamento. A máscara apaga a trama antes que ela encoste no conteúdo. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.07) 1px, transparent 0);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(115% 80% at 28% 0%, #000 18%, transparent 72%);
+  mask-image: radial-gradient(115% 80% at 28% 0%, #000 18%, transparent 72%);
+}
+.hero__grid { position: relative; z-index: 1; }
 
 .hero__grid {
   display: grid;
@@ -317,7 +394,7 @@ ul, ol { list-style: none; }
   margin-bottom: var(--sp-5);
 }
 .hero__title em,
-.hero__title strong { font-style: normal; font-weight: 800; }
+.hero__title strong { font-style: normal; font-weight: 700; color: var(--accent); }
 
 .hero__sub {
   font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
@@ -356,7 +433,7 @@ ul, ol { list-style: none; }
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(0, 0, 0, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: none;
 }
 
@@ -368,66 +445,6 @@ ul, ol { list-style: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-}
-
-/* ---------- Stats ----------
-   Título à esquerda, cartões numéricos lado a lado à direita.
-   O fundo vem da classe de superfície da dobra (.surface-gray no HTML). */
-.stats {
-  border-block: 1px solid var(--border);
-  padding: var(--sp-8) 0;
-}
-
-.stats__inner {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
-}
-
-.stats__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-}
-.stats__title em { font-style: normal; font-weight: 800; }
-
-.stats__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-4);
-}
-
-.stat {
-  text-align: left;
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--sp-5);
-}
-
-.stat__value {
-  font-family: var(--font-display);
-  display: block;
-  line-height: 1.1;
-  margin-bottom: 0.5rem;
-}
-.stat__value strong {
-  font-size: clamp(2rem, 3.4vw, 2.75rem);
-  font-weight: 800;
-  color: var(--green-deep);
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.stat__label {
-  font-size: 0.875rem;
-  color: var(--ink-muted);
-  display: block;
-  line-height: 1.45;
 }
 
 /* ---------- Benefícios: coluna fixa + lista ----------
@@ -460,17 +477,17 @@ ul, ol { list-style: none; }
 .beneficios__passo-atual {
   font-family: var(--font-display);
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.03em;
-  color: var(--green-deep);
+  color: var(--accent-legivel, var(--accent));
   font-variant-numeric: tabular-nums;
 }
 
 .beneficios__passo-total {
   font-family: var(--font-ui);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -497,14 +514,14 @@ ul, ol { list-style: none; }
 .lista__num {
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 4vw, 3.25rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 0.8;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
   color: var(--border-strong);
   transition: color 0.45s ease;
 }
-.lista__item.is-ativo .lista__num { color: var(--green-deep); }
+.lista__item.is-ativo .lista__num { color: var(--accent-legivel, var(--accent)); }
 
 @supports (-webkit-text-stroke: 1px #000) {
   .lista__num {
@@ -513,8 +530,8 @@ ul, ol { list-style: none; }
     transition: color 0.45s ease, -webkit-text-stroke-color 0.45s ease;
   }
   .lista__item.is-ativo .lista__num {
-    color: var(--green-deep);
-    -webkit-text-stroke-color: var(--green-deep);
+    color: var(--accent-legivel, var(--accent));
+    -webkit-text-stroke-color: var(--accent-legivel, var(--accent));
   }
 }
 
@@ -527,7 +544,7 @@ ul, ol { list-style: none; }
   margin-bottom: var(--sp-2);
 }
 .lista__title em,
-.lista__title strong { font-style: normal; font-weight: 800; }
+.lista__title strong { font-style: normal; font-weight: 700; }
 
 .lista__text { color: var(--ink-muted); font-size: 0.9843rem; }
 .lista__text strong { color: var(--ink); font-weight: 700; }
@@ -548,7 +565,7 @@ ul, ol { list-style: none; }
 .tags li {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-muted);
   background: var(--surface-raised);
   border: 1px solid var(--border);
@@ -573,13 +590,8 @@ ul, ol { list-style: none; }
 }
 
 /* ---------- Operação: BTG e suporte (dobra escura) ---------- */
-.operacao {
-  background: var(--black);
-  color: #fff;
-  padding: var(--sp-section) 0;
-}
-
-.operacao .section__title { color: #fff; }
+/* A cor vem de .surface-dark no HTML; aqui fica só o respiro da dobra. */
+.operacao { padding: var(--sp-section) 0; }
 
 .operacao__grid {
   display: grid;
@@ -589,7 +601,7 @@ ul, ol { list-style: none; }
 }
 
 .operacao__card {
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--sp-6);
   display: flex;
@@ -612,30 +624,24 @@ ul, ol { list-style: none; }
   letter-spacing: -0.02em;
 }
 
-.operacao__text { color: rgba(255, 255, 255, 0.78); font-size: 0.9843rem; }
+.operacao__text { color: var(--ink-muted); font-size: 0.9843rem; }
 
 .operacao__fine {
   margin-top: auto;
   padding-top: var(--sp-3);
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid var(--border);
   font-size: 0.78125rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-faint);
 }
-.operacao__fine strong { color: var(--gold); font-weight: 700; }
+.operacao__fine strong { color: var(--accent); font-weight: 700; }
 
-/* Sobre o preto o verde da marca some: aqui o botão inverte para branco. */
 .operacao__cta {
   margin-top: auto;
   padding-top: var(--sp-5);
 }
-.operacao__cta .btn--primary { background: #fff; color: var(--ink); }
-.operacao__cta .btn--primary:hover { background: var(--gold); }
-
-/* Sobre preto o verde da marca desaparece: o traço vira dourado e o texto,
-   branco lavado. */
-.checklist--light li { color: rgba(255, 255, 255, 0.78); }
-.checklist--light li::before { color: var(--gold); }
-
+/* Com a nota acima já ancorada na base, a folga não pode ser dividida em
+   duas: quem empurra é a nota, e o botão vem colado nela. */
+.operacao__fine + .operacao__cta { margin-top: 0; }
 /* Checklists */
 .checklist { display: flex; flex-direction: column; gap: 0.625rem; }
 .checklist li {
@@ -651,9 +657,9 @@ ul, ol { list-style: none; }
   top: 0;
   font-family: var(--font-ui);
   font-weight: 700;
-  color: var(--green-deep);
+  color: var(--accent);
 }
-.checklist--no li::before { content: "✕"; color: #B4432E; }
+.checklist--no li::before { content: "✕"; color: var(--danger); }
 
 /* ---------- O que é o AUVP Advisors ---------- */
 .modelo {
@@ -679,7 +685,24 @@ ul, ol { list-style: none; }
   overflow: hidden;
 }
 
-.cta-final__inner { position: relative; }
+/* Anéis concêntricos atrás do fecho, na mesma família do pontilhado do
+   hero: a página abre e fecha com a mesma matéria. */
+.cta-final::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-radial-gradient(
+    circle at 50% 42%,
+    transparent 0 51px,
+    rgba(255, 255, 255, 0.055) 51px 52px
+  );
+  -webkit-mask-image: radial-gradient(58% 58% at 50% 42%, #000 25%, transparent 80%);
+  mask-image: radial-gradient(58% 58% at 50% 42%, #000 25%, transparent 80%);
+}
+
+.cta-final__inner { position: relative; z-index: 1; }
 
 .cta-final__eye { margin: 0 auto var(--sp-6); width: 5.25rem; }
 
@@ -692,7 +715,7 @@ ul, ol { list-style: none; }
   margin-bottom: var(--sp-5);
 }
 .cta-final__title em,
-.cta-final__title strong { font-style: normal; font-weight: 800; }
+.cta-final__title strong { font-style: normal; font-weight: 700; color: var(--accent); }
 
 .cta-final__sub {
   color: var(--ink-muted);
@@ -705,11 +728,8 @@ ul, ol { list-style: none; }
 .cta-final .hero__compliance { margin-inline: auto; }
 
 /* ---------- Footer ---------- */
-.footer {
-  background: var(--black);
-  color: rgba(255, 255, 255, 0.85);
-  padding: var(--sp-8) 0 var(--sp-6);
-}
+/* A cor vem de .surface-deep no HTML. */
+.footer { padding: var(--sp-8) 0 var(--sp-6); }
 
 .footer__inner {
   display: flex;
@@ -718,13 +738,13 @@ ul, ol { list-style: none; }
   gap: 2rem;
   flex-wrap: wrap;
   padding-bottom: var(--sp-7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid var(--border);
 }
 
 .footer__tagline {
   margin-top: var(--sp-3);
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ink-faint);
   max-width: 22rem;
 }
 
@@ -735,13 +755,13 @@ ul, ol { list-style: none; }
   font-family: var(--font-ui);
   font-size: 0.875rem;
 }
-.footer__links a { text-decoration: none; color: rgba(255, 255, 255, 0.72); }
-.footer__links a:hover { color: #fff; }
+.footer__links a { text-decoration: none; color: var(--ink-muted); }
+.footer__links a:hover { color: var(--ink); }
 
 .footer__legal { padding-top: var(--sp-6); }
 .footer__legal p {
   font-size: 0.78125rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--ink-faint);
   max-width: 60rem;
   margin-bottom: 0.875rem;
 }
@@ -761,8 +781,6 @@ ul, ol { list-style: none; }
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 64rem) {
-  .stats__inner { grid-template-columns: 1fr; }
-
   .hero__grid { grid-template-columns: 1fr; }
   .hero__media { max-width: 30rem; margin-inline: auto; }
 
@@ -778,11 +796,9 @@ ul, ol { list-style: none; }
   .nav__actions .btn { display: none; }
   .nav__mobile[data-open] { display: flex; }
 
-  .stats__grid { grid-template-columns: 1fr; gap: var(--sp-3); }
-
 }
 
-.checklist strong { color: var(--ink); font-weight: 600; }
+.checklist strong { color: var(--ink); font-weight: 500; }
 
 /* ---------- Vídeo de lançamento ---------- */
 .video { padding: var(--sp-section) 0; }
@@ -825,7 +841,7 @@ ul, ol { list-style: none; }
 .field label {
   font-family: var(--font-ui);
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
 }
 
@@ -855,15 +871,15 @@ ul, ol { list-style: none; }
 .field select:focus-visible {
   outline: none;
   background: var(--surface-raised);
-  box-shadow: inset 0 0 0 2px var(--green-deep);
+  box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 .field--invalid input,
-.field--invalid select { box-shadow: inset 0 0 0 2px #97281A; }
+.field--invalid select { box-shadow: inset 0 0 0 2px var(--danger); }
 
 .field__error {
   font-size: 0.78125rem;
-  color: #97281A;
+  color: var(--danger);
   min-height: 1rem;
 }
 .field__error:empty { min-height: 0; }
@@ -871,7 +887,7 @@ ul, ol { list-style: none; }
 .field__hint {
   font-size: 0.8125rem;
   color: var(--ink-muted);
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--accent);
   padding-left: 0.75rem;
 }
 
@@ -891,10 +907,10 @@ ul, ol { list-style: none; }
   width: 1.125rem;
   height: 1.125rem;
   margin-top: 0.1875rem;
-  accent-color: var(--green-deep);
+  accent-color: var(--accent);
   cursor: pointer;
 }
-.consent a { color: var(--green-deep); text-decoration: underline; text-underline-offset: 2px; }
+.consent a { color: var(--accent-legivel, var(--accent)); text-decoration: underline; text-underline-offset: 2px; }
 .consent a:hover { text-decoration-thickness: 2px; }
 
 /* Link cujo destino ainda não existe não deve parecer clicável */
@@ -914,13 +930,13 @@ ul, ol { list-style: none; }
   min-height: 1.25rem;
   text-align: center;
 }
-.form__status[data-state="ok"] { color: var(--green-deep); font-weight: 600; }
-.form__status[data-state="erro"] { color: #97281A; }
+.form__status[data-state="ok"] { color: var(--accent); font-weight: 500; }
+.form__status[data-state="erro"] { color: var(--danger); }
 
 /* Foco visível em toda a página */
 a:focus-visible,
 button:focus-visible {
-  outline: 2px solid var(--green-deep);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -956,7 +972,7 @@ button:focus-visible {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold-deep);
+  color: var(--accent-legivel, var(--accent));
 }
 
 .calc__title {
@@ -966,7 +982,7 @@ button:focus-visible {
   line-height: 1.1;
   letter-spacing: -0.025em;
 }
-.calc__title em { font-style: normal; font-weight: 800; }
+.calc__title em { font-style: normal; font-weight: 700; }
 
 .calc__lead { color: var(--ink-muted); font-size: 0.9843rem; }
 
@@ -982,14 +998,14 @@ button:focus-visible {
 .calc__label {
   font-family: var(--font-ui);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink-faint);
 }
 
 .calc__value {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1009,7 +1025,7 @@ button:focus-visible {
   border-radius: 999px;
   background: linear-gradient(
     to right,
-    var(--green-deep) var(--pct),
+    var(--accent) var(--pct),
     var(--tint) var(--pct)
   );
   cursor: pointer;
@@ -1019,7 +1035,7 @@ button:focus-visible {
   width: 1.375rem;
   height: 1.375rem;
   border-radius: 50%;
-  background: var(--green-deep);
+  background: var(--accent);
   border: 3px solid var(--surface-raised);
   box-shadow: var(--shadow-chip);
   cursor: grab;
@@ -1029,11 +1045,11 @@ button:focus-visible {
   height: 1.375rem;
   border: 3px solid var(--surface-raised);
   border-radius: 50%;
-  background: var(--green-deep);
+  background: var(--accent);
   box-shadow: var(--shadow-chip);
   cursor: grab;
 }
-.calc__range:focus-visible { outline: 2px solid var(--green-deep); outline-offset: 4px; }
+.calc__range:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
 .calc__scale {
   grid-column: 1 / -1;
@@ -1052,7 +1068,7 @@ button:focus-visible {
 
 /* Painel do resultado */
 .calc__panel {
-  background: var(--black);
+  background: var(--ink-0);
   border-radius: var(--radius-lg);
   padding: clamp(var(--sp-5), 2.5vw, var(--sp-6));
   display: flex;
@@ -1079,14 +1095,14 @@ button:focus-visible {
 .calc__tile--hero {
   order: -1;
   grid-column: 1 / -1;
-  background: rgba(240, 191, 79, 0.08);
-  border-color: rgba(240, 191, 79, 0.38);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
 }
 
 .calc__tile-label {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.55);
@@ -1095,7 +1111,7 @@ button:focus-visible {
 .calc__tile-value {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
   letter-spacing: -0.02em;
   color: #fff;
@@ -1104,7 +1120,7 @@ button:focus-visible {
 
 .calc__tile--hero .calc__tile-value {
   font-size: clamp(1.5rem, 3.2vw, 2rem);
-  color: var(--gold);
+  color: var(--accent);
   text-wrap: balance;
 }
 
@@ -1120,7 +1136,7 @@ button:focus-visible {
 .split__caption {
   font-family: var(--font-ui);
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
@@ -1144,7 +1160,7 @@ button:focus-visible {
 .calc[data-on] .split__seg { width: var(--w); }
 
 .split__seg--base { background: #fff; }
-.split__seg--extra { background: var(--gold); transition-delay: 0.3s; }
+.split__seg--extra { background: var(--accent); transition-delay: 0.3s; }
 .split__seg--auvp { background: rgba(255, 255, 255, 0.24); transition-delay: 0.5s; }
 
 .split__legend {
@@ -1175,7 +1191,7 @@ button:focus-visible {
   flex-shrink: 0;
 }
 .split__key--base { background: #fff; }
-.split__key--extra { background: var(--gold); }
+.split__key--extra { background: var(--accent); }
 .split__key--auvp { background: rgba(255, 255, 255, 0.24); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1222,7 +1238,7 @@ button:focus-visible {
   display: block;
   height: 100%;
   width: 0%;
-  background: linear-gradient(to right, var(--green-1), var(--green-5));
+  background: linear-gradient(to right, var(--etapa-1), var(--etapa-5));
   transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .timeline.is-on .timeline__rail-fill { width: 100%; }
@@ -1262,16 +1278,16 @@ button:focus-visible {
    antes de o texto ser lido, e a última etapa é a mais densa. --etapa é
    declarado por posição logo abaixo. */
 .timeline.is-on .timeline__node {
-  background: var(--etapa, var(--green-deep));
-  box-shadow: 0 0 0 2px var(--etapa, var(--green-deep));
-  color: #fff;
+  background: var(--etapa, var(--accent));
+  box-shadow: 0 0 0 2px var(--etapa, var(--accent));
+  color: var(--ink-0);
 }
 
-.timeline__step:nth-of-type(1) { --etapa: var(--green-1); }
-.timeline__step:nth-of-type(2) { --etapa: var(--green-2); }
-.timeline__step:nth-of-type(3) { --etapa: var(--green-3); }
-.timeline__step:nth-of-type(4) { --etapa: var(--green-4); }
-.timeline__step:nth-of-type(5) { --etapa: var(--green-5); }
+.timeline__step:nth-of-type(1) { --etapa: var(--etapa-1); }
+.timeline__step:nth-of-type(2) { --etapa: var(--etapa-2); }
+.timeline__step:nth-of-type(3) { --etapa: var(--etapa-3); }
+.timeline__step:nth-of-type(4) { --etapa: var(--etapa-4); }
+.timeline__step:nth-of-type(5) { --etapa: var(--etapa-5); }
 
 .timeline__card {
   background: var(--surface-raised);
@@ -1296,8 +1312,8 @@ button:focus-visible {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--gold-deep);
-  background: rgba(240, 191, 79, 0.18);
+  color: var(--accent-legivel, var(--accent));
+  background: var(--accent-soft);
   border-radius: var(--radius-sm);
   padding: 0.25rem 0.5rem;
 }
@@ -1410,7 +1426,7 @@ button:focus-visible {
   font-weight: 700;
   flex-shrink: 0;
 }
-.fit__col--yes .fit__mark { background: var(--green-deep); color: #fff; }
+.fit__col--yes .fit__mark { background: var(--accent); color: var(--ink-0); }
 .fit__col--no .fit__mark { background: var(--tint); color: var(--ink-muted); }
 
 .fit__col--yes { background: var(--surface-raised); box-shadow: var(--shadow-soft); }
@@ -1437,11 +1453,15 @@ button:focus-visible {
 @media (max-width: 26rem) {
   .container { width: calc(100% - 2rem); }
   .nav__inner { width: calc(100% - 1rem); padding-inline: var(--sp-3); }
-  .nav__logo { height: 2.5rem; }
+  .nav__logo { height: 1.625rem; }
   .fit__col { padding: var(--sp-5) var(--sp-4); }
   .calc,
   .calc__panel { padding: var(--sp-5) var(--sp-4); }
+  /* Em tela estreita o rótulo longo do CTA não cabe em uma linha, e o
+     nowrap do botão empurrava a coluna e estourava a página. */
+  .btn { white-space: normal; text-align: center; }
   .btn--lg { width: 100%; justify-content: center; }
+  .operacao__cta .btn { width: 100%; justify-content: center; }
   .hero__ctas { flex-direction: column; align-items: stretch; }
 }
 
@@ -1452,6 +1472,6 @@ button:focus-visible {
 .modelo > *,
 .operacao__grid > *,
 .timeline > *,
-.fit > *,
-.stats__inner > *,
-.stats__grid > * { min-width: 0; }
+.beneficios > *,
+.lista__item > *,
+.fit > * { min-width: 0; }

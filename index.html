@@ -6,26 +6,43 @@
   <title>AUVP Advisors — Seja um advisor validado AUVP</title>
   <meta name="description" content="Faça parte do ecossistema da AUVP como advisor validado. Retenha até 80% do fee, mantenha autonomia total de metodologia e conte com a estrutura tecnológica e operacional por trás da sua carteira." />
 
-  <link rel="icon" type="image/svg+xml" href="assets/img/olho-preto.svg" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/olho-amarelo.svg" />
 
   <meta property="og:title" content="AUVP Advisors — Seja um advisor validado AUVP" />
   <meta property="og:description" content="Ao entrar na AUVP Advisors, você segue livre para adotar sua própria metodologia. Nós assumimos a estrutura tecnológica e o suporte operacional." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="pt_BR" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Satoshi (Fontshare/ITF). A licença permite hospedar os arquivos junto
+       do site; enquanto isso não é feito, a fonte vem do CDN da fundição.
+       Só os pesos que existem: 300, 400, 500, 700 e 900 — pedir 600 ou 800
+       faria o navegador arredondar e engordar o texto sem aviso. -->
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+  <link rel="stylesheet"
+        href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@300,400,500,700,900&display=swap" />
 
   <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
 
+  <!-- Logo AUVP Advisors. Embutido uma vez e reusado por <use>: como o
+       desenho é fill="currentColor", ele acompanha a cor da dobra em que
+       está — não há versão clara e versão escura do arquivo. O SVG solto
+       segue em assets/img/auvp-advisors.svg. -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="logo-advisors" viewBox="19.6 37.4 360.4 81.62" fill="currentColor">
+      <path d="M131.5,68.5c-28.7-37.1-75.3-37.1-104,0l-5.5,7.1,5.5,7.1c28.7,37.1,75.3,37.1,104,0l5.5-7.1-5.5-7.1ZM101.2,75c.2,5.7-1.8,11.1-5.7,15.3-3.9,4.2-9.2,6.6-14.9,6.8h-.8c-5.4,0-10.6-2-14.5-5.7-3.2-2.9-5.3-6.7-6.3-10.9-.1-.5.2-1,.7-1.1.2,0,.5,0,.7.1s.4.3.4.6c.9,3.8,2.8,7.3,5.7,10,3.8,3.5,8.8,5.4,14,5.2s10-2.4,13.6-6.2c3.5-3.8,5.4-8.8,5.2-14-.2-5.2-2.4-10-6.2-13.5-3.8-3.5-8.7-5.4-14-5.2-5.2.2-10,2.4-13.6,6.2-.9.9-1.6,1.9-2.3,3-.3.4-.9.6-1.3.3-.2-.1-.4-.3-.4-.6,0-.2,0-.5.1-.7.7-1.2,1.6-2.3,2.5-3.3,3.9-4.2,9.2-6.6,14.9-6.8,5.7-.2,11.1,1.8,15.3,5.7,4.2,3.9,6.6,9.2,6.8,14.9h0l.1-.1ZM84.9,73.9c1.2,0,2.2-.6,2.7-1.6.5,1.1.8,2.2.8,3.5,0,4.6-3.7,8.3-8.3,8.3s-8.3-3.7-8.3-8.3,3.7-8.3,8.3-8.3,2.3.2,3.3.7c-.9.5-1.5,1.5-1.5,2.7,0,1.7,1.4,3.1,3.1,3h-.1ZM85.6,68.7c.2,0,.3,0,.5.2v.8s-.2-.1-.4-.2-.4,0-.6,0h-.5c-.1,0,0,0,0,.1h0v.1l.2.1s.2,0,.4.1c.2,0,.4.2.6.2s.3.2.4.3.1.3.1.5h0c0,.4-.1.7-.3.8-.1.1-.4.2-.6.2v.5h-.8v-.5h-.8v-.9s.2.1.4.2h1q.1,0,.1-.2h0v-.2l-.2-.1c-.2-.1-.2,0-.3-.1-.2,0-.4-.2-.6-.2s-.3-.2-.4-.3-.1-.3-.1-.5h0c0-.4.1-.6.3-.8.2-.1.3-.2.6-.2v-.5h.8v.5h.2v.1ZM82.1,62.7c-3.5-.4-7,.6-9.7,2.7-2.8,2.2-4.5,5.3-4.9,8.8s.6,7,2.8,9.7,5.3,4.5,8.8,4.9c2.7.3,5.4-.2,7.8-1.5,2.3-1.3,4.2-3.2,5.5-5.5.2-.5.8-.6,1.3-.4.2.1.4.3.5.6s0,.5,0,.7c-1.4,2.7-3.6,4.9-6.2,6.3-2.2,1.2-4.7,1.8-7.1,1.8s-1.2,0-1.8-.1c-4-.5-7.6-2.5-10.1-5.7s-3.6-7.1-3.2-11.1c.5-4,2.5-7.6,5.7-10.1s7.1-3.6,11.1-3.1c5.6.7,10.4,4.4,12.4,9.7v.7c0,.2-.3.4-.5.5-.5.2-1,0-1.2-.6-1.8-4.7-5.9-7.9-10.8-8.5h0l-.4.2ZM101.4,97.2c-5.7,5.7-13.3,8.8-21.4,8.8s-15.7-3.1-21.4-8.8-8.8-13.3-8.8-21.4,3.1-15.7,8.8-21.4c5.7-5.7,13.3-8.8,21.4-8.8s2.3,0,3.4.2c.2,0,.5.2.6.3.2.2.2.5.2.7s-.2.5-.3.6-.4.2-.7.2c-1.1-.1-2.2-.2-3.2-.2-7.6,0-14.7,3-20,8.3s-8.3,12.5-8.3,20,3,14.7,8.3,20c5.3,5.3,12.5,8.3,20,8.3s14.7-2.9,20-8.3c5.3-5.3,8.3-12.5,8.3-20s-1.9-12-5.6-16.9c-.2-.2-.2-.5-.2-.7s.2-.5.4-.6c.2-.2.4-.2.7-.2.2,0,.5.2.6.4,3.9,5.2,6,11.5,6,18.1s-3.1,15.7-8.8,21.4h0Z"></path><path d="M203.2,84l-6.2-10.5h0l-4.3-7.4-8.1-13.6-18.5,31.4h-10.8l23.3-38.8c1.1-1.8,3.1-2.9,5.2-2.9h5.7l25.1,41.8h-11.4Z"></path><path d="M253.4,39.8h9.2v24.7c0,13.7-6.9,20.1-24.3,20.1s-24.3-6.4-24.3-20.1v-24.7h9.8v24.7c0,7.8,3.4,10.8,14.8,10.8s14.7-3,14.7-10.8v-24.7h.1Z"></path><path d="M266.1,39.8h11.5l18.5,31.6,18.4-31.6h10.9l-25.1,41.8h-9.1l-25.1-41.8h0Z"></path><path d="M338,72.1v-9.2h23c4.6,0,7.4-2.7,7.4-6.8s-2.7-6.8-7.4-6.8h-22v34.7h-9.4v-44.2h31.4c10.5,0,16.6,6.2,16.6,16s-6.1,16.3-16.6,16.3h-23Z"></path><path d="M154.0,104.8h83.5v3.9h-79.6c-2.1,0,-3.9,-1.7,-3.9,-3.9Z"></path><path d="M286.8,116.3l6-19.7h4.8l6,19.7h-3.1l-5.1-17.6h-.4l-5.1,17.6h-3.1,0ZM290.7,110.8v-2.6h8.9v2.6h-8.9Z" transform="translate(-41.19,0)"></path><path d="M272.42 116.30H265.61V96.60H272.42Q276.97 96.60 278.63 98.90Q280.30 101.20 280.30 106.12Q280.30 108.62 279.97 110.36Q279.64 112.10 278.81 113.51Q277.17 116.30 272.42 116.30ZM276.99 106.12Q276.99 102.55 276.10 100.97Q275.21 99.39 272.42 99.39H268.80V113.48H272.42Q275.27 113.48 276.22 111.38Q276.68 110.32 276.84 109.11Q276.99 107.90 276.99 106.12Z"></path><path d="M295.66 96.60H299.00L294.16 116.30H287.90L283.06 96.60H286.40L290.31 113.48H291.75Z"></path><path d="M328.3,116.3h-3.1v-19.7h3.1v19.7Z" transform="translate(-22.59,0)"></path><path d="M316.80 99.07Q313.15 99.07 313.15 101.63Q313.15 102.96 314.01 103.52Q314.87 104.08 317.82 104.90Q320.77 105.72 321.98 106.85Q323.18 107.99 323.18 110.43Q323.18 113.54 321.42 115.08Q319.65 116.62 316.60 116.62Q314.15 116.62 311.19 116.04L310.16 115.84L310.47 113.28Q314.36 113.80 316.40 113.80Q319.96 113.80 319.96 110.63Q319.96 109.40 319.16 108.81Q318.35 108.22 315.53 107.51Q312.72 106.81 311.34 105.57Q309.96 104.34 309.96 101.66Q309.96 98.99 311.70 97.62Q313.44 96.25 316.51 96.25Q318.73 96.25 321.75 96.77L322.75 96.95L322.49 99.53Q318.47 99.07 316.80 99.07Z"></path><path d="M330.78 112.13Q331.76 113.83 334.52 113.83Q337.28 113.83 338.24 112.16Q339.20 110.49 339.20 106.57Q339.20 102.64 338.21 100.86Q337.22 99.07 334.52 99.07Q331.81 99.07 330.81 100.86Q329.80 102.64 329.80 106.54Q329.80 110.43 330.78 112.13ZM340.74 114.20Q338.97 116.62 334.52 116.62Q330.06 116.62 328.28 114.19Q326.49 111.76 326.49 106.55Q326.49 101.35 328.29 98.81Q330.09 96.28 334.52 96.28Q338.95 96.28 340.73 98.80Q342.51 101.32 342.51 106.55Q342.51 111.78 340.74 114.20Z"></path><path d="M350.13 109.28V116.30H346.94V96.60H354.42Q361.09 96.60 361.09 102.87Q361.09 107.07 357.87 108.56L361.12 116.30H357.61L354.76 109.28ZM357.81 102.90Q357.81 99.36 354.42 99.36H350.13V106.52H354.48Q356.20 106.52 357.01 105.53Q357.81 104.54 357.81 102.90Z"></path><path d="M371.22 99.07Q367.56 99.07 367.56 101.63Q367.56 102.96 368.43 103.52Q369.29 104.08 372.24 104.90Q375.18 105.72 376.39 106.85Q377.60 107.99 377.60 110.43Q377.60 113.54 375.83 115.08Q374.06 116.62 371.01 116.62Q368.57 116.62 365.61 116.04L364.57 115.84L364.89 113.28Q368.77 113.80 370.81 113.80Q374.38 113.80 374.38 110.63Q374.38 109.40 373.57 108.81Q372.77 108.22 369.95 107.51Q367.13 106.81 365.75 105.57Q364.37 104.34 364.37 101.66Q364.37 98.99 366.11 97.62Q367.85 96.25 370.93 96.25Q373.14 96.25 376.16 96.77L377.17 96.95L376.91 99.53Q372.88 99.07 371.22 99.07Z"></path>
+    </symbol>
+  </svg>
+
   <!-- ============ NAV ============ -->
   <header class="nav" id="topo">
     <div class="nav__inner container">
-      <a href="#topo" class="nav__brand" aria-label="AUVP Capital — início">
-        <img src="assets/img/auvp-capital-horizontal-preta.svg" alt="AUVP Capital" class="nav__logo" width="400" height="152" />
+      <a href="#topo" class="nav__brand" aria-label="AUVP Advisors — início">
+        <svg class="nav__logo" viewBox="0 0 360.4 81.62" role="img" aria-label="AUVP Advisors">
+          <use href="#logo-advisors" />
+        </svg>
       </a>
 
       <nav class="nav__links" aria-label="Navegação principal">
@@ -55,7 +72,7 @@
   <main>
 
     <!-- ============ HERO ============ -->
-    <section class="hero surface-white">
+    <section class="hero surface-deep">
       <div class="container hero__grid">
         <div class="hero__copy">
           <h1 class="hero__title reveal">
@@ -90,30 +107,8 @@
       </div>
     </section>
 
-    <!-- ============ NÚMEROS DO ECOSSISTEMA ============ -->
-    <section class="stats surface-gray" aria-label="Números do ecossistema">
-      <div class="container stats__inner">
-        <h2 class="stats__title reveal">Esse é o <em>impacto</em><br />que provocamos no Brasil</h2>
-
-        <div class="stats__grid">
-          <div class="stat reveal">
-            <span class="stat__value"><strong>+1 Mi</strong></span>
-            <span class="stat__label">Investidores alcançados mensalmente em nossas plataformas</span>
-          </div>
-          <div class="stat reveal">
-            <span class="stat__value"><strong>+45 mil</strong></span>
-            <span class="stat__label">Contas abertas e ativas</span>
-          </div>
-          <div class="stat reveal">
-            <span class="stat__value"><strong>+60 mil</strong></span>
-            <span class="stat__label">Alunos e investidores formados pela AUVP</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- ============ O QUE É ============ -->
-    <section class="section surface-white" id="modelo">
+    <section class="section surface-bone" id="modelo">
       <div class="container modelo">
         <div class="modelo__head">
           <h2 class="section__title reveal">O que é a<br /><em>AUVP Advisors?</em></h2>
@@ -134,9 +129,9 @@
     </section>
 
     <!-- ============ OPERAÇÃO — BTG E SUPORTE ============ -->
-    <section class="operacao" id="operacao">
+    <section class="operacao surface-dark" id="operacao">
       <div class="container">
-        <h2 class="section__title reveal">Foque no cliente.<br /><em>Deixe a operação com a gente.</em></h2>
+        <h2 class="section__title reveal">Foque na consultoria.<br /><em>A estrutura vem junto.</em></h2>
 
         <div class="operacao__grid">
           <article class="operacao__card reveal">
@@ -155,16 +150,22 @@
           </article>
 
           <article class="operacao__card reveal">
-            <h3 class="operacao__title">Suporte operacional e em Banking</h3>
+            <h3 class="operacao__title">Possibilite que seus clientes usufruam do ecossistema AUVP</h3>
             <p class="operacao__text">
-              Deixe a burocracia com a nossa equipe. Você terá um time de suporte dedicado pronto
-              para auxiliar no dia a dia com:
+              Quem você atende passa a ter à disposição os produtos e serviços da AUVP — a oferta
+              é feita pela AUVP diretamente ao cliente, sem passar pela sua consultoria:
             </p>
-            <ul class="checklist checklist--light">
-              <li>Resolução rápida de dúvidas e problemas na plataforma</li>
-              <li>Facilitação de processos de cadastro e questões operacionais</li>
-              <li>Apoio na utilização das nossas ferramentas</li>
+            <ul class="checklist">
+              <li>Conta e cartão AUVP à disposição do seu cliente</li>
+              <li>Acesso às ferramentas e aos conteúdos do ecossistema</li>
+              <li>Relacionamento conduzido pela nossa equipe, direto com ele</li>
             </ul>
+            <p class="operacao__fine">
+              <strong>Atenção:</strong> a oferta desses produtos é feita pela AUVP diretamente ao
+              cliente. O advisor não distribui, não intermedia e não é remunerado por eles — a
+              consultoria de valores mobiliários segue independente, como manda a Resolução CVM
+              19/2021.
+            </p>
 
             <!-- O CTA fecha o segundo cartão em vez de ficar solto abaixo da
                  grade: os dois cartões passam a ter um elemento ancorado na
@@ -178,7 +179,7 @@
     </section>
 
     <!-- ============ BENEFÍCIOS ============ -->
-    <section class="section surface-gray" id="beneficios">
+    <section class="section surface-dark" id="beneficios">
       <div class="container">
 
         <!-- Coluna fixa à esquerda e lista rolando à direita: o argumento da
@@ -282,8 +283,8 @@
                 </p>
                 <ul class="tags">
                   <li>Tecnologia</li>
-                  <li>Suporte</li>
-                  <li>Banking</li>
+                  <li>Suporte operacional</li>
+                  <li>Produtos para o cliente</li>
                 </ul>
               </div>
             </li>
@@ -380,7 +381,7 @@
     <!-- ============ O CAMINHO PARA FAZER PARTE ============
          Timeline horizontal: as cinco etapas ficam lado a lado sobre um
          trilho que preenche quando o bloco entra na tela. -->
-    <section class="section surface-white" id="validacao">
+    <section class="section surface-bone" id="validacao">
       <div class="container">
         <h2 class="section__title reveal">O caminho para <em>fazer parte</em></h2>
         <p class="section__sub reveal">
@@ -470,7 +471,7 @@
     </section>
 
     <!-- ============ PARA QUEM É ============ -->
-    <section class="section surface-gray" id="para-quem">
+    <section class="section surface-dark" id="para-quem">
       <div class="container">
         <h2 class="section__title reveal">A AUVP Advisors é<br />para <em>você</em>?</h2>
 
@@ -505,7 +506,7 @@
 
     <!-- ============ VÍDEO DE LANÇAMENTO ============
          A seção fica oculta até VIDEO_URL ser preenchida em assets/js/main.js. -->
-    <section class="video surface-white" id="video" hidden data-video-section>
+    <section class="video surface-dark" id="video" hidden data-video-section>
       <div class="container video__inner">
         <h2 class="section__title reveal">Como a AUVP Advisors<br />foi construída</h2>
         <div class="video__frame reveal">
@@ -521,9 +522,9 @@
     </section>
 
     <!-- ============ CTA FINAL + FORMULÁRIO ============ -->
-    <section class="cta-final surface-white" id="interesse">
+    <section class="cta-final surface-deep" id="interesse">
       <div class="container cta-final__inner">
-        <img src="assets/img/olho-preto.svg" alt="" class="cta-final__eye reveal" width="92" height="58" />
+        <img src="assets/img/olho-branco.svg" alt="" class="cta-final__eye reveal" width="92" height="58" />
         <h2 class="cta-final__title reveal">Seu próximo cliente<br /><strong>já está procurando.</strong></h2>
         <p class="cta-final__sub reveal">
           Preencha os campos abaixo e entraremos em contato com os próximos passos do
@@ -645,11 +646,13 @@
   </main>
 
   <!-- ============ FOOTER ============ -->
-  <footer class="footer">
+  <footer class="footer surface-deep">
     <div class="container footer__inner">
       <div class="footer__brand">
-        <a href="#topo" class="nav__brand" aria-label="AUVP Capital — voltar ao topo">
-          <img src="assets/img/auvp-capital-horizontal-branca.svg" alt="AUVP Capital" class="nav__logo" width="400" height="152" />
+        <a href="#topo" class="nav__brand" aria-label="AUVP Advisors — voltar ao topo">
+          <svg class="nav__logo" viewBox="0 0 360.4 81.62" role="img" aria-label="AUVP Advisors">
+            <use href="#logo-advisors" />
+          </svg>
         </a>
         <p class="footer__tagline">Competência, transparência e autonomia — nessa ordem, sempre.</p>
       </div>

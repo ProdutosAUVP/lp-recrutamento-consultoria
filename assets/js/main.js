@@ -189,14 +189,8 @@ function aplicarVideo() {
   if (!secao || !frame || !VIDEO_URL) return;
   frame.setAttribute("src", VIDEO_URL);
   secao.hidden = false;
-
-  // Com o vídeo no ar entra mais uma dobra branca antes do CTA, que também
-  // é branco. Empurrar o CTA para o cinza mantém a alternância.
-  const cta = document.querySelector(".cta-final");
-  if (cta) {
-    cta.classList.remove("surface-white");
-    cta.classList.add("surface-gray");
-  }
+  // A dobra do vídeo é .surface-dark e o CTA logo abaixo é .surface-deep:
+  // os dois já se distinguem, então não há alternância a corrigir aqui.
 }
 
 /* ==========================================================================
@@ -236,42 +230,6 @@ function iniciarNavFlutuante() {
       : window.scrollY > 80;
     nav.classList.toggle("is-floating", limite);
   });
-}
-
-/** Números da faixa de prova contam até o valor final ao entrar na tela. */
-function iniciarContadores() {
-  const alvos = document.querySelectorAll(".stat__value strong");
-  if (!alvos.length || semMovimento || !("IntersectionObserver" in window)) return;
-
-  const io = new IntersectionObserver(
-    (entradas) => {
-      entradas.forEach((e) => {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-
-        // O número pode vir com prefixo e sufixo ("+45 mil"): os dois ficam
-        // parados enquanto só o miolo conta.
-        const partes = e.target.textContent.match(/^(\D*)(\d+)(.*)$/);
-        if (!partes) return;
-        const [, prefixo, digitos, sufixo] = partes;
-        const numero = parseInt(digitos, 10);
-        if (!Number.isFinite(numero)) return;
-
-        const duracao = 900;
-        const inicio = performance.now();
-        const passo = (agora) => {
-          const p = Math.min((agora - inicio) / duracao, 1);
-          // easeOutCubic: rápido no começo, assenta no fim
-          const valor = Math.round(numero * (1 - Math.pow(1 - p, 3)));
-          e.target.textContent = prefixo + valor + sufixo;
-          if (p < 1) requestAnimationFrame(passo);
-        };
-        requestAnimationFrame(passo);
-      });
-    },
-    { threshold: 0.6 }
-  );
-  alvos.forEach((el) => io.observe(el));
 }
 
 /** Calculadora do repasse: a barra da divisão preenche ao entrar na tela. */
@@ -386,6 +344,39 @@ function iniciarTimeline() {
   io.observe(bloco);
 }
 
+/**
+ * Lista de benefícios. O item que estiver cruzando a faixa central da tela
+ * recebe `is-ativo` e tem o número preenchido — é o que dá movimento à dobra
+ * sem esconder nada atrás de clique. Sem observer, todos ficam legíveis do
+ * mesmo jeito: o estado só troca a cor do número.
+ */
+function iniciarLista() {
+  const lista = document.querySelector("[data-lista]");
+  if (!lista || !("IntersectionObserver" in window)) return;
+
+  const itens = [...lista.querySelectorAll(".lista__item")];
+  if (!itens.length) return;
+
+  const contador = document.querySelector("[data-lista-atual]");
+
+  const io = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((e) => {
+        e.target.classList.toggle("is-ativo", e.isIntersecting);
+      });
+
+      // O contador segue o primeiro item ativo; se a faixa central ficar
+      // vazia entre dois itens, o número anterior permanece.
+      if (!contador) return;
+      const ativo = itens.findIndex((i) => i.classList.contains("is-ativo"));
+      if (ativo >= 0) contador.textContent = String(ativo + 1).padStart(2, "0");
+    },
+    // Faixa de ~10% da altura no meio da tela: só um ou dois itens por vez.
+    { rootMargin: "-45% 0px -45% 0px" }
+  );
+  itens.forEach((item) => io.observe(item));
+}
+
 /** Parallax discreto da foto do hero. */
 function iniciarParallax() {
   const media = document.querySelector(".hero__media");
@@ -398,8 +389,8 @@ function iniciarParallax() {
 
 document.addEventListener("DOMContentLoaded", () => {
   iniciarNavFlutuante();
-  iniciarContadores();
   iniciarGrafico();
+  iniciarLista();
   iniciarTimeline();
   iniciarParallax();
 

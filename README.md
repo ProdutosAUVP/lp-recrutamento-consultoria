@@ -13,10 +13,7 @@ Quatro regras valem para todo texto novo:
 3. **Nada de "catálogo" nem "vitrine":** o produto é a **plataforma** ou o **sistema**.
 4. **Sem travessão no texto visível.** Onde ele aparecia, a frase foi reescrita com ponto, vírgula ou dois-pontos. Vale para copy, `<title>`, `og:title` e `aria-label`; comentários de código seguem livres.
 
-> **Três exceções vivas, vindas de copy aprovada e mantidas de propósito** — não "corrija" sem confirmar com quem escreveu:
-> - o benefício 06 fecha com "destaque máximo na **vitrine**", contra a regra 3;
-> - o benefício 04 diz "sua página oficial **no** AUVP Advisors", contra a regra 2;
-> - o benefício 02 fala em "metodologia que faz sentido para o **membro**", e não para o cliente.
+> **As regras acima valem inclusive sobre copy aprovada.** A rodada de copy dos benefícios chegou com três desvios — "destaque máximo na *vitrine*", "sua página oficial *no* AUVP Advisors" e "metodologia que faz sentido para o *membro*" —, e os três foram ajustados para *plataforma*, *na* e *cliente*. Se um desvio for intencional, mude a regra aqui primeiro; enquanto ela estiver escrita, a página inteira a segue.
 
 ## Stack
 

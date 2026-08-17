@@ -22,12 +22,21 @@ const PRIVACY_URL = "";
 const VIDEO_URL = "";
 
 /**
- * Fee anual médio cobrado sobre o patrimônio sob consultoria, usado para
- * transformar o tamanho da carteira em receita no simulador de repasse.
- * 0.01 = 1% ao ano. A observação exibida abaixo do simulador é escrita a
+ * Fee anual médio cobrado sobre o patrimônio sob custódia, usado para
+ * transformar o tamanho da carteira em receita na calculadora de repasse.
+ * 0.01 = 1% ao ano. A observação exibida abaixo do controle é escrita a
  * partir daqui, então mudar este número mantém texto e conta alinhados.
  */
 const TAXA_FEE_ANUAL = 0.01;
+
+/**
+ * Faixa de repasse do fee para o advisor. O piso vem do comissionamento
+ * máximo da AUVP declarado no escopo (30% do fee) e o teto é o repasse de
+ * 80%. A calculadora mostra as duas pontas — não existe condição especial
+ * para quem se cadastra primeiro.
+ */
+const REPASSE_MIN = 0.7;
+const REPASSE_MAX = 0.8;
 
 /* ========================================================================== */
 
@@ -265,7 +274,7 @@ function iniciarContadores() {
   alvos.forEach((el) => io.observe(el));
 }
 
-/** Gráfico do repasse: anima ao entrar na tela e mostra a divisão no hover. */
+/** Calculadora do repasse: a barra da divisão preenche ao entrar na tela. */
 function iniciarGrafico() {
   const fee = document.querySelector("[data-fee]");
   if (!fee) return;
@@ -290,16 +299,19 @@ function iniciarGrafico() {
 }
 
 /**
- * Simulador do repasse. O tamanho da carteira é informado pelo próprio
- * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, as
- * proporções de 70% e 80%. Nenhum número aqui é promessa de faturamento.
+ * Calculadora do repasse. O patrimônio sob custódia é informado pelo próprio
+ * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, as duas
+ * pontas do repasse (REPASSE_MIN e REPASSE_MAX). Nenhum número aqui é
+ * promessa de faturamento.
  */
 function ligarSimulador(fee) {
   const range = fee.querySelector("[data-sim]");
   const valor = fee.querySelector("[data-sim-valor]");
-  const saida = fee.querySelector("[data-sim-saida]");
+  const saidaFee = fee.querySelector("[data-sim-fee]");
+  const saidaAno = fee.querySelector("[data-sim-ano]");
+  const saidaMes = fee.querySelector("[data-sim-mes]");
   const obs = fee.querySelector("[data-sim-obs]");
-  if (!range || !valor || !saida) return;
+  if (!range || !valor || !saidaFee || !saidaAno || !saidaMes) return;
 
   /** O controle anda em milhões de reais de patrimônio. */
   const emMilhoes = (mi) =>
@@ -310,25 +322,36 @@ function ligarSimulador(fee) {
   const emReais = (n) =>
     "R$ " + Math.round(n).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
 
-  function atualizar() {
-    const carteira = Number(range.value) * 1e6;
-    const feeAnual = carteira * TAXA_FEE_ANUAL;
-    const padrao = feeAnual * 0.7;
-    const primeiros = feeAnual * 0.8;
+  /** Piso e teto do repasse aparecem sempre juntos, nunca um número só. */
+  const faixa = (min, max) => `${emReais(min)} a ${emReais(max)}`;
 
-    valor.textContent = emMilhoes(Number(range.value));
-    saida.innerHTML =
-      `Uma carteira desse tamanho gera <b>${emReais(feeAnual)}</b> de fee no ano: ` +
-      `você fica com <b>${emReais(padrao)}</b> no repasse padrão e ` +
-      `<b>${emReais(primeiros)}</b> como um dos 20 primeiros — ` +
-      `<span class="sim__delta">${emReais(primeiros - padrao)} a mais por ano</span>.`;
+  const emPorcento = (n) =>
+    (n * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "%";
+
+  function atualizar() {
+    const milhoes = Number(range.value);
+    const feeAnual = milhoes * 1e6 * TAXA_FEE_ANUAL;
+
+    valor.textContent = emMilhoes(milhoes);
+    saidaFee.textContent = emReais(feeAnual);
+    saidaAno.textContent = faixa(feeAnual * REPASSE_MIN, feeAnual * REPASSE_MAX);
+    saidaMes.textContent = faixa(
+      (feeAnual * REPASSE_MIN) / 12,
+      (feeAnual * REPASSE_MAX) / 12
+    );
+
+    // Preenche o trilho até a posição escolhida.
+    const min = Number(range.min);
+    const max = Number(range.max);
+    const pct = ((milhoes - min) / (max - min)) * 100;
+    range.style.setProperty("--pct", `${pct}%`);
   }
 
   if (obs) {
-    const taxa = (TAXA_FEE_ANUAL * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
     obs.textContent =
-      `Obs.: os valores levam em conta o patrimônio líquido sob consultoria, ` +
-      `considerando um fee de ${taxa}% ao ano.`;
+      `Projeção sobre o patrimônio sob custódia informado por você, considerando um fee de ` +
+      `${emPorcento(TAXA_FEE_ANUAL)} ao ano e repasse de ${emPorcento(REPASSE_MIN)} a ` +
+      `${emPorcento(REPASSE_MAX)} do fee. Não é estimativa de faturamento nem promessa de resultado.`;
   }
 
   range.addEventListener("input", atualizar);

@@ -593,9 +593,15 @@ ul, ol { list-style: none; }
 /* A cor vem de .surface-dark no HTML; aqui fica só o respiro da dobra. */
 .operacao { padding: var(--sp-section) 0; }
 
+/* `start`, e não o `stretch` padrão: sem o co-brand o primeiro cartão ficou
+   com metade da massa do segundo, e esticá-lo abria um vão de quase 200px
+   entre o texto e a nota. Cartão lado a lado só fecha na mesma linha de base
+   quando os dois têm conteúdo comparável — aqui, alinhar pelo topo e deixar
+   cada um com a própria altura é o que não inventa espaço. */
 .operacao__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: var(--sp-4);
   margin-top: var(--sp-6);
 }
@@ -607,13 +613,6 @@ ul, ol { list-style: none; }
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
-}
-
-.operacao__cobrand {
-  width: 100%;
-  max-width: 13rem;
-  height: auto;
-  margin-bottom: var(--sp-2);
 }
 
 .operacao__title {

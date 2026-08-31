@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AUVP Advisors: seja um advisor validado AUVP</title>
-  <meta name="description" content="Faça parte do ecossistema da AUVP como advisor validado. Retenha até 80% do fee, mantenha autonomia total de metodologia e conte com a estrutura tecnológica e operacional por trás da sua carteira." />
+  <meta name="description" content="Faça parte do ecossistema da AUVP como advisor validado. Retenha até 70% do fee, mantenha autonomia total de metodologia e conte com a estrutura tecnológica e operacional por trás da sua carteira." />
 
   <link rel="icon" type="image/svg+xml" href="assets/img/olho-amarelo.svg" />
 
@@ -234,19 +234,21 @@
                o número preenchido (assets/js/main.js). -->
           <ol class="lista" data-lista>
 
-            <!-- Repasse — o escopo define comissionamento da AUVP de ATÉ 30%,
-                 logo o advisor fica com 70% no piso e pode chegar a 80%. -->
+            <!-- Repasse padrão: 70%, o espelho do comissionamento de 30% da
+                 AUVP declarado no escopo. Os 80% não entram aqui nem na
+                 calculadora: são benefício de lançamento, sujeito a
+                 elegibilidade, e vivem só no bloco .verba. -->
             <li class="lista__item">
               <span class="lista__num" aria-hidden="true">01</span>
               <div class="lista__corpo">
                 <h3 class="lista__title">Repasse justo e <em>acima do mercado</em></h3>
                 <p class="lista__text">
-                  Retenha <strong>até 80%</strong> do fee e garanta que o resultado do seu
+                  Retenha <strong>até 70%</strong> do fee e garanta que o resultado do seu
                   esforço vá para o seu próprio bolso.
                 </p>
                 <ul class="tags">
-                  <li>Piso de 70%</li>
-                  <li>Teto de 80%</li>
+                  <li>70% do fee para você</li>
+                  <li>AUVP fica com 30%</li>
                 </ul>
               </div>
             </li>
@@ -343,7 +345,7 @@
 
         <!-- Calculadora de repasse. Sai da grade dos cartões: em um terço da
              largura nem o controle nem a barra de divisão se leem. Todos os
-             números são derivados de TAXA_FEE_ANUAL, REPASSE_MIN e REPASSE_MAX
+             números são derivados de TAXA_FEE_ANUAL e REPASSE_PADRAO
              (assets/js/main.js) — a página não tem valor cravado no HTML. -->
         <div class="calc reveal" data-fee>
 
@@ -352,8 +354,8 @@
             <h3 class="calc__title">Quanto a sua carteira <em>rende para você</em></h3>
             <p class="calc__lead">
               Mova o controle até o patrimônio que você tem sob custódia. A conta parte de um
-              fee de referência de 1% ao ano e mostra quanto sobra para você nas duas pontas
-              do repasse.
+              fee de referência de 1% ao ano e mostra quanto sobra para você no repasse padrão
+              de 70%.
             </p>
 
             <div class="calc__control">
@@ -390,15 +392,13 @@
             <figure class="split">
               <figcaption class="split__caption">Como cada R$ 100 de fee se dividem</figcaption>
               <div class="split__bar" role="img"
-                   aria-label="Barra da divisão do fee: 70% ficam com o advisor no piso, mais uma faixa de até 10% que leva o repasse a 80%, e de 20% a 30% ficam com a AUVP.">
+                   aria-label="Barra da divisão do fee: 70% ficam com o advisor e 30% com a AUVP.">
                 <span class="split__seg split__seg--base" style="--w:70%"></span>
-                <span class="split__seg split__seg--extra" style="--w:10%"></span>
-                <span class="split__seg split__seg--auvp" style="--w:20%"></span>
+                <span class="split__seg split__seg--auvp" style="--w:30%"></span>
               </div>
               <ul class="split__legend">
-                <li><i class="split__key split__key--base" aria-hidden="true"></i><b>70%</b> repasse mínimo para você</li>
-                <li><i class="split__key split__key--extra" aria-hidden="true"></i><b>+10%</b> faixa que leva o repasse até 80%</li>
-                <li><i class="split__key split__key--auvp" aria-hidden="true"></i><b>20% a 30%</b> comissionamento da AUVP</li>
+                <li><i class="split__key split__key--base" aria-hidden="true"></i><b>70%</b> do fee ficam com você</li>
+                <li><i class="split__key split__key--auvp" aria-hidden="true"></i><b>30%</b> comissionamento da AUVP</li>
               </ul>
             </figure>
           </div>
@@ -418,9 +418,10 @@
                 <span class="verba__unidade">de repasse, fixo</span>
               </p>
               <p class="verba__texto">
-                No lugar da faixa de 70% a 80%, o teto travado em contrato desde o seu primeiro
-                cliente.
+                Dez pontos acima do repasse padrão de 70%, travados em contrato desde o seu
+                primeiro cliente.
               </p>
+              <p class="verba__selo">Sujeito a análise de elegibilidade</p>
             </div>
 
             <div class="verba__item">
@@ -432,6 +433,7 @@
                 Creditados direto na sua conta de anúncios, para acelerar a captação desde o
                 primeiro mês de operação.
               </p>
+              <p class="verba__selo">Sujeito a análise de elegibilidade</p>
             </div>
           </div>
 
@@ -744,10 +746,11 @@
       </p>
       <p>
         O acesso de clientes aos advisors da plataforma não exige patrimônio mínimo. O percentual
-        de repasse vai de 70% a 80% do fee pago pelo cliente e é definido em contrato: o
-        comissionamento da AUVP fica entre 20% e 30%. Os benefícios de lançamento (comissão
-        fixa de 80% de repasse e verba de R$ 10 mil em marketing) são limitados aos primeiros
-        advisors aprovados e sujeitos a critérios de elegibilidade de lançamento. Os valores da calculadora de repasse são
+        padrão de repasse é de 70% do fee pago pelo cliente, definido em contrato, e o
+        comissionamento da AUVP é de 30%. Os benefícios de lançamento (comissão fixa de 80% de
+        repasse e verba de R$ 10 mil em marketing) são limitados aos primeiros advisors
+        aprovados e concedidos apenas mediante análise de elegibilidade, sem garantia de
+        concessão. Os valores da calculadora de repasse usam o padrão de 70%. Os valores da calculadora de repasse são
         projeções calculadas sobre o patrimônio sob custódia informado pelo próprio advisor,
         considerando um fee anual de 1%. Não são estimativa de faturamento nem promessa de
         resultado da AUVP, e não descontam nenhum tipo de tributação. A vinculação ao BTG Pactual está sujeita a

@@ -30,13 +30,15 @@ const VIDEO_URL = "";
 const TAXA_FEE_ANUAL = 0.01;
 
 /**
- * Faixa de repasse do fee para o advisor. O piso vem do comissionamento
- * máximo da AUVP declarado no escopo (30% do fee) e o teto é o repasse de
- * 80%. A calculadora mostra as duas pontas — não existe condição especial
- * para quem se cadastra primeiro.
+ * Repasse padrão do fee para o advisor: 70%, o espelho do comissionamento
+ * de 30% da AUVP declarado no escopo. É o número da calculadora.
+ *
+ * Os 80% NÃO entram aqui: são benefício de lançamento, exclusivo dos
+ * primeiros advisors aprovados e sujeito a elegibilidade. Ele vive no bloco
+ * .verba do HTML, separado da conta, justamente para a calculadora nunca
+ * projetar receita sobre uma condição que nem todo mundo terá.
  */
-const REPASSE_MIN = 0.7;
-const REPASSE_MAX = 0.8;
+const REPASSE_PADRAO = 0.7;
 
 /* ========================================================================== */
 
@@ -258,9 +260,8 @@ function iniciarGrafico() {
 
 /**
  * Calculadora do repasse. O patrimônio sob custódia é informado pelo próprio
- * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, as duas
- * pontas do repasse (REPASSE_MIN e REPASSE_MAX). Nenhum número aqui é
- * promessa de faturamento.
+ * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, o repasse
+ * pela REPASSE_PADRAO. Nenhum número aqui é promessa de faturamento.
  */
 function ligarSimulador(fee) {
   const range = fee.querySelector("[data-sim]");
@@ -280,9 +281,6 @@ function ligarSimulador(fee) {
   const emReais = (n) =>
     "R$ " + Math.round(n).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
 
-  /** Piso e teto do repasse aparecem sempre juntos, nunca um número só. */
-  const faixa = (min, max) => `${emReais(min)} a ${emReais(max)}`;
-
   const emPorcento = (n) =>
     (n * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "%";
 
@@ -292,11 +290,9 @@ function ligarSimulador(fee) {
 
     valor.textContent = emMilhoes(milhoes);
     saidaFee.textContent = emReais(feeAnual);
-    saidaAno.textContent = faixa(feeAnual * REPASSE_MIN, feeAnual * REPASSE_MAX);
-    saidaMes.textContent = faixa(
-      (feeAnual * REPASSE_MIN) / 12,
-      (feeAnual * REPASSE_MAX) / 12
-    );
+    const repasse = feeAnual * REPASSE_PADRAO;
+    saidaAno.textContent = emReais(repasse);
+    saidaMes.textContent = emReais(repasse / 12);
 
     // Preenche o trilho até a posição escolhida.
     const min = Number(range.min);
@@ -308,8 +304,8 @@ function ligarSimulador(fee) {
   if (obs) {
     obs.textContent =
       `Projeção sobre o patrimônio sob custódia informado por você, considerando um fee de ` +
-      `${emPorcento(TAXA_FEE_ANUAL)} ao ano e repasse de ${emPorcento(REPASSE_MIN)} a ` +
-      `${emPorcento(REPASSE_MAX)} do fee. Os valores são brutos: não descontam nenhum tipo de ` +
+      `${emPorcento(TAXA_FEE_ANUAL)} ao ano e repasse padrão de ${emPorcento(REPASSE_PADRAO)} ` +
+      `do fee. Os valores são brutos: não descontam nenhum tipo de ` +
       `tributação, e por isso os valores reais podem variar. Não é estimativa de faturamento ` +
       `nem promessa de resultado.`;
   }

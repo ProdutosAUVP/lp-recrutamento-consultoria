@@ -1302,6 +1302,22 @@ button:focus-visible {
   font-size: 0.9063rem;
 }
 
+/* Nenhum dos dois benefícios é automático: o selo diz isso no próprio item,
+   e não só na letra miúda no rodapé do bloco. Ancorado na base para os dois
+   ficarem na mesma linha mesmo com textos de tamanhos diferentes. */
+.verba__selo {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0.25rem 0.5rem;
+  border: 1px dashed var(--accent-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--accent-legivel, var(--accent));
+}
+.verba__selo::before { content: "! "; font-weight: 700; }
+
 @media (max-width: 48rem) {
   .verba__grid { grid-template-columns: 1fr; }
 }
@@ -1349,8 +1365,7 @@ button:focus-visible {
 .calc[data-on] .split__seg { width: var(--w); }
 
 .split__seg--base { background: #fff; }
-.split__seg--extra { background: var(--accent); transition-delay: 0.3s; }
-.split__seg--auvp { background: rgba(255, 255, 255, 0.24); transition-delay: 0.5s; }
+.split__seg--auvp { background: rgba(255, 255, 255, 0.24); transition-delay: 0.3s; }
 
 .split__legend {
   display: flex;
@@ -1380,7 +1395,6 @@ button:focus-visible {
   flex-shrink: 0;
 }
 .split__key--base { background: #fff; }
-.split__key--extra { background: var(--accent); }
 .split__key--auvp { background: rgba(255, 255, 255, 0.24); }
 
 @media (prefers-reduced-motion: reduce) {

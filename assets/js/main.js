@@ -30,15 +30,15 @@ const VIDEO_URL = "";
 const TAXA_FEE_ANUAL = 0.01;
 
 /**
- * Repasse padrão do fee para o advisor: 70%, o espelho do comissionamento
- * de 30% da AUVP declarado no escopo. É o número da calculadora.
+ * Teto do repasse do fee para o advisor: até 70%, o espelho do
+ * comissionamento mínimo de 30% da AUVP declarado no escopo.
  *
- * Os 80% NÃO entram aqui: são benefício de lançamento, exclusivo dos
- * primeiros advisors aprovados e sujeito a elegibilidade. Ele vive no bloco
- * .verba do HTML, separado da conta, justamente para a calculadora nunca
- * projetar receita sobre uma condição que nem todo mundo terá.
+ * É TETO, não valor fixo: a calculadora projeta o melhor caso, e por isso
+ * todo texto ao redor dela carrega o asterisco e a palavra "simulação". Se
+ * um dia existir um piso definido, ele entra aqui como segunda constante e
+ * o resultado volta a ser faixa.
  */
-const REPASSE_PADRAO = 0.7;
+const REPASSE_TETO = 0.7;
 
 /* ========================================================================== */
 
@@ -261,7 +261,7 @@ function iniciarGrafico() {
 /**
  * Calculadora do repasse. O patrimônio sob custódia é informado pelo próprio
  * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, o repasse
- * pela REPASSE_PADRAO. Nenhum número aqui é promessa de faturamento.
+ * pela REPASSE_TETO. Nenhum número aqui é promessa de faturamento.
  */
 function ligarSimulador(fee) {
   const range = fee.querySelector("[data-sim]");
@@ -290,7 +290,7 @@ function ligarSimulador(fee) {
 
     valor.textContent = emMilhoes(milhoes);
     saidaFee.textContent = emReais(feeAnual);
-    const repasse = feeAnual * REPASSE_PADRAO;
+    const repasse = feeAnual * REPASSE_TETO;
     saidaAno.textContent = emReais(repasse);
     saidaMes.textContent = emReais(repasse / 12);
 
@@ -302,12 +302,14 @@ function ligarSimulador(fee) {
   }
 
   if (obs) {
+    // O selo "* Simulação" é estático no HTML; aqui vai só a parte que
+    // depende das constantes, para número e texto nunca saírem de sincronia.
     obs.textContent =
-      `Projeção sobre o patrimônio sob custódia informado por você, considerando um fee de ` +
-      `${emPorcento(TAXA_FEE_ANUAL)} ao ano e repasse padrão de ${emPorcento(REPASSE_PADRAO)} ` +
-      `do fee. Os valores são brutos: não descontam nenhum tipo de ` +
-      `tributação, e por isso os valores reais podem variar. Não é estimativa de faturamento ` +
-      `nem promessa de resultado.`;
+      `o repasse é de ATÉ ${emPorcento(REPASSE_TETO)} do fee, e a projeção mostra esse teto. ` +
+      `A conta parte do patrimônio sob custódia que você informou, considerando um fee de ` +
+      `${emPorcento(TAXA_FEE_ANUAL)} ao ano. Os valores são brutos: não descontam nenhum tipo ` +
+      `de tributação, então o valor real pode ser menor. Não é estimativa de faturamento nem ` +
+      `promessa de resultado.`;
   }
 
   range.addEventListener("input", atualizar);

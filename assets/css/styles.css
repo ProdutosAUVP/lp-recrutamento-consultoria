@@ -1172,12 +1172,6 @@ button:focus-visible {
   color: var(--ink-faint);
 }
 
-.calc__fine {
-  margin-top: var(--sp-2);
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-}
-
 /* Painel do resultado */
 .calc__panel {
   background: var(--ink-0);
@@ -1220,6 +1214,13 @@ button:focus-visible {
   color: rgba(255, 255, 255, 0.55);
 }
 
+/* Asterisco que amarra o valor ao aviso logo abaixo. */
+.calc__ast {
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
 .calc__tile-value {
   font-family: var(--font-display);
   font-size: 1.25rem;
@@ -1257,13 +1258,6 @@ button:focus-visible {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent-legivel, var(--accent));
-}
-
-/* Os dois benefícios lado a lado, cada um com a própria cifra. */
-.verba__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--sp-5) var(--sp-7);
 }
 
 .verba__item {
@@ -1307,7 +1301,7 @@ button:focus-visible {
    ficarem na mesma linha mesmo com textos de tamanhos diferentes. */
 .verba__selo {
   align-self: flex-start;
-  margin-top: auto;
+  margin-top: var(--sp-1);
   padding: 0.25rem 0.5rem;
   border: 1px dashed var(--accent-line);
   border-radius: var(--radius-sm);
@@ -1318,15 +1312,30 @@ button:focus-visible {
 }
 .verba__selo::before { content: "! "; font-weight: 700; }
 
-@media (max-width: 48rem) {
-  .verba__grid { grid-template-columns: 1fr; }
-}
 
 .verba__fine {
   font-size: 0.78125rem;
   color: var(--ink-faint);
   border-top: 1px solid var(--border);
   padding-top: var(--sp-3);
+}
+
+/* O aviso é o asterisco do número, então mora no painel escuro junto dele e
+   não em letra miúda do outro lado da dobra. Fica mais claro que a caixa de
+   observação de antes, porque é o que qualifica o valor. */
+.calc__aviso {
+  border-left: 2px solid var(--accent);
+  padding-left: var(--sp-3);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.calc__aviso-selo {
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* ---------- Barra da divisão do fee ----------

@@ -1003,6 +1003,16 @@ ul, ol { list-style: none; }
   padding-left: 0.75rem;
 }
 
+/* Armadilha anti-spam. Fora da tela em vez de display:none — alguns robôs
+   ignoram campos escondidos por display e caem só neste formato. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* Consentimento LGPD */
 .consent {
   display: grid;
@@ -1266,6 +1276,13 @@ button:focus-visible {
   gap: var(--sp-2);
 }
 
+/* Os dois benefícios de lançamento lado a lado, cada um com a própria cifra. */
+.verba__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5) var(--sp-7);
+}
+
 .verba__valor {
   display: flex;
   align-items: baseline;
@@ -1312,6 +1329,10 @@ button:focus-visible {
 }
 .verba__selo::before { content: "! "; font-weight: 700; }
 
+
+@media (max-width: 48rem) {
+  .verba__grid { grid-template-columns: 1fr; }
+}
 
 .verba__fine {
   font-size: 0.78125rem;

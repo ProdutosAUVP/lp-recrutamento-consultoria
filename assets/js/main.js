@@ -5,11 +5,18 @@
    ========================================================================== */
 
 /**
- * Endpoint que recebe o formulário de interesse (POST em JSON).
+ * Endpoint que recebe o formulário de interesse (POST com corpo em JSON).
  * Enquanto estiver vazio, o formulário valida os campos normalmente mas
  * avisa que o destino não foi configurado, em vez de fingir que enviou.
+ *
+ * Hoje o destino é um Web App do Google Apps Script, que grava na planilha
+ * de leads. O código dele está em `scripts/planilha-apps-script.gs` e o
+ * passo a passo da publicação, no README. A URL a colar aqui é a que o
+ * Apps Script devolve ao implantar, no formato:
+ *   https://script.google.com/macros/s/AKfycb.../exec
  */
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbxWJSO3vO9kV6soKZmEZ7VokCLwvL8x-mWEgHSib6llnkTJdTpisQIja_py4jbppXUIMg/exec";
 
 /** Páginas de Termos de Uso e Política de Privacidade (entrega do jurídico). */
 const TERMS_URL = "";
@@ -30,13 +37,16 @@ const VIDEO_URL = "";
 const TAXA_FEE_ANUAL = 0.01;
 
 /**
- * Teto do repasse do fee para o advisor: até 70%, o espelho do
- * comissionamento mínimo de 30% da AUVP declarado no escopo.
+ * Teto do repasse do fee para o advisor: até 70%.
  *
- * É TETO, não valor fixo: a calculadora projeta o melhor caso, e por isso
- * todo texto ao redor dela carrega o asterisco e a palavra "simulação". Se
- * um dia existir um piso definido, ele entra aqui como segunda constante e
- * o resultado volta a ser faixa.
+ * É TETO, não valor fixo. O simulador projeta o melhor caso, e por isso todo
+ * texto ao redor dele carrega o asterisco e a palavra "simulação": o aviso
+ * diz, com todas as letras, que o repasse é de ATÉ 70% e que a projeção
+ * mostra esse teto.
+ *
+ * Decisão comercial registrada: a LP comunica apenas o teto, e não o detalhe
+ * de como o percentual é apurado. Ver o README antes de trocar este número
+ * por qualquer outra estrutura.
  */
 const REPASSE_TETO = 0.7;
 
@@ -94,7 +104,7 @@ function iniciarFormulario() {
 
   const status = form.querySelector("[data-status]");
   const botao = form.querySelector("[data-submit]");
-  const campos = Array.from(form.querySelectorAll("input, select"));
+  const campos = Array.from(form.querySelectorAll("input:not([data-hp]), select"));
 
   const telefone = form.querySelector("#whatsapp");
   if (telefone) {
@@ -147,12 +157,28 @@ function iniciarFormulario() {
     status.dataset.state = "";
 
     try {
+      // O corpo é JSON, mas o Content-Type é text/plain de propósito.
+      // Com application/json o navegador manda um preflight OPTIONS, e o
+      // Web App do Apps Script não responde a OPTIONS: o envio morre em
+      // CORS antes de sair. Com text/plain a requisição é "simples", vai
+      // direto, e o Apps Script lê o JSON em e.postData.contents.
       const resposta = await fetch(FORM_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(dados),
       });
       if (!resposta.ok) throw new Error(String(resposta.status));
+
+      // Apps Script sempre responde 200, mesmo quando recusa o envio: o
+      // resultado real vem no corpo. Sem esta checagem, um erro do lado da
+      // planilha apareceria para o visitante como cadastro recebido.
+      let retorno = null;
+      try {
+        retorno = JSON.parse(await resposta.text());
+      } catch {
+        // Endpoint que não responde JSON: vale o status HTTP já conferido.
+      }
+      if (retorno && retorno.ok === false) throw new Error(retorno.erro || "recusado");
 
       form.reset();
       status.textContent = "Recebemos seu cadastro. O time entra em contato em breve.";

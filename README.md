@@ -22,7 +22,8 @@ Página estática, sem build e sem dependências:
 - `index.html` — todo o conteúdo, em seções semânticas
 - `assets/css/styles.css` — estilos (paleta clara institucional derivada do design system AUVP)
 - `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, destaque progressivo da lista de benefícios e calculadora de repasse
-- `assets/img/` — logos "olho" AUVP (SVG, vindos de [ProdutosAUVP/central](https://github.com/ProdutosAUVP/central))
+- `assets/img/` — logo AUVP Advisors, olhos AUVP e a foto do hero
+- `scripts/` — ferramentas de desenvolvimento: `auditar-classes.js` (auditoria de CSS) e `planilha-apps-script.gs` (o receptor do formulário, que roda no Google, não aqui). A pasta é excluída do deploy
 
 Para rodar localmente, basta abrir o `index.html` ou servir a pasta:
 
@@ -54,7 +55,7 @@ Tudo que depende de terceiros está no bloco de configuração no topo de `asset
 
 | Variável | O que é | Comportamento enquanto vazia |
 |---|---|---|
-| `FORM_ENDPOINT` | URL que recebe o formulário (POST em JSON) | O formulário valida os campos normalmente e avisa que o destino não foi configurado |
+| `FORM_ENDPOINT` | URL do Web App do Apps Script que grava na planilha de leads (ver "Planilha de leads") | ✅ **Configurada.** Vazia, o formulário valida os campos normalmente e avisa que o destino não foi definido |
 | `TERMS_URL` | Página de Termos de Uso | Os links ficam inertes e visivelmente desabilitados |
 | `PRIVACY_URL` | Página de Política de Privacidade | Idem |
 | `VIDEO_URL` | Embed do vídeo de lançamento | A dobra do vídeo fica oculta |
@@ -68,7 +69,9 @@ Além dessas, duas constantes no mesmo bloco governam o simulador de repasse:
 
 O aviso ao lado dos números é escrito a partir dessas duas, então mudar um número mantém conta e texto alinhados. Os percentuais da legenda da barra de divisão (até 70% e 30%) estão no HTML e precisam ser ajustados junto.
 
-> **`REPASSE_TETO` é teto, não valor fixo.** O simulador projeta o melhor caso, e é por isso que o rótulo do valor leva asterisco e o aviso abre com "* SIMULAÇÃO" em destaque, dentro do painel escuro, colado no número. Não é letra miúda decorativa: é o que qualifica o resultado. Se um dia existir um piso definido, ele entra como segunda constante e o resultado volta a ser faixa.
+> **`REPASSE_TETO` é teto, não valor fixo.** O simulador projeta o melhor caso, e é por isso que o rótulo do valor leva asterisco e o aviso abre com "* SIMULAÇÃO" em destaque, dentro do painel escuro, colado no número. Não é letra miúda decorativa: é o que qualifica o resultado.
+>
+> **Decisão comercial registrada:** o percentual efetivo não é apurado de forma linear no contrato, e a LP **comunica apenas o teto**, de propósito. O simulador projeta 70% sobre o fee inteiro, o que para a maior parte das carteiras é o melhor caso e não o caso provável — é exatamente isso que o asterisco declara. Não reintroduza a apuração detalhada na página sem decisão do comercial: a estrutura fica fora deste repositório, que é público.
 
 ### Formulário de interesse
 
@@ -77,6 +80,65 @@ Coleta os cinco campos definidos no escopo — WhatsApp, e-mail, registro na CVM
 O nome não consta da lista do escopo; foi acrescentado porque sem ele o time não tem como abrir o primeiro contato. É o único campo além do que o documento especifica.
 
 Quem responde "sem registro na CVM" recebe na hora uma mensagem dizendo que ainda pode se cadastrar e que o time envia o tutorial de registro — a pergunta qualifica o lead sem descartá-lo.
+
+## Planilha de leads (Google Sheets)
+
+O destino do formulário é uma planilha do Google, alimentada por um **Web App do Google Apps Script**. Não há servidor nem serviço de terceiros no meio: a LP faz `POST` direto no Web App, e ele grava a linha.
+
+O código do receptor está em **`scripts/planilha-apps-script.gs`**. Ele não roda no site — é colado no editor do Apps Script vinculado à planilha.
+
+### Como publicar (uma vez só)
+
+1. **Crie a planilha** no Google Drive, com o nome que o time preferir. Não precisa criar aba nem cabeçalho: o script cria a aba `Leads` e o cabeçalho no primeiro envio.
+2. Nela, vá em **Extensões → Apps Script**.
+3. Apague o `function myFunction() {}` que vem de exemplo e **cole o conteúdo de `scripts/planilha-apps-script.gs`**. Salve.
+4. **Implantar → Nova implantação**, engrenagem → **App da Web**, e configure:
+   - **Executar como:** `Eu`
+   - **Quem pode acessar:** `Qualquer pessoa`
+5. Na primeira implantação o Google pede autorização. A tela de "app não verificado" é esperada, por ser um script próprio: **Avançado → Acessar (nome do projeto)**.
+6. Copie a **URL do app da Web**, que termina em `/exec`.
+7. Cole essa URL em `FORM_ENDPOINT`, no topo de `assets/js/main.js`, e publique na `main`.
+
+> **Já feito.** A implantação está publicada e a URL configurada. Os passos acima ficam registrados para quando for preciso republicar (planilha nova, conta nova) ou refazer a implantação do zero.
+>
+> Só a **URL do app da Web** (`/exec`) é usada. A URL de *biblioteca* que o Apps Script também oferece serve para outro projeto importar este como dependência, o que não é o caso aqui.
+
+### Três armadilhas que custam tempo
+
+| Armadilha | O que acontece | O certo |
+|---|---|---|
+| **"Qualquer pessoa com Conta do Google"** em vez de "Qualquer pessoa" | O Google devolve tela de login em vez de gravar, e todo envio falha | Tem que ser **Qualquer pessoa**, sem login. O script não expõe dado nenhum: só aceita `POST` e responde `{ok:true}` |
+| **Editar o script e não reimplantar** | A URL continua servindo a versão antiga. É o erro mais comum, e o mais difícil de perceber, porque nada dá erro | Toda alteração no `.gs` pede **Implantar → Gerenciar implantações → editar (lápis) → Versão: Nova versão**. A URL não muda |
+| **Trocar o `Content-Type` para `application/json`** | O navegador dispara um preflight `OPTIONS`, que Web App do Apps Script não responde, e o envio morre em CORS antes de sair | Manter `text/plain;charset=utf-8`. O corpo continua sendo JSON, lido em `e.postData.contents` |
+
+### Conferindo se está no ar
+
+- **A URL no navegador:** abrir o `/exec` direto deve devolver `{"ok":true,"servico":"AUVP Advisors — receptor de leads"}`. Se pedir login, o acesso está errado (armadilha 1).
+- **Envio de verdade:** preencher o formulário no site publicado. A linha aparece na aba `Leads` na hora.
+- **Quando algo falhar:** no editor do Apps Script, **Execuções** mostra cada chamada recebida e o erro, se houver. Se a página diz "não foi possível enviar" mas a linha aparece na planilha, o problema é a leitura da resposta, não a gravação.
+
+### O que vai para a planilha
+
+Uma coluna por campo, na ordem definida em `COLUNAS` dentro do `.gs`:
+
+`Recebido em` · `Nome` · `WhatsApp` · `E-mail` · `Registro na CVM` · `Tempo de atuação` · `Metodologias` · `Consentimento LGPD` · `Origem`
+
+- **`Recebido em` é carimbo do servidor**, em horário de São Paulo. O relógio do visitante não é confiável e o fuso dele muito menos.
+- **Os slugs dos selects viram texto legível** (`pf-autorizada` → "Pessoa física autorizada pela CVM"). O mapa está em `ROTULOS`, no `.gs`.
+- **`Origem`** guarda a URL de onde o envio partiu, útil quando houver mais de uma página ou campanha.
+- Para acrescentar um campo, ele precisa entrar nos dois lados: no formulário do `index.html` e em `COLUNAS`. As linhas antigas seguem válidas, só ficam vazias na coluna nova.
+
+### Anti-spam
+
+O formulário tem um **campo-armadilha** (`empresa_site`) posicionado fora da tela. Pessoa nenhuma o vê ou tabula até ele, então qualquer valor preenchido veio de robô: o Apps Script responde `{ok:true}` para o robô não insistir, mas **não grava a linha**. Ele fica fora da validação por causa do atributo `data-hp`.
+
+### LGPD
+
+A planilha passa a conter **dado pessoal de terceiros** (nome, WhatsApp, e-mail). Antes de divulgar a LP, três coisas precisam de dono:
+
+1. **Quem tem acesso ao arquivo** — compartilhar com as pessoas do time que trabalham o lead, não com "qualquer pessoa com o link".
+2. **Por quanto tempo os dados ficam** — a página coleta o consentimento, mas não define retenção.
+3. **A Política de Privacidade** — `PRIVACY_URL` segue vazia e o link aparece desabilitado na página (`link--pendente`, `aria-disabled`), então ele não finge existir. **Mas o formulário já está gravando dado pessoal em planilha**, e o texto do consentimento cita uma política que o visitante não consegue ler. Enquanto o documento não existir, a página não deveria ser divulgada: é o único item desta lista que bloqueia o lançamento, não apenas o recomenda.
 
 ## Conferindo o CSS
 
@@ -95,7 +157,10 @@ Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla dema
 3. **Taxa da calculadora** — a calculadora parte do patrimônio sob custódia, não do fee. A conversão de patrimônio em receita usa `TAXA_FEE_ANUAL`, hoje em 1% ao ano; enquanto o número não for confirmado, a obs. abaixo do controle deixa a premissa visível para o visitante.
 4. **Benefícios em lista, não em cartões** — a dobra já passou por abas, grade de três colunas e bento; todas as versões esbarravam no mesmo problema: seis caixas do mesmo tamanho viram seis blocos de texto. Hoje é uma **coluna fixa à esquerda** (título, resumo e contador do item em leitura) com a **lista rolando à direita**, itens separados por filete. O movimento vem da leitura — o item que cruza a faixa central da tela recebe `is-ativo` e tem o número preenchido —, não de um clique, então nada fica escondido. **Cada item tem um teto de conteúdo:** título curto, uma frase de até duas linhas e uma fila de palavras-chave (`.tags`). O que não couber aí vira palavra-chave, não parágrafo. Um benefício novo é só mais um `<li>`: a lista não tem grade para fechar
 5. **O repasse é de até 70%** — teto, não valor fixo, e sem faixa declarada porque não existe piso definido. O simulador projeta o teto e diz isso no asterisco.
-6. **Benefício de lançamento** — um só: **R$ 10.000 em verba de marketing** para os primeiros advisors aprovados, logo abaixo do simulador e repetido no aviso legal do rodapé. Carrega um selo de "sujeito a análise de elegibilidade" no próprio cartão, além da letra miúda que fecha o bloco: não é automático por ordem de chegada. Os critérios nunca foram definidos, então a página fala em "primeiros advisors" sem cravar quantidade. **Confirmar antes de publicar:** a última informação registrada era de que esse benefício seguia em validação. Se ele cair, sai daqui e do aviso legal ao mesmo tempo, para não sobrar promessa órfã no rodapé.
+6. **Benefícios de lançamento** — dois, para os **20 primeiros advisors aprovados**: **80% de repasse durante 12 meses** e **R$ 10.000 em verba de marketing**. Ficam logo abaixo do simulador e repetidos no aviso legal do rodapé. Cada um carrega um selo de "sujeito a análise de elegibilidade" no próprio cartão, além da letra miúda que fecha o bloco: nenhum é automático por ordem de chegada.
+   > **Os 80% vivem só nesta dobra, por decisão explícita.** O resto da página, inclusive o simulador, comunica "até 70%". É o que evita a contradição de anunciar 80% no hero e projetar 70% na conta: aqui é bônus temporário e nomeado como tal, com a letra miúda dizendo que passados os 12 meses o repasse volta ao teto de 70%.
+   >
+   > **Confirmar antes de publicar:** a última informação registrada era de que a verba de marketing seguia em validação. Se um benefício cair, sai daqui e do aviso legal ao mesmo tempo, para não sobrar promessa órfã no rodapé.
 7. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
 
 ## Decisões adotadas a partir do documento de escopo
@@ -103,7 +168,7 @@ Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla dema
 A página foi originalmente construída a partir do briefing de comunicação. Onde o documento *AUVP Advisor: Resumo Completo do Projeto* diverge dele, **o documento prevaleceu**, por ser posterior e por conter as decisões comerciais e jurídicas. As premissas:
 
 - **Repasse de 70% ou mais**, não 50%. O escopo define comissionamento da AUVP de até 30% do fee, o que fixa o piso do consultor em 70%. O briefing dizia "repasse inicial de 50%" — tratado como desatualizado.
-- **O repasse é de até 70%, e os 80% não existem mais em lugar nenhum.** O teto é o espelho do comissionamento mínimo de 30% da AUVP. O número já mudou três vezes ao longo do projeto: 70% padrão com 80% para os 20 primeiros, depois "faixa de 70% a 80% para todos", depois padrão fixo de 70%, e enfim **até 70%, com os 80% descartados** ("essa ideia morreu"). **Ao mexer nele, mexa nos cinco lugares:** `REPASSE_TETO`, a `meta description`, o benefício 01 e suas palavras-chave, a legenda da barra de divisão e o aviso legal do rodapé.
+- **O repasse é de até 70% em toda a página, e os 80% existem só como bônus de lançamento.** O número já mudou quatro vezes ao longo do projeto: 70% padrão com 80% para os 20 primeiros, depois "faixa de 70% a 80% para todos", depois padrão fixo de 70%, depois **até 70% com os 80% descartados**, e enfim **até 70% com os 80% de volta, agora por 12 meses e confinados à dobra dos benefícios de lançamento**. **Ao mexer no teto, mexa nos cinco lugares:** `REPASSE_TETO`, a `meta description`, o benefício 01 e suas palavras-chave, a legenda da barra de divisão e o aviso legal do rodapé.
 - **A calculadora parte do patrimônio sob custódia.** O controle anda de R$ 1 mi a R$ 250 mi (começando em R$ 20 mi); o fee anual sai daí por `TAXA_FEE_ANUAL` e o repasse, por `REPASSE_TETO`. A barra de divisão é demonstrada sobre R$ 100 de fee.
 - **O advisor não recebe suporte de banking, e o fluxo é o inverso.** O segundo cartão da dobra de operação prometia "suporte operacional e em Banking" ao advisor — leitura errada do modelo. Quem oferece conta, cartão e os demais produtos é a **AUVP, diretamente ao cliente**; o advisor não distribui, não intermedia e não é remunerado por eles, e a consultoria de valores mobiliários segue independente. A copy passou a ser "possibilite que seus clientes usufruam do ecossistema AUVP", com a ressalva de compliance no rodapé do cartão. A palavra-chave "Banking" também saiu da lista de benefícios pelo mesmo motivo.
 - **A calculadora declara que os valores são brutos.** A observação abaixo do controle diz, com todas as letras, que a projeção não desconta nenhum tipo de tributação e que por isso os valores reais podem variar. O aviso legal do rodapé repete a mesma ressalva.

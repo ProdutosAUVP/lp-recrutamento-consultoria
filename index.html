@@ -677,6 +677,15 @@
             </div>
           </div>
 
+          <!-- Armadilha anti-spam: humano nenhum vê nem tabula até aqui, então
+               qualquer valor preenchido veio de robô. O Apps Script descarta a
+               linha em silêncio. Fica fora da validação por causa do data-hp. -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="empresa-site">Não preencha este campo</label>
+            <input type="text" id="empresa-site" name="empresa_site"
+                   tabindex="-1" autocomplete="off" data-hp />
+          </div>
+
           <div class="field field--consent">
             <label class="consent" for="consentimento">
               <input type="checkbox" id="consentimento" name="consentimento" required aria-describedby="erro-consentimento" />

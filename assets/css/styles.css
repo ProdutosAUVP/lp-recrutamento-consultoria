@@ -1003,6 +1003,16 @@ ul, ol { list-style: none; }
   padding-left: 0.75rem;
 }
 
+/* Armadilha anti-spam. Fora da tela em vez de display:none — alguns robôs
+   ignoram campos escondidos por display e caem só neste formato. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* Consentimento LGPD */
 .consent {
   display: grid;

@@ -36,12 +36,14 @@ jobs:
       - name: Montar o site
         # A LP é estática: vai tudo do topo do repositório, menos o que não
         # deve ir ao ar. O glob não pega arquivos ocultos, então .git e
-        # .github ficam de fora sozinhos.
+        # .github ficam de fora sozinhos. `scripts/` é ferramenta de
+        # desenvolvimento (auditoria de CSS e o código do Apps Script da
+        # planilha): não é servido pela página e não precisa ir ao ar.
         run: |
           mkdir -p _site
           for item in *; do
             case "$item" in
-              _site|README.md) continue ;;
+              _site|README.md|scripts) continue ;;
             esac
             cp -r "$item" _site/
           done

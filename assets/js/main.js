@@ -5,9 +5,15 @@
    ========================================================================== */
 
 /**
- * Endpoint que recebe o formulário de interesse (POST em JSON).
+ * Endpoint que recebe o formulário de interesse (POST com corpo em JSON).
  * Enquanto estiver vazio, o formulário valida os campos normalmente mas
  * avisa que o destino não foi configurado, em vez de fingir que enviou.
+ *
+ * Hoje o destino é um Web App do Google Apps Script, que grava na planilha
+ * de leads. O código dele está em `scripts/planilha-apps-script.gs` e o
+ * passo a passo da publicação, no README. A URL a colar aqui é a que o
+ * Apps Script devolve ao implantar, no formato:
+ *   https://script.google.com/macros/s/AKfycb.../exec
  */
 const FORM_ENDPOINT = "";
 
@@ -94,7 +100,7 @@ function iniciarFormulario() {
 
   const status = form.querySelector("[data-status]");
   const botao = form.querySelector("[data-submit]");
-  const campos = Array.from(form.querySelectorAll("input, select"));
+  const campos = Array.from(form.querySelectorAll("input:not([data-hp]), select"));
 
   const telefone = form.querySelector("#whatsapp");
   if (telefone) {
@@ -147,12 +153,28 @@ function iniciarFormulario() {
     status.dataset.state = "";
 
     try {
+      // O corpo é JSON, mas o Content-Type é text/plain de propósito.
+      // Com application/json o navegador manda um preflight OPTIONS, e o
+      // Web App do Apps Script não responde a OPTIONS: o envio morre em
+      // CORS antes de sair. Com text/plain a requisição é "simples", vai
+      // direto, e o Apps Script lê o JSON em e.postData.contents.
       const resposta = await fetch(FORM_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(dados),
       });
       if (!resposta.ok) throw new Error(String(resposta.status));
+
+      // Apps Script sempre responde 200, mesmo quando recusa o envio: o
+      // resultado real vem no corpo. Sem esta checagem, um erro do lado da
+      // planilha apareceria para o visitante como cadastro recebido.
+      let retorno = null;
+      try {
+        retorno = JSON.parse(await resposta.text());
+      } catch {
+        // Endpoint que não responde JSON: vale o status HTTP já conferido.
+      }
+      if (retorno && retorno.ok === false) throw new Error(retorno.erro || "recusado");
 
       form.reset();
       status.textContent = "Recebemos seu cadastro. O time entra em contato em breve.";

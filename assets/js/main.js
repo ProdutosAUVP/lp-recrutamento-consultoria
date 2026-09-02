@@ -15,7 +15,8 @@
  * Apps Script devolve ao implantar, no formato:
  *   https://script.google.com/macros/s/AKfycb.../exec
  */
-const FORM_ENDPOINT = "";
+const FORM_ENDPOINT =
+  "https://script.google.com/macros/s/AKfycbxWJSO3vO9kV6soKZmEZ7VokCLwvL8x-mWEgHSib6llnkTJdTpisQIja_py4jbppXUIMg/exec";
 
 /** Páginas de Termos de Uso e Política de Privacidade (entrega do jurídico). */
 const TERMS_URL = "";

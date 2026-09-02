@@ -55,7 +55,7 @@ Tudo que depende de terceiros está no bloco de configuração no topo de `asset
 
 | Variável | O que é | Comportamento enquanto vazia |
 |---|---|---|
-| `FORM_ENDPOINT` | URL do Web App do Apps Script que grava na planilha de leads (ver "Planilha de leads") | O formulário valida os campos normalmente e avisa que o destino não foi configurado |
+| `FORM_ENDPOINT` | URL do Web App do Apps Script que grava na planilha de leads (ver "Planilha de leads") | ✅ **Configurada.** Vazia, o formulário valida os campos normalmente e avisa que o destino não foi definido |
 | `TERMS_URL` | Página de Termos de Uso | Os links ficam inertes e visivelmente desabilitados |
 | `PRIVACY_URL` | Página de Política de Privacidade | Idem |
 | `VIDEO_URL` | Embed do vídeo de lançamento | A dobra do vídeo fica oculta |
@@ -97,6 +97,10 @@ O código do receptor está em **`scripts/planilha-apps-script.gs`**. Ele não r
 6. Copie a **URL do app da Web**, que termina em `/exec`.
 7. Cole essa URL em `FORM_ENDPOINT`, no topo de `assets/js/main.js`, e publique na `main`.
 
+> **Já feito.** A implantação está publicada e a URL configurada. Os passos acima ficam registrados para quando for preciso republicar (planilha nova, conta nova) ou refazer a implantação do zero.
+>
+> Só a **URL do app da Web** (`/exec`) é usada. A URL de *biblioteca* que o Apps Script também oferece serve para outro projeto importar este como dependência, o que não é o caso aqui.
+
 ### Três armadilhas que custam tempo
 
 | Armadilha | O que acontece | O certo |
@@ -132,7 +136,7 @@ A planilha passa a conter **dado pessoal de terceiros** (nome, WhatsApp, e-mail)
 
 1. **Quem tem acesso ao arquivo** — compartilhar com as pessoas do time que trabalham o lead, não com "qualquer pessoa com o link".
 2. **Por quanto tempo os dados ficam** — a página coleta o consentimento, mas não define retenção.
-3. **A Política de Privacidade** — hoje `PRIVACY_URL` está vazia e o link aparece desabilitado na página. Enquanto ela não existir, o formulário coleta consentimento apontando para um documento que o visitante não consegue ler.
+3. **A Política de Privacidade** — `PRIVACY_URL` segue vazia e o link aparece desabilitado na página (`link--pendente`, `aria-disabled`), então ele não finge existir. **Mas o formulário já está gravando dado pessoal em planilha**, e o texto do consentimento cita uma política que o visitante não consegue ler. Enquanto o documento não existir, a página não deveria ser divulgada: é o único item desta lista que bloqueia o lançamento, não apenas o recomenda.
 
 ## Conferindo o CSS
 

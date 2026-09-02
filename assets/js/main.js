@@ -37,13 +37,16 @@ const VIDEO_URL = "";
 const TAXA_FEE_ANUAL = 0.01;
 
 /**
- * Teto do repasse do fee para o advisor: até 70%, o espelho do
- * comissionamento mínimo de 30% da AUVP declarado no escopo.
+ * Teto do repasse do fee para o advisor: até 70%.
  *
- * É TETO, não valor fixo: a calculadora projeta o melhor caso, e por isso
- * todo texto ao redor dela carrega o asterisco e a palavra "simulação". Se
- * um dia existir um piso definido, ele entra aqui como segunda constante e
- * o resultado volta a ser faixa.
+ * É TETO, não valor fixo. O simulador projeta o melhor caso, e por isso todo
+ * texto ao redor dele carrega o asterisco e a palavra "simulação": o aviso
+ * diz, com todas as letras, que o repasse é de ATÉ 70% e que a projeção
+ * mostra esse teto.
+ *
+ * Decisão comercial registrada: a LP comunica apenas o teto, e não o detalhe
+ * de como o percentual é apurado. Ver o README antes de trocar este número
+ * por qualquer outra estrutura.
  */
 const REPASSE_TETO = 0.7;
 

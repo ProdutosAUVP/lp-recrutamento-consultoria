@@ -18,9 +18,14 @@
 const FORM_ENDPOINT =
   "https://script.google.com/macros/s/AKfycbxWJSO3vO9kV6soKZmEZ7VokCLwvL8x-mWEgHSib6llnkTJdTpisQIja_py4jbppXUIMg/exec";
 
-/** Páginas de Termos de Uso e Política de Privacidade (entrega do jurídico). */
-const TERMS_URL = "";
-const PRIVACY_URL = "";
+/**
+ * Termos de Uso e Política de Privacidade do programa (entrega do jurídico).
+ * São PDFs hospedados no CDN; os links abrem em nova aba.
+ */
+const TERMS_URL =
+  "https://cdn.asupernova.com.br/termos/auvp%20advisors/AUVP_Advisor_Termos_v1.pdf";
+const PRIVACY_URL =
+  "https://cdn.asupernova.com.br/termos/auvp%20advisors/AUVP_Advisor_PP_v1.pdf";
 
 /**
  * Vídeo de lançamento (URL de embed, ex.: https://www.youtube.com/embed/ID).

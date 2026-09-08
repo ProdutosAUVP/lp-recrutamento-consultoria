@@ -1674,6 +1674,82 @@ button:focus-visible {
 
 .fit__col .checklist { flex: 1; }
 
+/* ---------- Dúvidas frequentes ----------
+   Acordeão nativo (<details>/<summary>): abre e fecha sem JS e o leitor de
+   tela já anuncia o estado. Segue a lista de benefícios: itens separados
+   por filete, sem cartão. A coluna é estreita porque a leitura é de texto. */
+.faq__lista {
+  max-width: 50rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.faq__item {
+  border-top: 1px solid var(--border);
+}
+.faq__item:last-child { border-bottom: 1px solid var(--border); }
+
+.faq__pergunta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5) 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  transition: color 0.2s ease;
+}
+.faq__pergunta::-webkit-details-marker { display: none; }
+.faq__pergunta:hover { color: var(--accent-legivel); }
+.faq__pergunta:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* O marcador é um "+" que vira "×" ao girar: informa o estado, não decora. */
+.faq__pergunta::after {
+  content: "+";
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+  transition: transform 0.25s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.faq__item[open] .faq__pergunta::after {
+  transform: rotate(45deg);
+  color: var(--ink-0);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.faq__resposta {
+  padding: 0 0 var(--sp-5);
+  padding-right: clamp(0rem, 6vw, 3.5rem);
+  color: var(--ink-muted);
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq__pergunta, .faq__pergunta::after { transition: none; }
+}
+
 /* ==========================================================================
    Responsivo — pontos de quebra por conteúdo, não por dispositivo
    ========================================================================== */

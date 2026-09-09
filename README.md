@@ -140,6 +140,25 @@ A planilha passa a conter **dado pessoal de terceiros** (nome, WhatsApp, e-mail)
 2. **Por quanto tempo os dados ficam** — a página coleta o consentimento, mas não define retenção.
 3. **A Política de Privacidade** — resolvido: `PRIVACY_URL` e `TERMS_URL` apontam para os PDFs entregues pelo jurídico (`AUVP_Advisor_PP_v1.pdf` e `AUVP_Advisor_Termos_v1.pdf`, no CDN), e os links do consentimento e do rodapé abrem os documentos em nova aba. Se alguma das duas variáveis voltar a ficar vazia, o link correspondente aparece desabilitado na página (`link--pendente`, `aria-disabled`) em vez de fingir existir, e a página não deveria ser divulgada nesse estado, porque o formulário grava dado pessoal em planilha citando uma política que o visitante não consegue ler. Ao publicar uma nova versão dos documentos, troque a URL aqui e no `main.js`.
 
+## Manual de Registro na CVM (PDF)
+
+O material do jurídico que ensina o advisor a se registrar na CVM como consultor de valores mobiliários existe em `docs/manual-registro-cvm/`, na identidade visual do site: capa e fechos escuros, miolo sobre o osso, um acento só, mesma família tipográfica e o mesmo logo (embutido como `<symbol>` e reusado por `<use>`, como no `index.html`).
+
+- `index.html` — a fonte do manual. É uma página impressa: cada seção é uma folha A4 (`.folha`), com rodapé e numeração vindos de `@page`, e as páginas escuras usam a página nomeada `@page escura` (sem margem e sem rodapé). Na tela ela aparece como folhas sobre fundo escuro, então dá para revisar no navegador antes de gerar o PDF
+- `img/` — as nove telas do CVMWeb que vieram no material. **A tela do passo 8 exibia CPF e nome reais e foi tarjada aqui**; as demais já vinham com os campos borrados
+- `fonts/` — a **Figtree** (SIL OFL, licença junto) em instâncias estáticas 400/500/700 e itálico. É o **substituto** da Satoshi: o ambiente remoto não alcança a Fontshare, e o PDF publicado saiu com ela. O HTML pede a Satoshi primeiro e cai na Figtree só se a fundição não responder, então gerar o PDF em uma máquina com acesso à Fontshare troca a família sozinho
+- `AUVP_Advisor_Manual_Registro_CVM_v1.pdf` — o PDF publicado, no mesmo padrão de nome dos Termos e da Política no CDN
+
+Para regerar depois de editar o HTML (precisa do Playwright com Chromium):
+
+```bash
+node scripts/gerar-manual-pdf.js
+```
+
+O script imprime qual família entrou no PDF (Satoshi ou Figtree). A pasta `docs/` vai para o ar junto com o site, então o manual também fica acessível em `docs/manual-registro-cvm/` na URL do Pages; o link para o PDF pode ser apontado de onde o time preferir (CDN ou Pages).
+
+Duas escolhas de conteúdo ficam registradas: o texto é o do jurídico, inclusive o nome **"AUVP Advisor"** no singular e os travessões, que a regra de vocabulário desta página não cobre por ser um documento jurídico; e a nota da Seção 7 que instruía o autor a capturar as telas ("cada passo tem um espaço para o print real da tela: capture…") virou uma frase para o leitor, já que as telas estão no documento.
+
 ## Conferindo o CSS
 
 ```bash

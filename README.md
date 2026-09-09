@@ -23,7 +23,7 @@ Página estática, sem build e sem dependências:
 - `assets/css/styles.css` — estilos (paleta clara institucional derivada do design system AUVP)
 - `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, destaque progressivo da lista de benefícios e calculadora de repasse
 - `assets/img/` — logo AUVP Advisors, olhos AUVP e a foto do hero
-- `scripts/` — ferramentas de desenvolvimento: `auditar-classes.js` (auditoria de CSS) e `planilha-apps-script.gs` (o receptor do formulário, que roda no Google, não aqui). A pasta é excluída do deploy
+- `scripts/` — ferramentas de desenvolvimento: `auditar-classes.js` (auditoria de CSS), `planilha-apps-script.gs` (o receptor do formulário, que roda no Google, não aqui) e `gerar-manual-pdf.js` (gera o PDF do Manual de Registro na CVM; é o único com dependências, declaradas no `package.json` da pasta). A pasta é excluída do deploy
 
 Para rodar localmente, basta abrir o `index.html` ou servir a pasta:
 
@@ -75,9 +75,11 @@ O aviso ao lado dos números é escrito a partir dessas duas, então mudar um n�
 
 ### Formulário de interesse
 
-Coleta os cinco campos definidos no escopo — WhatsApp, e-mail, registro na CVM, metodologias e anos de experiência — mais o **nome completo** e o consentimento de LGPD. O `POST` envia JSON com as chaves `nome`, `whatsapp`, `email`, `registro`, `metodologias`, `experiencia`, `consentimento` e `origem`.
+Coleta WhatsApp, e-mail, registro na CVM e anos de experiência (do escopo), mais o **nome completo**, o consentimento de LGPD e, desde a rodada de setembro, três perguntas de qualificação: **patrimônio sob custódia** (faixa, em select), **corretoras em que atende** e **certificações** (múltipla escolha em fichas). A pergunta de metodologias saiu nessa rodada. O `POST` envia JSON com as chaves `nome`, `whatsapp`, `email`, `registro`, `experiencia`, `patrimonio`, `corretoras`, `certificacoes`, `consentimento` e `origem`.
 
-O nome não consta da lista do escopo; foi acrescentado porque sem ele o time não tem como abrir o primeiro contato. É o único campo além do que o documento especifica.
+As múltiplas escolhas são grupos de checkboxes num `<fieldset data-grupo>`: o fieldset é o campo que valida e mostra erro, e as marcadas vão numa string só, separadas por vírgula ("BTG, XP"), na ordem do formulário. **Corretoras é obrigatória** (a opção "Outras" cobre quem não está na lista); **certificações é opcional**, porque quem ainda não tem registro na CVM também pode se cadastrar e não deveria travar aí.
+
+O nome não consta da lista do escopo; foi acrescentado porque sem ele o time não tem como abrir o primeiro contato.
 
 Quem responde "sem registro na CVM" recebe na hora uma mensagem dizendo que ainda pode se cadastrar e que o time envia o tutorial de registro — a pergunta qualifica o lead sem descartá-lo.
 
@@ -121,7 +123,10 @@ O código do receptor está em **`scripts/planilha-apps-script.gs`**. Ele não r
 
 Uma coluna por campo, na ordem definida em `COLUNAS` dentro do `.gs`:
 
-`Recebido em` · `Nome` · `WhatsApp` · `E-mail` · `Registro na CVM` · `Tempo de atuação` · `Metodologias` · `Consentimento LGPD` · `Origem`
+`Recebido em` · `Nome` · `WhatsApp` · `E-mail` · `Registro na CVM` · `Tempo de atuação` · `Metodologias` · `Consentimento LGPD` · `Origem` · `Patrimônio sob custódia` · `Corretoras em que atende` · `Certificações`
+
+- **`Metodologias` fica vazia nos leads novos**: a pergunta saiu do formulário, mas a coluna continua em `COLUNAS` porque o cabeçalho da planilha só é escrito uma vez, e tirar uma coluna do meio desalinharia as linhas novas com o cabeçalho e as antigas. Para removê-la de vez, apague a linha em `COLUNAS` e a coluna na planilha, juntos. Pelo mesmo motivo, **coluna nova entra sempre no fim**; o script completa o cabeçalho sozinho quando encontra colunas sem rótulo.
+- **Essa rodada exige reimplantar o Apps Script** (Implantar → Gerenciar implantações → editar → Nova versão): a URL não muda, mas a versão publicada é a que decide quais colunas são gravadas. Até lá, os três campos novos chegam no JSON e são ignorados pela versão antiga.
 
 - **`Recebido em` é carimbo do servidor**, em horário de São Paulo. O relógio do visitante não é confiável e o fuso dele muito menos.
 - **Os slugs dos selects viram texto legível** (`pf-autorizada` → "Pessoa física autorizada pela CVM"). O mapa está em `ROTULOS`, no `.gs`.
@@ -139,6 +144,30 @@ A planilha passa a conter **dado pessoal de terceiros** (nome, WhatsApp, e-mail)
 1. **Quem tem acesso ao arquivo** — compartilhar com as pessoas do time que trabalham o lead, não com "qualquer pessoa com o link".
 2. **Por quanto tempo os dados ficam** — a página coleta o consentimento, mas não define retenção.
 3. **A Política de Privacidade** — resolvido: `PRIVACY_URL` e `TERMS_URL` apontam para os PDFs entregues pelo jurídico (`AUVP_Advisor_PP_v1.pdf` e `AUVP_Advisor_Termos_v1.pdf`, no CDN), e os links do consentimento e do rodapé abrem os documentos em nova aba. Se alguma das duas variáveis voltar a ficar vazia, o link correspondente aparece desabilitado na página (`link--pendente`, `aria-disabled`) em vez de fingir existir, e a página não deveria ser divulgada nesse estado, porque o formulário grava dado pessoal em planilha citando uma política que o visitante não consegue ler. Ao publicar uma nova versão dos documentos, troque a URL aqui e no `main.js`.
+
+## Manual de Registro na CVM (PDF)
+
+O material do jurídico que ensina o advisor a se registrar na CVM como consultor de valores mobiliários existe em `docs/manual-registro-cvm/`, na identidade visual do site: capa e fechos escuros, miolo sobre o osso, um acento só, mesma família tipográfica e o mesmo logo (embutido como `<symbol>` e reusado por `<use>`, como no `index.html`).
+
+- `index.html` — a fonte do manual. É uma página impressa: **cada `.folha` é exatamente uma página A4**, com a página sem margem (`@page { margin: 0 }`) e o respiro como padding da folha. Foi a forma de o fundo (osso ou escuro) cobrir a página inteira: o Chromium deixa a área de margem branca. Rodapé e numeração são pseudo-elementos da folha, e o total de páginas entra por um script no fim do HTML. Como a folha tem `overflow: hidden`, conteúdo que passar da altura some sem aviso; o script de geração confere isso e avisa qual folha estourou, para você dividi-la em duas (é o que já acontece nas Seções 1 e 7). Na tela o documento aparece como folhas sobre fundo escuro, então dá para revisar no navegador antes de gerar o PDF
+- `img/` — as nove telas do CVMWeb que vieram no material. **A tela do passo 8 exibia CPF e nome reais e foi tarjada aqui**; as demais já vinham com os campos borrados
+- `fonts/` — a **Figtree** (SIL OFL, licença junto) em instâncias estáticas 400/500/700 e itálico. É o **substituto** da Satoshi: o ambiente remoto não alcança a Fontshare, e o PDF publicado saiu com ela. O HTML pede a Satoshi primeiro e cai na Figtree só se a fundição não responder, então gerar o PDF em uma máquina com acesso à Fontshare troca a família sozinho
+- `AUVP_Advisor_Manual_Registro_CVM_v1.pdf` — o PDF publicado, no mesmo padrão de nome dos Termos e da Política no CDN. É **preenchível** e **navegável**: 72 campos de formulário no Kit e nos checklists, o sumário e o cabeçalho de cada página com links internos, e os títulos como marcadores (outline) do leitor
+
+Para regerar depois de editar o HTML:
+
+```bash
+cd scripts
+npm install                      # uma vez: Playwright + pdf-lib
+npx playwright install chromium  # uma vez, se o Chromium do Playwright não estiver na máquina
+npm run manual
+```
+
+O script faz três coisas: imprime o HTML pelo Chromium (uma folha por página, links e marcadores incluídos), lê a posição de cada elemento marcado com `data-campo` no HTML e, com o pdf-lib, cria um campo de formulário em cima de cada um. O tipo vem de `data-tipo` (`texto`, `multilinha`, `check` ou `radio`; nos rádios, `data-campo` é o grupo e `data-valor`, a opção). As caixas com texto-modelo do Anexo D viram campos já preenchidos com aquele texto, para o advisor adaptar. **Para acrescentar um campo, basta marcar o elemento no HTML**; o script não tem lista própria. Ele também avisa se alguma folha estourou a altura e imprime qual família tipográfica entrou no PDF (Satoshi ou Figtree). O texto digitado nos campos usa a Helvetica do leitor de PDF, não a fonte do manual.
+
+A pasta `docs/` vai para o ar junto com o site, então o manual também fica acessível em `docs/manual-registro-cvm/` na URL do Pages; o link para o PDF pode ser apontado de onde o time preferir (CDN ou Pages).
+
+Duas escolhas de conteúdo ficam registradas: o texto é o do jurídico, inclusive o nome **"AUVP Advisor"** no singular e os travessões, que a regra de vocabulário desta página não cobre por ser um documento jurídico; e a nota da Seção 7 que instruía o autor a capturar as telas ("cada passo tem um espaço para o print real da tela: capture…") virou uma frase para o leitor, já que as telas estão no documento. Fora isso, o texto foi conferido frase a frase contra o PDF do jurídico, e o cabeçalho e o rodapé corridos são os dele ("AUVP Advisor · Manual de Registro na CVM · Consultor de Valores Mobiliários" em cima, "Você faz o registro. A gente te ensina como fazer." embaixo). Os placeholders `[NOME]`, `[Nº]` e `[DATA]` dos modelos viraram lacunas com rótulo, que no PDF são campos.
 
 ## Conferindo o CSS
 
@@ -161,7 +190,7 @@ Vale rodar depois de mexer no CSS. O arquivo é grande e uma edição ampla dema
    > **Os 80% vivem só nesta dobra, por decisão explícita.** O resto da página, inclusive o simulador, comunica "até 70%". É o que evita a contradição de anunciar 80% no hero e projetar 70% na conta: aqui é bônus temporário e nomeado como tal, com a letra miúda dizendo que passados os 12 meses o repasse volta ao teto de 70%.
    >
    > **Confirmar antes de publicar:** a última informação registrada era de que a verba de marketing seguia em validação. Se um benefício cair, sai daqui e do aviso legal ao mesmo tempo, para não sobrar promessa órfã no rodapé.
-7. **Dúvidas frequentes** — a dobra `#faq` (entre "É para você?" e o vídeo) traz as oito perguntas do documento *FAQ AUVP Advisor*, em acordeão nativo (`<details>`/`<summary>`, sem JS). **A copy é reproduzida na íntegra, por decisão do time:** a primeira versão trocava "consultor" por *advisor* e "AUVP Advisor" por *a AUVP Advisors* seguindo as regras de vocabulário, e a correção enviada em seguida devolveu o texto original. É a única dobra em que essas duas regras não valem; ao revisar a FAQ, revise a partir do documento, não da página. Dois pontos para o jurídico confirmar: a resposta sobre patrimônio fora do BTG **cita XP e Ágora pelo nome**, e a mesma regra de marca que vale para o BTG pode valer para elas; e a resposta sobre outros produtos diz que os produtos do ecossistema *podem ser ofertados* (com a comissão retida pela AUVP), enquanto a dobra de operação diz que o advisor não distribui nem intermedia. As duas frases convivem, mas vale alinhar a redação.
+7. **Dúvidas frequentes** — a dobra `#faq` (entre "É para você?" e o vídeo) traz as perguntas do documento *FAQ AUVP Advisor* em acordeão nativo (`<details>`/`<summary>`, sem JS), agrupadas em **seis macrotemas**, como na FAQ da escola: 01 Posso entrar na AUVP Advisor? (perguntas 2, 7, 8, 15, 17), 02 Qual modelo de negócios e remuneração? (9, 10), 03 Como funciona minha carteira e o BTG? (1, 4, 16), 04 O que posso e o que não posso fazer? (3, 5, 6, 12), 05 Qual é minha relação com a AUVP e com meus clientes? (11, 13) e 06 Como funciona minha operação na plataforma? (14, 18, 19). A numeração é a do documento. **A página tem só as oito primeiras perguntas**; as demais (9 a 19) ainda não chegaram, e os temas 02, 05 e 06 estão com `hidden` no botão e no painel até a copy entrar: basta colar os `<details>` no painel e tirar o `hidden` dos dois. Os temas viram abas por JS (`iniciarFaq`); sem JS ficam empilhados com título. **A copy é reproduzida na íntegra, por decisão do time:** a primeira versão trocava "consultor" por *advisor* e "AUVP Advisor" por *a AUVP Advisors* seguindo as regras de vocabulário, e a correção enviada em seguida devolveu o texto original. É a única dobra em que essas duas regras não valem; ao revisar a FAQ, revise a partir do documento, não da página. Dois pontos para o jurídico confirmar: a resposta sobre patrimônio fora do BTG **cita XP e Ágora pelo nome**, e a mesma regra de marca que vale para o BTG pode valer para elas; e a resposta sobre outros produtos diz que os produtos do ecossistema *podem ser ofertados* (com a comissão retida pela AUVP), enquanto a dobra de operação diz que o advisor não distribui nem intermedia. As duas frases convivem, mas vale alinhar a redação.
 8. **Conteúdo que segue fora** — o quadro "Como você assina" (chancela *consultor AUVP* × *advisor*) saiu da dobra de benefícios e a regra permanece apenas no aviso legal do rodapé. **Pendente de validação do jurídico**, ainda mais agora que a página trata todo mundo por *advisor*.
 
 ## Decisões adotadas a partir do documento de escopo

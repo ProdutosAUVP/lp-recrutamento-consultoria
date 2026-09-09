@@ -584,26 +584,32 @@
     <!-- ============ DÚVIDAS FREQUENTES ============
          Copy do jurídico/comercial (FAQ AUVP Advisor), reproduzida na íntegra
          por decisão do time: aqui "consultor" e "AUVP Advisor" ficam como no
-         documento. Acordeão nativo: <details> dispensa JS. -->
-    <section class="section surface-dark" id="faq">
+         documento. As perguntas estão agrupadas em seis macrotemas, como na
+         FAQ da escola; a numeração nos comentários é a do documento. Um tema
+         sem pergunta ainda fica com `hidden` (no botão e no painel) até a
+         copy chegar. Acordeão nativo: <details> dispensa JS; as abas dos
+         temas são JS e, sem ele, os temas aparecem empilhados. -->
+    <section class="section surface-dark faq" id="faq" data-faq>
       <div class="container">
         <h2 class="section__title reveal">Dúvidas <em>frequentes</em></h2>
         <p class="section__sub reveal">
           O que mais perguntam antes de preencher o formulário de interesse.
         </p>
 
-        <div class="faq__lista reveal">
-          <details class="faq__item">
-            <summary class="faq__pergunta">Terei acesso a outras corretoras além do BTG?</summary>
-            <div class="faq__resposta">
-              <p>
-                Não. O consultor tem exclusividade com a plataforma AUVP Advisor e não pode
-                participar de outros programas B2B simultaneamente.
-              </p>
-            </div>
-          </details>
+        <div class="faq__temas reveal" role="tablist" aria-label="Temas das dúvidas frequentes">
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-entrar" aria-controls="faq-entrar" aria-selected="false"><b>01</b>Posso entrar na AUVP Advisor?</button>
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-modelo" aria-controls="faq-modelo" aria-selected="false" hidden><b>02</b>Qual modelo de negócios e remuneração?</button>
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-carteira" aria-controls="faq-carteira" aria-selected="false"><b>03</b>Como funciona minha carteira e o BTG?</button>
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-regras" aria-controls="faq-regras" aria-selected="false"><b>04</b>O que posso e o que não posso fazer?</button>
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-relacao" aria-controls="faq-relacao" aria-selected="false" hidden><b>05</b>Qual é minha relação com a AUVP e com meus clientes?</button>
+          <button class="faq__tema-btn" type="button" role="tab" id="faq-aba-operacao" aria-controls="faq-operacao" aria-selected="false" hidden><b>06</b>Como funciona minha operação na plataforma?</button>
+        </div>
 
-          <details class="faq__item">
+        <div class="faq__tema" id="faq-entrar" role="tabpanel" aria-labelledby="faq-aba-entrar" data-tema>
+          <h3 class="faq__tema-titulo"><b>01</b>Posso entrar na AUVP Advisor?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 15 e 17. -->
+          <div class="faq__lista">
+<details class="faq__item">
             <summary class="faq__pergunta">Preciso ter CNPJ de consultoria ou posso atuar como pessoa física?</summary>
             <div class="faq__resposta">
               <p>
@@ -615,7 +621,63 @@
             </div>
           </details>
 
-          <details class="faq__item">
+<details class="faq__item">
+            <summary class="faq__pergunta">Preciso ter registro na CVM?</summary>
+            <div class="faq__resposta">
+              <p>
+                Sim. A AUVP Advisor exige que cada consultor tenha seu próprio registro na CVM
+                como pessoa física. Cada consultor será responsável por manter sua certificação
+                ativa e em conformidade com as regulamentações.
+              </p>
+            </div>
+          </details>
+
+<details class="faq__item">
+            <summary class="faq__pergunta">Existe um valor mínimo de patrimônio orientado pré-existente exigido para o cadastro na plataforma?</summary>
+            <div class="faq__resposta">
+              <p>Não há um valor mínimo obrigatório para o cadastro na plataforma.</p>
+            </div>
+          </details>
+          </div>
+        </div>
+        <div class="faq__tema" id="faq-modelo" role="tabpanel" aria-labelledby="faq-aba-modelo" data-tema hidden>
+          <h3 class="faq__tema-titulo"><b>02</b>Qual modelo de negócios e remuneração?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 9 e 10. -->
+          <div class="faq__lista">
+
+          </div>
+        </div>
+        <div class="faq__tema" id="faq-carteira" role="tabpanel" aria-labelledby="faq-aba-carteira" data-tema>
+          <h3 class="faq__tema-titulo"><b>03</b>Como funciona minha carteira e o BTG?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 16. -->
+          <div class="faq__lista">
+<details class="faq__item">
+            <summary class="faq__pergunta">Terei acesso a outras corretoras além do BTG?</summary>
+            <div class="faq__resposta">
+              <p>
+                Não. O consultor tem exclusividade com a plataforma AUVP Advisor e não pode
+                participar de outros programas B2B simultaneamente.
+              </p>
+            </div>
+          </details>
+
+<details class="faq__item">
+            <summary class="faq__pergunta">E se meu cliente não quiser trazer o patrimônio para o BTG?</summary>
+            <div class="faq__resposta">
+              <p>
+                Clientes já atendidos em outras corretoras também podem continuar fora da
+                plataforma, desde que o acesso seja direto com a corretora (como XP, Ágora
+                etc.), e não por meio de outras consultorias.
+              </p>
+            </div>
+          </details>
+          </div>
+        </div>
+        <div class="faq__tema" id="faq-regras" role="tabpanel" aria-labelledby="faq-aba-regras" data-tema>
+          <h3 class="faq__tema-titulo"><b>04</b>O que posso e o que não posso fazer?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 12. -->
+          <div class="faq__lista">
+<details class="faq__item">
             <summary class="faq__pergunta">Tem exclusividade no AUVP Advisor?</summary>
             <div class="faq__resposta">
               <p>
@@ -627,18 +689,7 @@
             </div>
           </details>
 
-          <details class="faq__item">
-            <summary class="faq__pergunta">E se meu cliente não quiser trazer o patrimônio para o BTG?</summary>
-            <div class="faq__resposta">
-              <p>
-                Clientes já atendidos em outras corretoras também podem continuar fora da
-                plataforma, desde que o acesso seja direto com a corretora (como XP, Ágora
-                etc.), e não por meio de outras consultorias.
-              </p>
-            </div>
-          </details>
-
-          <details class="faq__item">
+<details class="faq__item">
             <summary class="faq__pergunta">Receberei suporte operacional de backoffice para atender os clientes?</summary>
             <div class="faq__resposta">
               <p>
@@ -652,7 +703,7 @@
             </div>
           </details>
 
-          <details class="faq__item">
+<details class="faq__item">
             <summary class="faq__pergunta">Posso ofertar e ser remunerado por outros produtos financeiros?</summary>
             <div class="faq__resposta">
               <p>
@@ -661,24 +712,21 @@
               </p>
             </div>
           </details>
+          </div>
+        </div>
+        <div class="faq__tema" id="faq-relacao" role="tabpanel" aria-labelledby="faq-aba-relacao" data-tema hidden>
+          <h3 class="faq__tema-titulo"><b>05</b>Qual é minha relação com a AUVP e com meus clientes?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 11 e 13. -->
+          <div class="faq__lista">
 
-          <details class="faq__item">
-            <summary class="faq__pergunta">Preciso ter registro na CVM?</summary>
-            <div class="faq__resposta">
-              <p>
-                Sim. A AUVP Advisor exige que cada consultor tenha seu próprio registro na CVM
-                como pessoa física. Cada consultor será responsável por manter sua certificação
-                ativa e em conformidade com as regulamentações.
-              </p>
-            </div>
-          </details>
+          </div>
+        </div>
+        <div class="faq__tema" id="faq-operacao" role="tabpanel" aria-labelledby="faq-aba-operacao" data-tema hidden>
+          <h3 class="faq__tema-titulo"><b>06</b>Como funciona minha operação na plataforma?</h3>
+          <!-- Pendentes do documento FAQ AUVP Advisor: perguntas 14, 18 e 19. -->
+          <div class="faq__lista">
 
-          <details class="faq__item">
-            <summary class="faq__pergunta">Existe um valor mínimo de patrimônio orientado pré-existente exigido para o cadastro na plataforma?</summary>
-            <div class="faq__resposta">
-              <p>Não há um valor mínimo obrigatório para o cadastro na plataforma.</p>
-            </div>
-          </details>
+          </div>
         </div>
       </div>
     </section>
@@ -769,8 +817,9 @@
             <p class="field__error" id="erro-registro" data-error-for="registro"></p>
           </div>
 
-          <div class="form__row">
-            <div class="field">
+          <!-- Os dois selects abaixo ficam em largura cheia: as faixas de
+               patrimônio não cabem em meia coluna sem cortar o texto. -->
+          <div class="field">
               <label for="experiencia">Há quantos anos você atua na consultoria de investimentos?</label>
               <select id="experiencia" name="experiencia" required aria-describedby="erro-experiencia">
                 <option value="" disabled selected>Selecione uma opção</option>
@@ -781,20 +830,53 @@
                 <option value="mais-de-10">Mais de 10 anos</option>
               </select>
               <p class="field__error" id="erro-experiencia" data-error-for="experiencia"></p>
-            </div>
-
-            <div class="field">
-              <label for="metodologias">Quais metodologias aplica na alocação de ativos?</label>
-              <input
-                type="text"
-                id="metodologias"
-                name="metodologias"
-                placeholder="Ex.: alocação por metas, rebalanceamento trimestral"
-                required
-                aria-describedby="erro-metodologias" />
-              <p class="field__error" id="erro-metodologias" data-error-for="metodologias"></p>
-            </div>
           </div>
+
+          <div class="field">
+              <label for="patrimonio">Patrimônio sob custódia</label>
+              <select id="patrimonio" name="patrimonio" required aria-describedby="erro-patrimonio">
+                <option value="" disabled selected>Selecione uma faixa</option>
+                <option value="ate-5mi">Até R$ 5 milhões</option>
+                <option value="5-25mi">De R$ 5 milhões a R$ 25 milhões</option>
+                <option value="25-100mi">De R$ 25 milhões a R$ 100 milhões</option>
+                <option value="acima-100mi">Acima de R$ 100 milhões</option>
+              </select>
+              <p class="field__error" id="erro-patrimonio" data-error-for="patrimonio"></p>
+          </div>
+
+          <!-- Grupos de múltipla escolha: cada opção é um checkbox com o rótulo
+               como valor, e o JS junta as marcadas numa string separada por
+               vírgula. O fieldset é quem entra na validação, não cada caixa. -->
+          <fieldset class="field field--grupo" data-grupo="corretoras" data-obrigatorio aria-describedby="erro-corretoras">
+            <legend>Em quais corretoras você atende?</legend>
+            <p class="field__ajuda">Marque todas que se aplicam.</p>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="corretoras" value="BTG" /><span>BTG</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="XP" /><span>XP</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="Inter" /><span>Inter</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="C6" /><span>C6</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="Safra" /><span>Safra</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="Genial" /><span>Genial</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="Avenue" /><span>Avenue</span></label>
+              <label class="chip"><input type="checkbox" name="corretoras" value="Outras" /><span>Outras</span></label>
+            </div>
+            <p class="field__error" id="erro-corretoras" data-error-for="corretoras"></p>
+          </fieldset>
+
+          <fieldset class="field field--grupo" data-grupo="certificacoes" aria-describedby="erro-certificacoes">
+            <legend>Quais certificações você tem?</legend>
+            <p class="field__ajuda">Marque todas que se aplicam. Se ainda não tiver, siga em frente.</p>
+            <div class="chips">
+              <label class="chip"><input type="checkbox" name="certificacoes" value="C-Pro I" /><span>C-Pro I</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="C-Pro R" /><span>C-Pro R</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="CEA" /><span>CEA</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="CFP" /><span>CFP</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="CNPI" /><span>CNPI</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="CGA" /><span>CGA</span></label>
+              <label class="chip"><input type="checkbox" name="certificacoes" value="CFA" /><span>CFA</span></label>
+            </div>
+            <p class="field__error" id="erro-certificacoes" data-error-for="certificacoes"></p>
+          </fieldset>
 
           <!-- Armadilha anti-spam: humano nenhum vê nem tabula até aqui, então
                qualquer valor preenchido veio de robô. O Apps Script descarta a

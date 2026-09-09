@@ -37,9 +37,17 @@ var COLUNAS = [
   ['email',         'E-mail'],
   ['registro',      'Registro na CVM'],
   ['experiencia',   'Tempo de atuação'],
+  // A pergunta de metodologias saiu do formulário, mas a coluna fica: o
+  // cabeçalho da planilha só é escrito uma vez, e tirar uma coluna daqui
+  // desalinharia as linhas novas com o cabeçalho e as linhas antigas. Para
+  // removê-la de vez, apague a linha aqui E a coluna na planilha, juntos.
   ['metodologias',  'Metodologias'],
   ['consentimento', 'Consentimento LGPD'],
-  ['origem',        'Origem']
+  ['origem',        'Origem'],
+  // Colunas novas entram no fim, pelo mesmo motivo.
+  ['patrimonio',    'Patrimônio sob custódia'],
+  ['corretoras',    'Corretoras em que atende'],
+  ['certificacoes', 'Certificações']
 ];
 
 /**
@@ -59,7 +67,15 @@ var ROTULOS = {
     '3-5':        'De 3 a 5 anos',
     '5-10':       'De 5 a 10 anos',
     'mais-de-10': 'Mais de 10 anos'
+  },
+  patrimonio: {
+    'ate-5mi':     'Até R$ 5 milhões',
+    '5-25mi':      'De R$ 5 milhões a R$ 25 milhões',
+    '25-100mi':    'De R$ 25 milhões a R$ 100 milhões',
+    'acima-100mi': 'Acima de R$ 100 milhões'
   }
+  // Corretoras e certificações chegam como texto pronto ("BTG, XP"): os
+  // valores das caixas já são os rótulos.
 };
 
 /** Abrir a URL no navegador cai aqui: serve para conferir se está no ar. */
@@ -121,6 +137,17 @@ function abaDeLeads() {
     aba.appendRow(COLUNAS.map(function (col) { return col[1]; }));
     aba.getRange(1, 1, 1, COLUNAS.length).setFontWeight('bold');
     aba.setFrozenRows(1);
+    return aba;
+  }
+
+  // Coluna nova em COLUNAS (sempre no fim) ganha o rótulo no cabeçalho já
+  // existente, para a planilha não ficar com colunas sem nome.
+  var largura = aba.getLastColumn();
+  if (largura < COLUNAS.length) {
+    var faltam = COLUNAS.slice(largura).map(function (col) { return col[1]; });
+    aba.getRange(1, largura + 1, 1, faltam.length)
+      .setValues([faltam])
+      .setFontWeight('bold');
   }
   return aba;
 }

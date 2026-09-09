@@ -545,9 +545,12 @@ function iniciarFaq() {
 
   abas.forEach((aba, i) => {
     aba.addEventListener("click", () => escolher(aba));
-    // Setas andam entre as abas, como num tablist.
+    // Setas andam entre as abas, como num tablist: para baixo/direita
+    // avança, para cima/esquerda volta (a lista é vertical no desktop e
+    // horizontal no celular).
     aba.addEventListener("keydown", (e) => {
-      const passo = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      const passo = ["ArrowDown", "ArrowRight"].includes(e.key) ? 1
+        : ["ArrowUp", "ArrowLeft"].includes(e.key) ? -1 : 0;
       if (!passo) return;
       e.preventDefault();
       const proxima = abas[(i + passo + abas.length) % abas.length];

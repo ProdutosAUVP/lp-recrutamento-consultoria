@@ -60,34 +60,11 @@
     }
 
     /* ---------- Páginas ---------- */
-    @page {
-      size: A4;
-      margin: 18mm 17mm 20mm;
-      @bottom-left {
-        content: "AUVP Advisor  ·  Manual de Registro na CVM";
-        font-family: 'Satoshi', 'Figtree', system-ui, sans-serif;
-        font-size: 7.5pt;
-        letter-spacing: 0.04em;
-        color: #6E7176;
-        vertical-align: top;
-        padding-top: 2mm;
-      }
-      @bottom-right {
-        content: "Página " counter(page) " de " counter(pages);
-        font-family: 'Satoshi', 'Figtree', system-ui, sans-serif;
-        font-size: 7.5pt;
-        letter-spacing: 0.04em;
-        color: #6E7176;
-        vertical-align: top;
-        padding-top: 2mm;
-      }
-    }
-    /* Capa, dobra da AUVP e fecho: sangram até a borda e não levam rodapé. */
-    @page escura {
-      margin: 0;
-      @bottom-left { content: none; }
-      @bottom-right { content: none; }
-    }
+    /* A página não tem margem: o Chromium deixa a área de margem branca, então
+       a cor de fundo (osso ou escuro) é pintada pela própria folha, que ocupa
+       o A4 inteiro e carrega o respiro como padding. Cada folha é uma página;
+       o rodapé e a numeração são elementos dela (o total vem de um script). */
+    @page { size: A4; margin: 0; }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -106,23 +83,38 @@
       print-color-adjust: exact;
     }
 
+    body { counter-reset: folha; }
+    .folha {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      padding: 18mm 17mm 22mm;
+      background: var(--bone);
+      counter-increment: folha;
+      break-before: page;
+      break-after: page;
+    }
+    .folha:first-child { break-before: auto; }
+    .folha:last-child { break-after: auto; }
+
+    /* Rodapé corrido das páginas claras */
+    .folha:not(.pagina-escura)::before,
+    .folha:not(.pagina-escura)::after {
+      position: absolute;
+      bottom: 11mm;
+      font-size: 7.5pt;
+      letter-spacing: 0.04em;
+      color: var(--ink-faint);
+    }
+    .folha:not(.pagina-escura)::before { content: "AUVP Advisor  ·  Manual de Registro na CVM"; left: 17mm; }
+    .folha:not(.pagina-escura)::after { content: "Página " counter(folha) " de " attr(data-total); right: 17mm; }
+
     /* Na tela, o documento aparece como folhas A4 sobre o fundo escuro. */
     @media screen {
       html { background: var(--ink-0); }
       body { background: transparent; padding: 24px 0; }
-      .folha {
-        width: 210mm;
-        margin: 0 auto 24px;
-        background: var(--bone);
-        padding: 18mm 17mm 20mm;
-        min-height: 297mm;
-        box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.65);
-      }
-      .folha.pagina-escura { padding: 0; }
-    }
-    @media print {
-      .folha { break-after: page; }
-      .folha:last-child { break-after: auto; }
+      .folha { margin: 0 auto 24px; box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.65); }
     }
 
     img { max-width: 100%; display: block; }
@@ -134,11 +126,6 @@
 
     /* ---------- Páginas escuras ---------- */
     .pagina-escura {
-      page: escura;
-      break-before: page;
-      width: 210mm;
-      height: 297mm;
-      overflow: hidden;
       padding: 18mm 17mm;
       background: var(--ink-0);
       --surface: var(--ink-0);
@@ -240,8 +227,6 @@
       text-transform: uppercase;
       color: var(--accent-legivel);
     }
-    .secao { break-before: page; }
-    .folha:first-child { break-before: auto; }
     .secao__head { margin-bottom: 7mm; }
     .secao__titulo {
       font-size: 24pt;
@@ -427,7 +412,7 @@
       break-inside: avoid;
     }
     .tela img { width: 100%; height: auto; border-radius: var(--radius-sm); }
-    .tela--par { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; max-width: 100%; }
+    .tela--par { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; align-items: start; }
     .tela__legenda { font-size: 8.5pt; color: var(--ink-faint); font-style: italic; margin-top: 2mm; }
 
     /* ---------- Página da AUVP Advisor (Seção 8) ---------- */
@@ -622,7 +607,13 @@
       </div>
     </div>
 
-    <h3 class="sub">O que fica com cada um</h3>
+  </section>
+
+  <section class="folha secao" id="secao-1b">
+    <div class="secao__head">
+      <span class="eyebrow">Seção 1 · continuação</span>
+    </div>
+    <h3 class="sub sub--primeiro">O que fica com cada um</h3>
     <div class="duas">
       <div class="cartao">
         <p class="cartao__rotulo"><span class="eyebrow">A AUVP Advisor</span></p>
@@ -924,6 +915,12 @@
       </div>
     </div>
 
+  </section>
+
+  <section class="folha secao" id="secao-7b">
+    <div class="secao__head">
+      <span class="eyebrow">Seção 7 · Passo a passo no CVMWeb</span>
+    </div>
     <div class="passo">
       <span class="no">4</span>
       <div>
@@ -957,6 +954,12 @@
       </div>
     </div>
 
+  </section>
+
+  <section class="folha secao" id="secao-7c">
+    <div class="secao__head">
+      <span class="eyebrow">Seção 7 · Passo a passo no CVMWeb</span>
+    </div>
     <div class="passo">
       <span class="no">7</span>
       <div>
@@ -1260,5 +1263,12 @@
     </div>
   </section>
 
+  <script>
+    // Numera o rodapé: cada .folha é uma página, e o total entra por atributo.
+    (function () {
+      var folhas = document.querySelectorAll(".folha");
+      folhas.forEach(function (f) { f.setAttribute("data-total", folhas.length); });
+    })();
+  </script>
 </body>
 </html>

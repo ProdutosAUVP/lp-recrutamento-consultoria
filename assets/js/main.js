@@ -42,18 +42,23 @@ const VIDEO_URL = "";
 const TAXA_FEE_ANUAL = 0.01;
 
 /**
- * Teto do repasse do fee para o advisor: até 70%.
+ * Tabela progressiva do repasse, da pergunta 9 da FAQ ("Como sou
+ * remunerado?"). A faixa é escolhida pela receita bruta mensal total gerada
+ * na plataforma, e o percentual da faixa vale sobre a receita inteira (não é
+ * alíquota marginal). `ate` é o limite superior da faixa, em reais por mês.
  *
- * É TETO, não valor fixo. O simulador projeta o melhor caso, e por isso todo
- * texto ao redor dele carrega o asterisco e a palavra "simulação": o aviso
- * diz, com todas as letras, que o repasse é de ATÉ 70% e que a projeção
- * mostra esse teto.
- *
- * Decisão comercial registrada: a LP comunica apenas o teto, e não o detalhe
- * de como o percentual é apurado. Ver o README antes de trocar este número
- * por qualquer outra estrutura.
+ * O último percentual é o teto (70%), que a página cita em outros lugares.
+ * O simulador projeta a faixa em que a carteira cai e diz qual é; por isso
+ * todo texto ao redor carrega o asterisco e a palavra "simulação".
  */
-const REPASSE_TETO = 0.7;
+const FAIXAS_REPASSE = [
+  { ate: 10000, pct: 0.5 },
+  { ate: 30000, pct: 0.55 },
+  { ate: 50000, pct: 0.6 },
+  { ate: 80000, pct: 0.65 },
+  { ate: Infinity, pct: 0.7 },
+];
+const REPASSE_TETO = FAIXAS_REPASSE[FAIXAS_REPASSE.length - 1].pct;
 
 /* ========================================================================== */
 
@@ -321,10 +326,16 @@ function iniciarGrafico() {
   ligarSimulador(fee);
 }
 
+/** A faixa da tabela em que uma receita mensal cai. */
+function faixaDoRepasse(receitaMensal) {
+  return FAIXAS_REPASSE.find((f) => receitaMensal <= f.ate);
+}
+
 /**
  * Calculadora do repasse. O patrimônio sob custódia é informado pelo próprio
- * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL e, dele, o repasse
- * pela REPASSE_TETO. Nenhum número aqui é promessa de faturamento.
+ * advisor; daí sai o fee anual pela taxa de TAXA_FEE_ANUAL, a receita mensal
+ * escolhe a faixa em FAIXAS_REPASSE e o percentual da faixa vale sobre o fee
+ * inteiro. Nenhum número aqui é promessa de faturamento.
  */
 function ligarSimulador(fee) {
   const range = fee.querySelector("[data-sim]");
@@ -332,7 +343,13 @@ function ligarSimulador(fee) {
   const saidaFee = fee.querySelector("[data-sim-fee]");
   const saidaAno = fee.querySelector("[data-sim-ano]");
   const saidaMes = fee.querySelector("[data-sim-mes]");
+  const saidaFaixa = fee.querySelector("[data-sim-faixa]");
   const obs = fee.querySelector("[data-sim-obs]");
+  const barra = fee.querySelector("[data-split-bar]");
+  const segBase = fee.querySelector("[data-split-base]");
+  const segAuvp = fee.querySelector("[data-split-auvp]");
+  const pctBase = fee.querySelector("[data-split-pct-base]");
+  const pctAuvp = fee.querySelector("[data-split-pct-auvp]");
   if (!range || !valor || !saidaFee || !saidaAno || !saidaMes) return;
 
   /** O controle anda em milhões de reais de patrimônio. */
@@ -347,15 +364,47 @@ function ligarSimulador(fee) {
   const emPorcento = (n) =>
     (n * 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 }) + "%";
 
+  /** "até R$ 10 mil", "de R$ 10 mil a R$ 30 mil", "acima de R$ 80 mil". */
+  const descreverFaixa = (faixa) => {
+    const mil = (n) => "R$ " + Math.round(n / 1000).toLocaleString("pt-BR") + " mil";
+    const i = FAIXAS_REPASSE.indexOf(faixa);
+    if (i === 0) return "receita mensal até " + mil(faixa.ate);
+    if (faixa.ate === Infinity) return "receita mensal acima de " + mil(FAIXAS_REPASSE[i - 1].ate);
+    return "receita mensal de " + mil(FAIXAS_REPASSE[i - 1].ate) + " a " + mil(faixa.ate);
+  };
+
   function atualizar() {
     const milhoes = Number(range.value);
     const feeAnual = milhoes * 1e6 * TAXA_FEE_ANUAL;
+    const faixa = faixaDoRepasse(feeAnual / 12);
 
     valor.textContent = emMilhoes(milhoes);
     saidaFee.textContent = emReais(feeAnual);
-    const repasse = feeAnual * REPASSE_TETO;
+    const repasse = feeAnual * faixa.pct;
     saidaAno.textContent = emReais(repasse);
     saidaMes.textContent = emReais(repasse / 12);
+    if (saidaFaixa) {
+      saidaFaixa.innerHTML = "";
+      const b = document.createElement("b");
+      b.textContent = emPorcento(faixa.pct) + " do fee";
+      saidaFaixa.append(b, document.createTextNode(" · " + descreverFaixa(faixa)));
+    }
+
+    // A barra de divisão segue a faixa: é ela que mostra a parte de cada um.
+    const pctVoce = emPorcento(faixa.pct);
+    const pctAuvpTxt = emPorcento(1 - faixa.pct);
+    if (segBase && segAuvp) {
+      segBase.style.setProperty("--w", pctVoce);
+      segAuvp.style.setProperty("--w", pctAuvpTxt);
+    }
+    if (pctBase) pctBase.textContent = pctVoce;
+    if (pctAuvp) pctAuvp.textContent = pctAuvpTxt;
+    if (barra) {
+      barra.setAttribute(
+        "aria-label",
+        `Barra da divisão do fee: ${pctVoce} ficam com o advisor e ${pctAuvpTxt} com a AUVP.`
+      );
+    }
 
     // Preenche o trilho até a posição escolhida.
     const min = Number(range.min);
@@ -367,12 +416,15 @@ function ligarSimulador(fee) {
   if (obs) {
     // O selo "* Simulação" é estático no HTML; aqui vai só a parte que
     // depende das constantes, para número e texto nunca saírem de sincronia.
+    const primeira = FAIXAS_REPASSE[0];
     obs.textContent =
-      `o repasse é de ATÉ ${emPorcento(REPASSE_TETO)} do fee, e a projeção mostra esse teto. ` +
-      `A conta parte do patrimônio sob custódia que você informou, considerando um fee de ` +
-      `${emPorcento(TAXA_FEE_ANUAL)} ao ano. Os valores são brutos: não descontam nenhum tipo ` +
-      `de tributação, então o valor real pode ser menor. Não é estimativa de faturamento nem ` +
-      `promessa de resultado.`;
+      `o repasse segue a tabela progressiva da plataforma, de ${emPorcento(primeira.pct)} a ` +
+      `${emPorcento(REPASSE_TETO)} do fee conforme a sua receita bruta mensal, e a projeção ` +
+      `mostra a faixa em que a carteira informada cai. A conta parte do patrimônio sob custódia ` +
+      `que você informou, considerando um fee de referência de ${emPorcento(TAXA_FEE_ANUAL)} ao ano ` +
+      `(o fee real é definido com cada cliente, dentro da faixa por patrimônio). Os valores são ` +
+      `brutos: não descontam nenhum tipo de tributação, então o valor real pode ser menor. Não é ` +
+      `estimativa de faturamento nem promessa de resultado.`;
   }
 
   range.addEventListener("input", atualizar);
@@ -493,9 +545,12 @@ function iniciarFaq() {
 
   abas.forEach((aba, i) => {
     aba.addEventListener("click", () => escolher(aba));
-    // Setas andam entre as abas, como num tablist.
+    // Setas andam entre as abas, como num tablist: para baixo/direita
+    // avança, para cima/esquerda volta (a lista é vertical no desktop e
+    // horizontal no celular).
     aba.addEventListener("keydown", (e) => {
-      const passo = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      const passo = ["ArrowDown", "ArrowRight"].includes(e.key) ? 1
+        : ["ArrowUp", "ArrowLeft"].includes(e.key) ? -1 : 0;
       if (!passo) return;
       e.preventDefault();
       const proxima = abas[(i + passo + abas.length) % abas.length];

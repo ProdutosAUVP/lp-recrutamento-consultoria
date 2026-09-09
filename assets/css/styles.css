@@ -1003,6 +1003,48 @@ ul, ol { list-style: none; }
   padding-left: 0.75rem;
 }
 
+/* Múltipla escolha em fichas: o fieldset é o campo, a legenda é o rótulo e
+   cada opção é um checkbox escondido atrás de uma ficha. A ficha marcada
+   ganha o laranja com tinta escura, como todo elemento ativo da página. */
+.field--grupo { border: 0; padding: 0; margin: 0; min-width: 0; }
+.field--grupo legend {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0;
+  margin-bottom: 0.4375rem;
+}
+.field__ajuda { font-size: 0.78125rem; color: var(--ink-faint); margin-top: -0.125rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip { position: relative; cursor: pointer; }
+.chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+.chip span {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border-radius: var(--radius);
+  padding: 0.5625rem 0.875rem;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.chip:hover span { background: var(--tint); }
+.chip input:focus-visible + span { box-shadow: inset 0 0 0 2px var(--accent); }
+.chip input:checked + span { background: var(--accent); color: var(--ink-0); }
+.field--invalid .chip span { box-shadow: inset 0 0 0 1px var(--danger); }
+.field--invalid .chip input:checked + span { box-shadow: none; }
+
 /* Armadilha anti-spam. Fora da tela em vez de display:none — alguns robôs
    ignoram campos escondidos por display e caem só neste formato. */
 .honeypot {
@@ -1746,8 +1788,72 @@ button:focus-visible {
   gap: var(--sp-3);
 }
 
+/* Macrotemas. Em cima, a lista de temas como abas; embaixo, as perguntas do
+   tema escolhido. Sem JS todos os temas ficam visíveis, empilhados, cada um
+   com o próprio título — a aba só esconde o que não foi escolhido. */
+.faq__temas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: var(--sp-6);
+}
+.faq__tema-btn {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5625rem 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.faq__tema-btn b {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-legivel, var(--accent));
+  font-variant-numeric: tabular-nums;
+}
+/* O display acima venceria o `hidden` do atributo; o tema sem copy some mesmo. */
+.faq__tema-btn[hidden] { display: none; }
+.faq__tema-btn:hover { color: var(--ink); border-color: var(--border-strong); }
+.faq__tema-btn[aria-selected="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink-0);
+}
+.faq__tema-btn[aria-selected="true"] b { color: var(--ink-0); }
+
+.faq__tema { max-width: 50rem; }
+.faq__tema + .faq__tema { margin-top: var(--sp-7); }
+.faq__tema-titulo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--sp-4);
+}
+.faq__tema-titulo b {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--accent-legivel, var(--accent));
+  font-variant-numeric: tabular-nums;
+}
+/* Com as abas ligadas, o título do tema repete o botão escolhido. */
+.faq[data-abas] .faq__tema-titulo { display: none; }
+.faq[data-abas] .faq__tema + .faq__tema { margin-top: 0; }
+
 @media (prefers-reduced-motion: reduce) {
-  .faq__pergunta, .faq__pergunta::after { transition: none; }
+  .faq__pergunta, .faq__pergunta::after, .faq__tema-btn { transition: none; }
 }
 
 /* ==========================================================================

@@ -63,7 +63,8 @@ const MSG = {
   email: "Informe um e-mail válido.",
   registro: "Selecione uma das opções.",
   experiencia: "Selecione uma das opções.",
-  metodologias: "Conte em poucas palavras como você atende.",
+  patrimonio: "Selecione uma faixa.",
+  corretoras: "Marque pelo menos uma corretora.",
   consentimento: "É preciso aceitar para continuar.",
 };
 
@@ -77,8 +78,21 @@ function emailValido(valor) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(valor.trim());
 }
 
+/** Nome do campo: o input tem `name`; o grupo de checkboxes, `data-grupo`. */
+function nomeDoCampo(campo) {
+  return campo.name || campo.dataset.grupo;
+}
+
+/** Nas múltiplas escolhas, o que vale é o conjunto de caixas marcadas. */
+function marcadas(grupo) {
+  return Array.from(grupo.querySelectorAll("input:checked")).map((c) => c.value);
+}
+
 function validarCampo(campo) {
-  const nome = campo.name;
+  const nome = nomeDoCampo(campo);
+  if (campo.dataset.grupo !== undefined) {
+    return !campo.hasAttribute("data-obrigatorio") || marcadas(campo).length > 0;
+  }
   if (nome === "consentimento") return campo.checked;
   if (nome === "whatsapp") return whatsappValido(campo.value);
   if (nome === "email") return emailValido(campo.value);
@@ -88,8 +102,9 @@ function validarCampo(campo) {
 }
 
 function mostrarErro(form, campo, mostrar) {
-  const alvo = form.querySelector(`[data-error-for="${campo.name}"]`);
-  if (alvo) alvo.textContent = mostrar ? MSG[campo.name] || "Campo obrigatório." : "";
+  const nome = nomeDoCampo(campo);
+  const alvo = form.querySelector(`[data-error-for="${nome}"]`);
+  if (alvo) alvo.textContent = mostrar ? MSG[nome] || "Campo obrigatório." : "";
   campo.setAttribute("aria-invalid", mostrar ? "true" : "false");
   campo.closest(".field")?.classList.toggle("field--invalid", mostrar);
 }
@@ -109,7 +124,11 @@ function iniciarFormulario() {
 
   const status = form.querySelector("[data-status]");
   const botao = form.querySelector("[data-submit]");
-  const campos = Array.from(form.querySelectorAll("input:not([data-hp]), select"));
+  // Os checkboxes das múltiplas escolhas não entram um a um: o fieldset do
+  // grupo é o campo, e é ele que valida e mostra erro.
+  const campos = Array.from(
+    form.querySelectorAll("input:not([data-hp]):not([data-grupo] input), select, [data-grupo]")
+  );
 
   const telefone = form.querySelector("#whatsapp");
   if (telefone) {
@@ -125,8 +144,15 @@ function iniciarFormulario() {
     });
   }
 
-  // Só limpa o erro depois que o campo passa a estar válido.
+  // Só limpa o erro depois que o campo passa a estar válido. O grupo não
+  // recebe blur: revalida a cada caixa marcada ou desmarcada.
   campos.forEach((campo) => {
+    if (campo.dataset.grupo !== undefined) {
+      campo.addEventListener("change", () => {
+        if (validarCampo(campo)) mostrarErro(form, campo, false);
+      });
+      return;
+    }
     campo.addEventListener("blur", () => mostrarErro(form, campo, !validarCampo(campo)));
     campo.addEventListener("input", () => {
       if (validarCampo(campo)) mostrarErro(form, campo, false);
@@ -142,7 +168,8 @@ function iniciarFormulario() {
     if (invalidos.length) {
       status.textContent = "Revise os campos destacados.";
       status.dataset.state = "erro";
-      invalidos[0].focus();
+      // No grupo, o foco vai para a primeira caixa; o fieldset em si não recebe foco.
+      (invalidos[0].querySelector("input") || invalidos[0]).focus();
       return;
     }
 
@@ -155,6 +182,11 @@ function iniciarFormulario() {
 
     const dados = Object.fromEntries(new FormData(form).entries());
     dados.consentimento = form.querySelector("#consentimento").checked;
+    // As múltiplas escolhas vão como uma string só ("BTG, XP"), na ordem em
+    // que aparecem no formulário. Vazio quando nada foi marcado.
+    form.querySelectorAll("[data-grupo]").forEach((grupo) => {
+      dados[grupo.dataset.grupo] = marcadas(grupo).join(", ");
+    });
     dados.origem = window.location.href;
 
     botao.disabled = true;
@@ -435,6 +467,47 @@ function iniciarLista() {
   itens.forEach((item) => io.observe(item));
 }
 
+/**
+ * Abas dos macrotemas da FAQ. Os temas sem pergunta chegam com `hidden` no
+ * botão e no painel e ficam de fora. Sem JS, todos os temas aparecem
+ * empilhados com o próprio título; com JS, só o escolhido, e o título some
+ * porque repete o botão.
+ */
+function iniciarFaq() {
+  const faq = document.querySelector("[data-faq]");
+  if (!faq) return;
+  const abas = Array.from(faq.querySelectorAll('[role="tab"]:not([hidden])'));
+  const paineis = Array.from(faq.querySelectorAll("[data-tema]:not([hidden])"));
+  if (abas.length < 2) return;
+
+  function escolher(aba) {
+    abas.forEach((a) => {
+      const ativa = a === aba;
+      a.setAttribute("aria-selected", String(ativa));
+      a.tabIndex = ativa ? 0 : -1;
+    });
+    paineis.forEach((p) => {
+      p.hidden = p.id !== aba.getAttribute("aria-controls");
+    });
+  }
+
+  abas.forEach((aba, i) => {
+    aba.addEventListener("click", () => escolher(aba));
+    // Setas andam entre as abas, como num tablist.
+    aba.addEventListener("keydown", (e) => {
+      const passo = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!passo) return;
+      e.preventDefault();
+      const proxima = abas[(i + passo + abas.length) % abas.length];
+      escolher(proxima);
+      proxima.focus();
+    });
+  });
+
+  faq.setAttribute("data-abas", "");
+  escolher(abas[0]);
+}
+
 /** Parallax discreto da foto do hero. */
 function iniciarParallax() {
   const media = document.querySelector(".hero__media");
@@ -452,6 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
   iniciarFluxo();
   iniciarTimeline();
   iniciarParallax();
+  iniciarFaq();
 
   // CTAs — todos os botões .js-cta levam ao formulário
   document.querySelectorAll(".js-cta").forEach((el) => {

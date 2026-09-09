@@ -23,7 +23,7 @@ Página estática, sem build e sem dependências:
 - `assets/css/styles.css` — estilos (paleta clara institucional derivada do design system AUVP)
 - `assets/js/main.js` — configuração, formulário de interesse, menu mobile, reveal on scroll, timeline de entrada, destaque progressivo da lista de benefícios e calculadora de repasse
 - `assets/img/` — logo AUVP Advisors, olhos AUVP e a foto do hero
-- `scripts/` — ferramentas de desenvolvimento: `auditar-classes.js` (auditoria de CSS) e `planilha-apps-script.gs` (o receptor do formulário, que roda no Google, não aqui). A pasta é excluída do deploy
+- `scripts/` — ferramentas de desenvolvimento: `auditar-classes.js` (auditoria de CSS), `planilha-apps-script.gs` (o receptor do formulário, que roda no Google, não aqui) e `gerar-manual-pdf.js` (gera o PDF do Manual de Registro na CVM; é o único com dependências, declaradas no `package.json` da pasta). A pasta é excluída do deploy
 
 Para rodar localmente, basta abrir o `index.html` ou servir a pasta:
 
@@ -147,17 +147,22 @@ O material do jurídico que ensina o advisor a se registrar na CVM como consulto
 - `index.html` — a fonte do manual. É uma página impressa: **cada `.folha` é exatamente uma página A4**, com a página sem margem (`@page { margin: 0 }`) e o respiro como padding da folha. Foi a forma de o fundo (osso ou escuro) cobrir a página inteira: o Chromium deixa a área de margem branca. Rodapé e numeração são pseudo-elementos da folha, e o total de páginas entra por um script no fim do HTML. Como a folha tem `overflow: hidden`, conteúdo que passar da altura some sem aviso; o script de geração confere isso e avisa qual folha estourou, para você dividi-la em duas (é o que já acontece nas Seções 1 e 7). Na tela o documento aparece como folhas sobre fundo escuro, então dá para revisar no navegador antes de gerar o PDF
 - `img/` — as nove telas do CVMWeb que vieram no material. **A tela do passo 8 exibia CPF e nome reais e foi tarjada aqui**; as demais já vinham com os campos borrados
 - `fonts/` — a **Figtree** (SIL OFL, licença junto) em instâncias estáticas 400/500/700 e itálico. É o **substituto** da Satoshi: o ambiente remoto não alcança a Fontshare, e o PDF publicado saiu com ela. O HTML pede a Satoshi primeiro e cai na Figtree só se a fundição não responder, então gerar o PDF em uma máquina com acesso à Fontshare troca a família sozinho
-- `AUVP_Advisor_Manual_Registro_CVM_v1.pdf` — o PDF publicado, no mesmo padrão de nome dos Termos e da Política no CDN
+- `AUVP_Advisor_Manual_Registro_CVM_v1.pdf` — o PDF publicado, no mesmo padrão de nome dos Termos e da Política no CDN. É **preenchível** e **navegável**: 72 campos de formulário no Kit e nos checklists, o sumário e o cabeçalho de cada página com links internos, e os títulos como marcadores (outline) do leitor
 
-Para regerar depois de editar o HTML (precisa do Playwright com Chromium):
+Para regerar depois de editar o HTML:
 
 ```bash
-node scripts/gerar-manual-pdf.js
+cd scripts
+npm install                      # uma vez: Playwright + pdf-lib
+npx playwright install chromium  # uma vez, se o Chromium do Playwright não estiver na máquina
+npm run manual
 ```
 
-O script imprime qual família entrou no PDF (Satoshi ou Figtree). A pasta `docs/` vai para o ar junto com o site, então o manual também fica acessível em `docs/manual-registro-cvm/` na URL do Pages; o link para o PDF pode ser apontado de onde o time preferir (CDN ou Pages).
+O script faz três coisas: imprime o HTML pelo Chromium (uma folha por página, links e marcadores incluídos), lê a posição de cada elemento marcado com `data-campo` no HTML e, com o pdf-lib, cria um campo de formulário em cima de cada um. O tipo vem de `data-tipo` (`texto`, `multilinha`, `check` ou `radio`; nos rádios, `data-campo` é o grupo e `data-valor`, a opção). As caixas com texto-modelo do Anexo D viram campos já preenchidos com aquele texto, para o advisor adaptar. **Para acrescentar um campo, basta marcar o elemento no HTML**; o script não tem lista própria. Ele também avisa se alguma folha estourou a altura e imprime qual família tipográfica entrou no PDF (Satoshi ou Figtree). O texto digitado nos campos usa a Helvetica do leitor de PDF, não a fonte do manual.
 
-Duas escolhas de conteúdo ficam registradas: o texto é o do jurídico, inclusive o nome **"AUVP Advisor"** no singular e os travessões, que a regra de vocabulário desta página não cobre por ser um documento jurídico; e a nota da Seção 7 que instruía o autor a capturar as telas ("cada passo tem um espaço para o print real da tela: capture…") virou uma frase para o leitor, já que as telas estão no documento.
+A pasta `docs/` vai para o ar junto com o site, então o manual também fica acessível em `docs/manual-registro-cvm/` na URL do Pages; o link para o PDF pode ser apontado de onde o time preferir (CDN ou Pages).
+
+Duas escolhas de conteúdo ficam registradas: o texto é o do jurídico, inclusive o nome **"AUVP Advisor"** no singular e os travessões, que a regra de vocabulário desta página não cobre por ser um documento jurídico; e a nota da Seção 7 que instruía o autor a capturar as telas ("cada passo tem um espaço para o print real da tela: capture…") virou uma frase para o leitor, já que as telas estão no documento. Fora isso, o texto foi conferido frase a frase contra o PDF do jurídico, e o cabeçalho e o rodapé corridos são os dele ("AUVP Advisor · Manual de Registro na CVM · Consultor de Valores Mobiliários" em cima, "Você faz o registro. A gente te ensina como fazer." embaixo). Os placeholders `[NOME]`, `[Nº]` e `[DATA]` dos modelos viraram lacunas com rótulo, que no PDF são campos.
 
 ## Conferindo o CSS
 

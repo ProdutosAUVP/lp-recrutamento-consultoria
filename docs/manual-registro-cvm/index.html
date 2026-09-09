@@ -98,7 +98,18 @@
     .folha:first-child { break-before: auto; }
     .folha:last-child { break-after: auto; }
 
-    /* Rodapé corrido das páginas claras */
+    /* Cabeçalho e rodapé corridos das páginas claras, como no material original:
+       marca e título em cima, o lema e a numeração embaixo. */
+    .corrido {
+      position: absolute;
+      top: 8mm; left: 17mm; right: 17mm;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 7.5pt;
+      letter-spacing: 0.04em;
+      color: var(--ink-faint);
+    }
+    .corrido strong { font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-legivel); }
+    .corrido a { color: inherit; text-decoration: none; }
     .folha:not(.pagina-escura)::before,
     .folha:not(.pagina-escura)::after {
       position: absolute;
@@ -107,7 +118,7 @@
       letter-spacing: 0.04em;
       color: var(--ink-faint);
     }
-    .folha:not(.pagina-escura)::before { content: "AUVP Advisor  ·  Manual de Registro na CVM"; left: 17mm; }
+    .folha:not(.pagina-escura)::before { content: "Você faz o registro. A gente te ensina como fazer."; left: 17mm; }
     .folha:not(.pagina-escura)::after { content: "Página " counter(folha) " de " attr(data-total); right: 17mm; }
 
     /* Na tela, o documento aparece como folhas A4 sobre o fundo escuro. */
@@ -378,8 +389,7 @@
     /* ---------- Checklists (quadradinhos) ---------- */
     .check { display: flex; flex-direction: column; gap: 1.8mm; }
     .check li { position: relative; padding-left: 7mm; font-size: 9.75pt; line-height: 1.4; color: var(--ink); }
-    .check li::before {
-      content: "";
+    .check .cx {
       position: absolute; left: 0; top: 0.2em;
       width: 3.8mm; height: 3.8mm;
       border: 1.5px solid var(--border-strong);
@@ -433,14 +443,28 @@
     .modelo__eyebrow { margin-bottom: 3mm; }
     .modelo p + p { margin-top: 2.5mm; }
     .modelo .assinatura { margin-top: 4mm; font-weight: 500; }
-    .ph {
+    /* Lacunas dos modelos: linha para preencher, com o rótulo miúdo embaixo.
+       No PDF cada uma vira um campo de formulário. */
+    .modelo--lacunas p { line-height: 2.2; }
+    .lacuna {
       display: inline-block;
-      padding: 0 1.2mm;
-      background: var(--accent-soft);
-      color: var(--accent-legivel);
-      font-weight: 700;
-      border-radius: var(--radius-sm);
+      position: relative;
+      vertical-align: baseline;
+      height: 1.15em;
+      margin: 0 0.25em;
+      border-bottom: 1px solid var(--ink);
     }
+    .lacuna::after {
+      content: attr(data-rotulo);
+      position: absolute; left: 0; top: 100%;
+      font-size: 6pt; line-height: 1.6;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+    .lacuna--nome { width: 60mm; }
+    .lacuna--cpf { width: 34mm; }
+    .lacuna--data { width: 26mm; }
     .form { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm 6mm; margin-bottom: 4mm; break-inside: avoid; }
     .form--uma { grid-template-columns: 1fr; }
     .form__grupo { grid-column: 1 / -1; margin-top: 2mm; }
@@ -460,11 +484,12 @@
     .simnao tr:last-child td { border-bottom: 0; }
     .simnao td:last-child { white-space: nowrap; text-align: right; width: 30mm; }
     .opcao { display: inline-block; margin-left: 3mm; }
-    .opcao::before { content: ""; display: inline-block; vertical-align: -0.35mm; width: 3.4mm; height: 3.4mm; border: 1.5px solid var(--border-strong); border-radius: 50%; margin-right: 1.4mm; }
+    .bolinha { display: inline-block; vertical-align: -0.35mm; width: 3.4mm; height: 3.4mm; border: 1.5px solid var(--border-strong); border-radius: 50%; margin-right: 1.4mm; }
 
     /* ---------- Sumário ---------- */
     .sumario { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 6mm; margin-top: 6mm; }
-    .sumario li { display: grid; grid-template-columns: 9mm 1fr; gap: 3mm; padding: 5mm 0; border-top: 1px solid var(--border); align-items: start; }
+    .sumario li { padding: 5mm 0; border-top: 1px solid var(--border); }
+    .sumario li > a { display: grid; grid-template-columns: 9mm 1fr; gap: 3mm; align-items: start; color: inherit; text-decoration: none; }
     .sumario__n { font-size: 16pt; font-weight: 700; letter-spacing: -0.04em; line-height: 1; color: var(--accent-legivel); font-variant-numeric: tabular-nums; }
     .sumario__t { font-size: 10.5pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; }
     .sumario__d { font-size: 9.25pt; color: var(--ink-muted); margin-top: 1mm; }
@@ -505,7 +530,7 @@
 
     <div class="capa__miolo">
       <span class="eyebrow capa__eyebrow">AUVP Advisor</span>
-      <h1 class="capa__titulo">Manual de Registro<br /><em>na CVM</em></h1>
+      <h1 class="capa__titulo">Manual de Registro <br /><em>na CVM</em></h1>
       <p class="capa__sub">Como se registrar como Consultor de Valores Mobiliários</p>
       <p class="capa__desc">Um guia claro, do zero ao protocolo — Pessoa Física e Pessoa Jurídica</p>
 
@@ -522,7 +547,8 @@
   </section>
 
   <!-- ============ SUMÁRIO ============ -->
-  <section class="folha" aria-label="Sumário">
+  <section class="folha" id="sumario" aria-label="Sumário">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Sumário</span>
       <h2 class="secao__titulo">O caminho inteiro, <strong>seção por seção</strong></h2>
@@ -530,23 +556,24 @@
     </div>
 
     <ol class="sumario">
-      <li><span class="sumario__n">01</span><div><p class="sumario__t">Antes de começar</p><p class="sumario__d">Quem precisa do registro, consultor ou assessor, PF ou PJ, o que fica com cada um.</p></div></li>
-      <li><span class="sumario__n">02</span><div><p class="sumario__t">Descubra qual é o seu caminho</p><p class="sumario__d">As duas trilhas, passo a passo, e a regra de ouro da PJ.</p></div></li>
-      <li><span class="sumario__n">03</span><div><p class="sumario__t">Separe os documentos antes de começar</p><p class="sumario__d">A lista completa, quem prepara e onde a AUVP ajuda.</p></div></li>
-      <li><span class="sumario__n">04</span><div><p class="sumario__t">Vamos preencher juntos — o currículo (Anexo D)</p><p class="sumario__d">Cursos, certificação e experiência, campo a campo.</p></div></li>
-      <li><span class="sumario__n">05</span><div><p class="sumario__t">Anexo D — três itens que costumam travar</p><p class="sumario__d">Declaração do responsável, contingências e declarações adicionais.</p></div></li>
-      <li><span class="sumario__n">06</span><div><p class="sumario__t">Os anexos, em linguagem simples</p><p class="sumario__d">Do Anexo A ao F: o que cada um significa.</p></div></li>
-      <li><span class="sumario__n">07</span><div><p class="sumario__t">Passo a passo no CVMWeb</p><p class="sumario__d">A parte operacional, tela a tela, do acesso ao protocolo.</p></div></li>
-      <li><span class="sumario__n">08</span><div><p class="sumario__t">A AUVP Advisor ao seu lado</p><p class="sumario__d">Orientação, preenchimento assistido, conferência e depois do registro.</p></div></li>
-      <li><span class="sumario__n">09</span><div><p class="sumario__t">Depois que o registro sair</p><p class="sumario__d">Contrato, suitability e as obrigações para manter tudo em dia.</p></div></li>
-      <li><span class="sumario__n">10</span><div><p class="sumario__t">Pronto para protocolar?</p><p class="sumario__d">O checklist final, antes e depois do registro.</p></div></li>
-      <li class="sumario--kit"><span class="sumario__n">Kit</span><div><p class="sumario__t">Kit documental — modelos para preenchimento</p><p class="sumario__d">Requerimento de habilitação, informações cadastrais e Formulário de Referência (Anexo D) com exemplos preenchidos.</p></div></li>
+      <li><a href="#secao-1"><span class="sumario__n">01</span><div><p class="sumario__t">Antes de começar</p><p class="sumario__d">Quem precisa do registro, consultor ou assessor, PF ou PJ, o que fica com cada um.</p></div></a></li>
+      <li><a href="#secao-2"><span class="sumario__n">02</span><div><p class="sumario__t">Descubra qual é o seu caminho</p><p class="sumario__d">As duas trilhas, passo a passo, e a regra de ouro da PJ.</p></div></a></li>
+      <li><a href="#secao-3"><span class="sumario__n">03</span><div><p class="sumario__t">Separe os documentos antes de começar</p><p class="sumario__d">A lista completa, quem prepara e onde a AUVP ajuda.</p></div></a></li>
+      <li><a href="#secao-4"><span class="sumario__n">04</span><div><p class="sumario__t">Vamos preencher juntos — o currículo (Anexo D)</p><p class="sumario__d">Cursos, certificação e experiência, campo a campo.</p></div></a></li>
+      <li><a href="#secao-5"><span class="sumario__n">05</span><div><p class="sumario__t">Anexo D — três itens que costumam travar</p><p class="sumario__d">Declaração do responsável, contingências e declarações adicionais.</p></div></a></li>
+      <li><a href="#secao-6"><span class="sumario__n">06</span><div><p class="sumario__t">Os anexos, em linguagem simples</p><p class="sumario__d">Do Anexo A ao F: o que cada um significa.</p></div></a></li>
+      <li><a href="#secao-7"><span class="sumario__n">07</span><div><p class="sumario__t">Passo a passo no CVMWeb</p><p class="sumario__d">A parte operacional, tela a tela, do acesso ao protocolo.</p></div></a></li>
+      <li><a href="#secao-8"><span class="sumario__n">08</span><div><p class="sumario__t">A AUVP Advisor ao seu lado</p><p class="sumario__d">Orientação, preenchimento assistido, conferência e depois do registro.</p></div></a></li>
+      <li><a href="#secao-9"><span class="sumario__n">09</span><div><p class="sumario__t">Depois que o registro sair</p><p class="sumario__d">Contrato, suitability e as obrigações para manter tudo em dia.</p></div></a></li>
+      <li><a href="#secao-10"><span class="sumario__n">10</span><div><p class="sumario__t">Pronto para protocolar?</p><p class="sumario__d">O checklist final, antes e depois do registro.</p></div></a></li>
+      <li class="sumario--kit"><a href="#kit"><span class="sumario__n">Kit</span><div><p class="sumario__t">Kit documental — modelos para preenchimento</p><p class="sumario__d">Requerimento de habilitação, informações cadastrais e Formulário de Referência (Anexo D) com exemplos preenchidos.</p></div></a></li>
     </ol>
 
   </section>
 
   <!-- ============ SEÇÃO 1 ============ -->
   <section class="folha secao" id="secao-1">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 1</span>
       <h2 class="secao__titulo">Antes de <strong>começar</strong></h2>
@@ -556,7 +583,7 @@
     <h3 class="sub sub--primeiro">Quem precisa do registro</h3>
     <p>Toda pessoa ou empresa que vá <strong>orientar, recomendar e aconselhar</strong> clientes sobre investimentos, de forma profissional e independente. É uma atividade privativa de quem tem autorização da CVM.</p>
 
-    <h3 class="sub">Consultor<span class="ou">·  ou  ·</span>Assessor?</h3>
+    <h3 class="sub">Consultor <span class="ou">· ou ·</span> Assessor?</h3>
     <div class="duas">
       <div class="cartao">
         <p class="cartao__rotulo"><span class="eyebrow">Consultor</span></p>
@@ -585,7 +612,7 @@
       <p>Cancele o registro de assessor antes de pedir o de consultor. O consultor PF e os diretores de uma consultoria PJ também não podem manter registro de assessor.</p>
     </div>
 
-    <h3 class="sub">Pessoa Física<span class="ou">·  ou  ·</span>Pessoa Jurídica?</h3>
+    <h3 class="sub">Pessoa Física <span class="ou">· ou ·</span> Pessoa Jurídica?</h3>
     <div class="duas">
       <div class="cartao">
         <p class="cartao__rotulo"><span class="eyebrow">Pessoa Física (PF)</span></p>
@@ -610,6 +637,7 @@
   </section>
 
   <section class="folha secao" id="secao-1b">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 1 · continuação</span>
     </div>
@@ -645,6 +673,7 @@
 
   <!-- ============ SEÇÃO 2 ============ -->
   <section class="folha secao" id="secao-2">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 2</span>
       <h2 class="secao__titulo">Descubra qual é o <strong>seu caminho</strong></h2>
@@ -698,6 +727,7 @@
 
   <!-- ============ SEÇÃO 3 ============ -->
   <section class="folha secao" id="secao-3">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 3</span>
       <h2 class="secao__titulo">Separe os documentos <strong>antes de começar</strong></h2>
@@ -734,6 +764,7 @@
 
   <!-- ============ SEÇÃO 4 ============ -->
   <section class="folha secao" id="secao-4">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 4</span>
       <h2 class="secao__titulo">Vamos preencher juntos — <strong>o currículo (Anexo D)</strong></h2>
@@ -779,6 +810,7 @@
 
   <!-- ============ SEÇÃO 5 ============ -->
   <section class="folha secao" id="secao-5">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 5</span>
       <h2 class="secao__titulo">Anexo D — <strong>três itens que costumam travar</strong></h2>
@@ -817,6 +849,7 @@
 
   <!-- ============ SEÇÃO 6 ============ -->
   <section class="folha secao" id="secao-6">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 6</span>
       <h2 class="secao__titulo">Os anexos, <strong>em linguagem simples</strong></h2>
@@ -841,25 +874,25 @@
         <p class="cartao__rotulo"><span class="eyebrow">Anexo B</span></p>
         <p class="cartao__titulo">Documentos da Pessoa Física</p>
         <ul class="check" style="margin-top:3mm">
-          <li>Requerimento assinado</li>
-          <li>Comprovante de certificação</li>
-          <li>Diploma de curso superior</li>
-          <li>Informações cadastrais</li>
-          <li>CPF e documento de identidade</li>
-          <li>Formulário de Referência — itens 1, 3, 5 e 6 (Anexo D)</li>
+          <li><i class="cx" data-campo="anexo_b_1" data-tipo="check"></i>Requerimento assinado</li>
+          <li><i class="cx" data-campo="anexo_b_2" data-tipo="check"></i>Comprovante de certificação</li>
+          <li><i class="cx" data-campo="anexo_b_3" data-tipo="check"></i>Diploma de curso superior</li>
+          <li><i class="cx" data-campo="anexo_b_4" data-tipo="check"></i>Informações cadastrais</li>
+          <li><i class="cx" data-campo="anexo_b_5" data-tipo="check"></i>CPF e documento de identidade</li>
+          <li><i class="cx" data-campo="anexo_b_6" data-tipo="check"></i>Formulário de Referência — itens 1, 3, 5 e 6 (Anexo D)</li>
         </ul>
       </div>
       <div class="cartao anexo" style="margin-top:0">
         <p class="cartao__rotulo"><span class="eyebrow">Anexo C</span></p>
         <p class="cartao__titulo">Documentos da Pessoa Jurídica</p>
         <ul class="check" style="margin-top:3mm">
-          <li>Requerimento do representante legal</li>
-          <li>Atos constitutivos com objeto de consultoria</li>
-          <li>Informações cadastrais da empresa</li>
-          <li>Indicação do diretor de suitability</li>
-          <li>Formulário de Referência — itens 1, 2, 3, 4, 7, 8, 10 e 12 (Anexo E)</li>
-          <li>Item 11 (contingências), se houver dados</li>
-          <li>Itens 6.1, 6.2 e 9.1 (escopo e remuneração)</li>
+          <li><i class="cx" data-campo="anexo_c_1" data-tipo="check"></i>Requerimento do representante legal</li>
+          <li><i class="cx" data-campo="anexo_c_2" data-tipo="check"></i>Atos constitutivos com objeto de consultoria</li>
+          <li><i class="cx" data-campo="anexo_c_3" data-tipo="check"></i>Informações cadastrais da empresa</li>
+          <li><i class="cx" data-campo="anexo_c_4" data-tipo="check"></i>Indicação do diretor de suitability</li>
+          <li><i class="cx" data-campo="anexo_c_5" data-tipo="check"></i>Formulário de Referência — itens 1, 2, 3, 4, 7, 8, 10 e 12 (Anexo E)</li>
+          <li><i class="cx" data-campo="anexo_c_6" data-tipo="check"></i>Item 11 (contingências), se houver dados</li>
+          <li><i class="cx" data-campo="anexo_c_7" data-tipo="check"></i>Itens 6.1, 6.2 e 9.1 (escopo e remuneração)</li>
         </ul>
       </div>
     </div>
@@ -877,6 +910,7 @@
 
   <!-- ============ SEÇÃO 7 ============ -->
   <section class="folha secao" id="secao-7">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 7</span>
       <h2 class="secao__titulo">Passo a passo <strong>no CVMWeb</strong></h2>
@@ -918,6 +952,7 @@
   </section>
 
   <section class="folha secao" id="secao-7b">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 7 · Passo a passo no CVMWeb</span>
     </div>
@@ -957,6 +992,7 @@
   </section>
 
   <section class="folha secao" id="secao-7c">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 7 · Passo a passo no CVMWeb</span>
     </div>
@@ -975,7 +1011,7 @@
     <div class="passo">
       <span class="no">8</span>
       <div>
-        <p class="passo__titulo">Revise e protocole</p>
+        <p class="passo__titulo">Revise e Protocole</p>
         <p class="passo__texto">Confira dados e anexos — inconsistências geram exigência.</p>
         <figure class="tela">
           <img src="img/cvmweb-09.png" width="623" height="351" alt="Tela de revisão do pedido antes do protocolo." />
@@ -1032,6 +1068,7 @@
 
   <!-- ============ SEÇÃO 9 ============ -->
   <section class="folha secao" id="secao-9">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 9</span>
       <h2 class="secao__titulo">Depois que o <strong>registro sair</strong></h2>
@@ -1075,6 +1112,7 @@
 
   <!-- ============ SEÇÃO 10 ============ -->
   <section class="folha secao" id="secao-10">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Seção 10</span>
       <h2 class="secao__titulo">Pronto para <strong>protocolar?</strong></h2>
@@ -1084,27 +1122,27 @@
     <div class="cartao">
       <p class="cartao__rotulo"><span class="eyebrow">Antes do protocolo</span></p>
       <ul class="check check--duas" style="margin-top:2mm">
-        <li>Tenho graduação (diploma digitalizado)</li>
-        <li>Tenho certificação aceita</li>
-        <li>Conta gov.br Prata ou Ouro</li>
-        <li>Registro de assessor cancelado (se aplicável)</li>
-        <li>CPF e documento de identidade</li>
-        <li>Informações cadastrais preenchidas</li>
-        <li>Requerimento assinado</li>
-        <li>Anexo D preenchido (itens 1, 3, 5 e 6)</li>
-        <li>GRU emitida e paga · comprovante salvo</li>
-        <li>PDFs legíveis · pedido revisado</li>
-        <li><strong>Protocolei</strong></li>
+        <li><i class="cx" data-campo="antes_protocolo_1" data-tipo="check"></i>Tenho graduação (diploma digitalizado)</li>
+        <li><i class="cx" data-campo="antes_protocolo_2" data-tipo="check"></i>Tenho certificação aceita</li>
+        <li><i class="cx" data-campo="antes_protocolo_3" data-tipo="check"></i>Conta gov.br Prata ou Ouro</li>
+        <li><i class="cx" data-campo="antes_protocolo_4" data-tipo="check"></i>Registro de assessor cancelado (se aplicável)</li>
+        <li><i class="cx" data-campo="antes_protocolo_5" data-tipo="check"></i>CPF e documento de identidade</li>
+        <li><i class="cx" data-campo="antes_protocolo_6" data-tipo="check"></i>Informações cadastrais preenchidas</li>
+        <li><i class="cx" data-campo="antes_protocolo_7" data-tipo="check"></i>Requerimento assinado</li>
+        <li><i class="cx" data-campo="antes_protocolo_8" data-tipo="check"></i>Anexo D preenchido (itens 1, 3, 5 e 6)</li>
+        <li><i class="cx" data-campo="antes_protocolo_9" data-tipo="check"></i>GRU emitida e paga · comprovante salvo</li>
+        <li><i class="cx" data-campo="antes_protocolo_10" data-tipo="check"></i>PDFs legíveis · pedido revisado</li>
+        <li><i class="cx" data-campo="antes_protocolo_11" data-tipo="check"></i><strong>Protocolei</strong></li>
       </ul>
     </div>
 
     <h3 class="sub">Depois do registro</h3>
     <div class="cartao">
       <ul class="check">
-        <li>Registro confirmado na consulta pública · número guardado</li>
-        <li>Adesão à plataforma AUVP Advisor concluída</li>
-        <li>Treinamento realizado</li>
-        <li>Ambiente de trabalho na AUVP Advisor (plataforma) configurado</li>
+        <li><i class="cx" data-campo="depois_registro_1" data-tipo="check"></i>Registro confirmado na consulta pública · número guardado</li>
+        <li><i class="cx" data-campo="depois_registro_2" data-tipo="check"></i>Adesão à plataforma AUVP Advisor concluída</li>
+        <li><i class="cx" data-campo="depois_registro_3" data-tipo="check"></i>Treinamento realizado</li>
+        <li><i class="cx" data-campo="depois_registro_4" data-tipo="check"></i>Ambiente de trabalho na AUVP Advisor (plataforma) configurado</li>
       </ul>
     </div>
 
@@ -1117,6 +1155,7 @@
 
   <!-- ============ KIT DOCUMENTAL ============ -->
   <section class="folha secao" id="kit">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Kit documental</span>
       <h2 class="secao__titulo">Modelos para <strong>preenchimento</strong></h2>
@@ -1124,20 +1163,21 @@
     </div>
 
     <h3 class="sub sub--primeiro">1 · Requerimento de habilitação — Pessoa Física</h3>
-    <div class="cartao modelo">
+    <div class="cartao modelo modelo--lacunas">
       <p class="modelo__eyebrow"><span class="eyebrow">Requerimento</span></p>
       <p><strong>Requerimento de Habilitação Profissional para Consultor de Valores Mobiliários — Resolução CVM nº 19.</strong></p>
       <p>Prezados Senhores,</p>
-      <p>Eu, <span class="ph">[NOME]</span>, portador(a) do CPF nº <span class="ph">[Nº]</span>, venho solicitar à Comissão de Valores Mobiliários (CVM) a habilitação profissional para a atividade de consultor de valores mobiliários, conforme a Resolução CVM nº 19/2021.</p>
-      <p>O tipo de pedido que submeto é por certificação, conforme previsto no regulamento em vigor. A presente solicitação é datada de <span class="ph">[DATA]</span>.</p>
+      <p>Eu, <span class="lacuna lacuna--nome" data-campo="req_nome" data-tipo="texto" data-rotulo="Nome"></span>, portador(a) do CPF nº <span class="lacuna lacuna--cpf" data-campo="req_cpf" data-tipo="texto" data-rotulo="CPF"></span>, venho solicitar à Comissão de Valores Mobiliários (CVM) a habilitação profissional para a atividade de consultor de valores mobiliários, conforme a Resolução CVM nº 19/2021.</p>
+      <p>O tipo de pedido que submeto é por certificação, conforme previsto no regulamento em vigor. A presente solicitação é datada de <span class="lacuna lacuna--data" data-campo="req_data" data-tipo="texto" data-rotulo="Data"></span>.</p>
       <p>Assino este requerimento como declaração do meu interesse na obtenção da habilitação profissional mencionada, e coloco-me à disposição para informações adicionais.</p>
       <p>Atenciosamente,</p>
-      <p class="assinatura"><span class="ph">[NOME]</span>  ·  <span class="ph">[CPF]</span>  ·  <span class="ph">[DATA]</span></p>
+      <p class="assinatura"><span class="lacuna lacuna--nome" data-campo="req_ass_nome" data-tipo="texto" data-rotulo="Nome"></span>  ·  <span class="lacuna lacuna--cpf" data-campo="req_ass_cpf" data-tipo="texto" data-rotulo="CPF"></span>  ·  <span class="lacuna lacuna--data" data-campo="req_ass_data" data-tipo="texto" data-rotulo="Data"></span></p>
     </div>
     <p class="fino fino--legenda">Modelo de requerimento por certificação, conforme a Resolução CVM nº 19/2021.</p>
   </section>
 
   <section class="folha secao" id="kit-2">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Kit documental</span>
       <h2 class="secao__titulo">2 · Informações cadastrais do consultor <strong>(Pessoa Natural)</strong></h2>
@@ -1145,29 +1185,30 @@
 
     <div class="form">
       <p class="form__grupo" style="margin-top:0"><span class="eyebrow">Dados gerais</span></p>
-      <div class="campo-form"><label>Nome</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Nacionalidade</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Estado civil</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Data de nascimento</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>CPF</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Documento de identidade (ID)</label><div class="caixa"></div></div>
+      <div class="campo-form"><label>Nome</label><div class="caixa" data-campo="cad_nome" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Nacionalidade</label><div class="caixa" data-campo="cad_nacionalidade" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Estado civil</label><div class="caixa" data-campo="cad_estado_civil" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Data de nascimento</label><div class="caixa" data-campo="cad_nascimento" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>CPF</label><div class="caixa" data-campo="cad_cpf" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Documento de identidade (ID)</label><div class="caixa" data-campo="cad_identidade" data-tipo="texto"></div></div>
 
       <p class="form__grupo"><span class="eyebrow">Endereço</span></p>
-      <div class="campo-form"><label>Tipo de endereço</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Logradouro</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Complemento</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Bairro</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>UF / Município</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>CEP</label><div class="caixa"></div></div>
+      <div class="campo-form"><label>Tipo de endereço</label><div class="caixa" data-campo="cad_tipo_endereco" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Logradouro</label><div class="caixa" data-campo="cad_logradouro" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Complemento</label><div class="caixa" data-campo="cad_complemento" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Bairro</label><div class="caixa" data-campo="cad_bairro" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>UF / Município</label><div class="caixa" data-campo="cad_uf_municipio" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>CEP</label><div class="caixa" data-campo="cad_cep" data-tipo="texto"></div></div>
 
       <p class="form__grupo"><span class="eyebrow">Contatos</span></p>
-      <div class="campo-form"><label>Telefones</label><div class="caixa"></div></div>
-      <div class="campo-form"><label>Fax</label><div class="caixa"></div></div>
-      <div class="campo-form" style="grid-column: 1 / -1"><label>E-mails</label><div class="caixa"></div></div>
+      <div class="campo-form"><label>Telefones</label><div class="caixa" data-campo="cad_telefones" data-tipo="texto"></div></div>
+      <div class="campo-form"><label>Fax</label><div class="caixa" data-campo="cad_fax" data-tipo="texto"></div></div>
+      <div class="campo-form" style="grid-column: 1 / -1"><label>E-mails</label><div class="caixa" data-campo="cad_emails" data-tipo="texto"></div></div>
     </div>
   </section>
 
   <section class="folha secao" id="kit-3">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Kit documental</span>
       <h2 class="secao__titulo">3 · Formulário de Referência — <strong>Anexo D (Pessoa Natural)</strong></h2>
@@ -1175,26 +1216,27 @@
     </div>
 
     <h3 class="sub sub--primeiro">1. Identificação e declaração do responsável</h3>
-    <div class="cartao modelo">
-      <p><span class="ph">[NOME]</span>, inscrito(a) no CPF sob o nº <span class="ph">[Nº]</span>.</p>
+    <div class="cartao modelo modelo--lacunas">
+      <p><span class="lacuna lacuna--nome" data-campo="fr_1_nome" data-tipo="texto" data-rotulo="Nome"></span>, inscrito(a) no CPF sob o nº <span class="lacuna lacuna--cpf" data-campo="fr_1_cpf" data-tipo="texto" data-rotulo="CPF"></span>.</p>
       <p>“Prezados Senhores, declaro para os devidos fins que revi o formulário de referência aqui apresentado e que o conjunto de informações nele contido é um retrato verdadeiro, preciso e completo dos dados e informações necessários.”</p>
       <p class="linha-assinatura">Assinatura</p>
     </div>
 
     <h3 class="sub">2. Escopo das atividades</h3>
-    <div class="caixa caixa--texto">Consultoria de valores mobiliários que presta serviços de orientação, recomendação e aconselhamento, de forma profissional, independente e individualizada, sobre investimentos no mercado de valores mobiliários, cuja adoção e implementação são exclusivas do cliente. A prestação se dá pela análise e orientação, por meio de reuniões, sobre a melhor alocação dos recursos do cliente.</div>
+    <div class="caixa caixa--texto" data-campo="fr_2_escopo" data-tipo="multilinha">Consultoria de valores mobiliários que presta serviços de orientação, recomendação e aconselhamento, de forma profissional, independente e individualizada, sobre investimentos no mercado de valores mobiliários, cuja adoção e implementação são exclusivas do cliente. A prestação se dá pela análise e orientação, por meio de reuniões, sobre a melhor alocação dos recursos do cliente.</div>
     <p class="fino fino--legenda">Acrescente ou retire conforme a sua atuação.</p>
 
     <h3 class="sub">2.1.b) Títulos e valores mobiliários objeto de consultoria</h3>
-    <div class="caixa caixa--texto">Valores mobiliários em geral, ações de companhias abertas, títulos públicos, DI, renda fixa e cotas de fundos de investimento.</div>
+    <div class="caixa caixa--texto" data-campo="fr_2_1b_titulos" data-tipo="multilinha">Valores mobiliários em geral, ações de companhias abertas, títulos públicos, DI, renda fixa e cotas de fundos de investimento.</div>
     <p class="fino fino--legenda">Acrescente ou retire conforme a sua atuação.</p>
 
     <h3 class="sub">2.1.c) “Conheça seu cliente” e suitability</h3>
-    <div class="caixa caixa--texto">O processo de conheça seu cliente (KYC) é feito por questionário, entrevistas e acompanhamento dos investimentos. São usadas consultas às Receitas Federal, Estadual e Municipal, à Justiça Comum e Federal, entre outras fontes. A consulta é feita previamente à abertura de relacionamento com o investidor.</div>
+    <div class="caixa caixa--texto" data-campo="fr_2_1c_kyc" data-tipo="multilinha">O processo de conheça seu cliente (KYC) é feito por questionário, entrevistas e acompanhamento dos investimentos. São usadas consultas às Receitas Federal, Estadual e Municipal, à Justiça Comum e Federal, entre outras fontes. A consulta é feita previamente à abertura de relacionamento com o investidor.</div>
     <p class="fino fino--legenda">Acrescente ou retire conforme a sua atuação.</p>
   </section>
 
   <section class="folha secao" id="kit-3b">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Kit documental · Anexo D</span>
       <h2 class="secao__titulo">3. Conhecimento <strong>e experiência</strong></h2>
@@ -1202,45 +1244,46 @@
     </div>
 
     <div class="form form--uma" style="margin-top:0">
-      <div class="campo-form"><label>3.a) Cursos concluídos</label><div class="caixa caixa--alta"></div></div>
-      <div class="campo-form"><label>3.b) Certificação (nome / instituição / ano)</label><div class="caixa"></div></div>
+      <div class="campo-form"><label>3.a) Cursos concluídos</label><div class="caixa caixa--alta" data-campo="fr_3a_cursos" data-tipo="multilinha"></div></div>
+      <div class="campo-form"><label>3.b) Certificação (nome / instituição / ano)</label><div class="caixa" data-campo="fr_3b_certificacao" data-tipo="texto"></div></div>
     </div>
 
     <p class="campo-form"><label style="display:block;font-size:7.5pt;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:1.2mm">3.c) Experiências profissionais dos últimos 5 anos</label></p>
     <table class="tabela tabela-exp">
       <thead><tr><th>Empresa</th><th>Cargo e funções</th><th>Atividade principal da empresa</th></tr></thead>
       <tbody>
-        <tr><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td></tr>
+        <tr><td data-campo="fr_3c_1_1" data-tipo="texto"></td><td data-campo="fr_3c_1_2" data-tipo="texto"></td><td data-campo="fr_3c_1_3" data-tipo="texto"></td></tr>
+        <tr><td data-campo="fr_3c_2_1" data-tipo="texto"></td><td data-campo="fr_3c_2_2" data-tipo="texto"></td><td data-campo="fr_3c_2_3" data-tipo="texto"></td></tr>
+        <tr><td data-campo="fr_3c_3_1" data-tipo="texto"></td><td data-campo="fr_3c_3_2" data-tipo="texto"></td><td data-campo="fr_3c_3_3" data-tipo="texto"></td></tr>
       </tbody>
     </table>
 
     <h3 class="sub">4. Remuneração</h3>
-    <div class="caixa caixa--texto">A remuneração é realizada por taxas de base fixa, além de percentual baseado em performance. As bases fixas são calculadas sobre percentual do patrimônio total e percentual sobre o rendimento líquido auferido.</div>
+    <div class="caixa caixa--texto" data-campo="fr_4_remuneracao" data-tipo="multilinha">A remuneração é realizada por taxas de base fixa, além de percentual baseado em performance. As bases fixas são calculadas sobre percentual do patrimônio total e percentual sobre o rendimento líquido auferido.</div>
     <p class="fino fino--legenda">Acrescente ou retire conforme a sua atuação.</p>
 
     <h3 class="sub">5. Contingências</h3>
-    <div class="caixa caixa--texto">5.1 Não há.   ·   5.2 Não há.   ·   5.3 Não há.</div>
+    <div class="caixa caixa--texto" data-campo="fr_5_contingencias" data-tipo="multilinha">5.1 Não há.   ·   5.2 Não há.   ·   5.3 Não há.</div>
     <p class="fino fino--legenda">Se houver processos ou condenações relevantes, descreva os fatos e valores.</p>
 
   </section>
 
   <section class="folha secao" id="kit-3c">
+    <div class="corrido"><strong>AUVP Advisor</strong><a href="#sumario" title="Voltar ao sumário">Manual de Registro na CVM · Consultor de Valores Mobiliários</a></div>
     <div class="secao__head">
       <span class="eyebrow">Kit documental · Anexo D</span>
       <h2 class="secao__titulo">6. Declarações <strong>adicionais</strong></h2>
       <p class="secao__lead">O esperado é “Não há.” em todos os itens. Marque conforme a sua situação:</p>
     </div>
     <table class="simnao">
-      <tr><td>6.1) Acusações/punições nos últimos 5 anos (CVM, BCB, SUSEP ou PREVIC)?</td><td><span class="opcao">Não</span><span class="opcao">Sim</span></td></tr>
-      <tr><td>6.2) Condenação por crimes financeiros/contra a administração (transitada em julgado)?</td><td><span class="opcao">Não</span><span class="opcao">Sim</span></td></tr>
-      <tr><td>6.3) Impedimento de administrar seus bens por decisão judicial/administrativa?</td><td><span class="opcao">Não</span><span class="opcao">Sim</span></td></tr>
-      <tr><td>6.4) Consta como comitente inadimplente em mercado organizado?</td><td><span class="opcao">Não</span><span class="opcao">Sim</span></td></tr>
+      <tr><td>6.1) Acusações/punições nos últimos 5 anos (CVM, BCB, SUSEP ou PREVIC)?</td><td><span class="opcao"><i class="bolinha" data-campo="fr_6_1" data-tipo="radio" data-valor="Não"></i>Não</span><span class="opcao"><i class="bolinha" data-campo="fr_6_1" data-tipo="radio" data-valor="Sim"></i>Sim</span></td></tr>
+      <tr><td>6.2) Condenação por crimes financeiros/contra a administração (transitada em julgado)?</td><td><span class="opcao"><i class="bolinha" data-campo="fr_6_2" data-tipo="radio" data-valor="Não"></i>Não</span><span class="opcao"><i class="bolinha" data-campo="fr_6_2" data-tipo="radio" data-valor="Sim"></i>Sim</span></td></tr>
+      <tr><td>6.3) Impedimento de administrar seus bens por decisão judicial/administrativa?</td><td><span class="opcao"><i class="bolinha" data-campo="fr_6_3" data-tipo="radio" data-valor="Não"></i>Não</span><span class="opcao"><i class="bolinha" data-campo="fr_6_3" data-tipo="radio" data-valor="Sim"></i>Sim</span></td></tr>
+      <tr><td>6.4) Consta como comitente inadimplente em mercado organizado?</td><td><span class="opcao"><i class="bolinha" data-campo="fr_6_4" data-tipo="radio" data-valor="Não"></i>Não</span><span class="opcao"><i class="bolinha" data-campo="fr_6_4" data-tipo="radio" data-valor="Sim"></i>Sim</span></td></tr>
     </table>
 
     <div class="form form--uma" style="margin-top:5mm">
-      <div class="campo-form"><label>Se marcou “Sim” em algum item, descreva os fatos</label><div class="caixa caixa--alta"></div></div>
+      <div class="campo-form"><label>Se marcou “Sim” em algum item, descreva os fatos</label><div class="caixa caixa--alta" data-campo="fr_6_descricao" data-tipo="multilinha"></div></div>
     </div>
   </section>
 
@@ -1253,7 +1296,7 @@
 
     <div class="fecho">
       <div class="fecho__olho"><svg viewBox="0 0 400 250" fill="currentColor" aria-hidden="true"><path  d="M348.11,105.03C264.73-2.56,129.56-2.56,46.19,105.03l-15.96,20.6,15.96,20.6c83.37,107.59,218.55,107.59,301.92,0l15.97-20.6-15.97-20.6ZM260.01,123.92c.59,16.55-5.3,32.34-16.59,44.46-11.28,12.12-26.61,19.12-43.16,19.71-.75.03-1.51.04-2.27.04-15.69,0-30.68-5.9-42.19-16.62-9.19-8.55-15.49-19.52-18.24-31.73-.33-1.48.6-2.95,2.08-3.28.73-.16,1.46-.04,2.07.36.62.39,1.06,1.01,1.21,1.72,2.5,11.12,8.24,21.11,16.61,28.9,11.04,10.29,25.44,15.64,40.51,15.12,15.08-.53,29.06-6.91,39.34-17.96,10.28-11.04,15.65-25.43,15.12-40.52-.54-15.08-6.92-29.06-17.96-39.34-11.05-10.28-25.37-15.64-40.52-15.11-15.08.54-29.05,6.91-39.34,17.96-2.49,2.68-4.73,5.6-6.65,8.69-.81,1.29-2.52,1.67-3.79.88-.62-.39-1.06-1-1.22-1.71s-.04-1.46.34-2.08c2.1-3.37,4.56-6.58,7.3-9.52,11.29-12.12,26.62-19.12,43.17-19.71,16.61-.59,32.34,5.3,44.46,16.59,12.12,11.29,19.12,26.62,19.71,43.17ZM212.77,120.69c3.35,0,6.27-1.86,7.78-4.61,1.41,3.06,2.21,6.46,2.21,10.05,0,13.25-10.74,23.99-23.99,23.99s-23.99-10.74-23.99-23.99,10.74-23.99,23.99-23.99c3.42,0,6.66.72,9.6,2.01-2.66,1.53-4.46,4.4-4.46,7.68,0,4.89,3.97,8.86,8.86,8.86ZM214.98,105.48c.53.12.98.26,1.36.43l.24,2.38c-.41-.19-.88-.34-1.38-.46-.51-.12-1.04-.18-1.6-.18-.37,0-.65.02-.86.07-.2.05-.35.12-.42.22-.08.1-.12.21-.12.35v.02c0,.14.05.27.14.38.1.11.27.22.52.34.25.11.62.25,1.09.4.67.21,1.24.43,1.7.67.46.23.8.53,1.04.9.23.37.35.86.35,1.48v.11c0,1.03-.33,1.8-1,2.32-.43.33-1.02.54-1.73.66v1.44h-2.31v-1.39c-.1-.01-.22,0-.32-.02-.4-.06-.77-.13-1.11-.22-.34-.09-.63-.18-.89-.28l-.24-2.55c.41.18.9.34,1.47.5s1.16.24,1.78.24c.55,0,.94-.06,1.16-.17.22-.11.33-.3.33-.55v-.03c0-.17-.05-.31-.16-.42-.11-.11-.28-.22-.53-.32s-.58-.22-1-.35c-.68-.22-1.25-.45-1.72-.71-.47-.26-.82-.58-1.06-.96-.24-.39-.36-.88-.36-1.48v-.12c0-.93.32-1.63.96-2.12.43-.33,1-.53,1.69-.64v-1.39h2.31v1.37c.23.03.47.06.67.1ZM204.59,88.09c-10.24-1.21-20.24,1.63-28.29,7.98-8.05,6.35-13.15,15.46-14.36,25.65-1.2,10.17,1.64,20.21,8,28.27,6.36,8.06,15.46,13.17,25.63,14.37,7.85.94,15.71-.55,22.67-4.3,6.8-3.66,12.28-9.19,15.86-16.01.69-1.34,2.35-1.86,3.7-1.16.66.35,1.14.92,1.35,1.62.22.7.15,1.45-.19,2.1-4.08,7.78-10.35,14.12-18.12,18.3-6.36,3.41-13.52,5.22-20.7,5.22-1.74,0-3.5-.1-5.22-.31-11.63-1.37-22.03-7.21-29.3-16.43-7.27-9.22-10.52-20.69-9.14-32.32,1.38-11.65,7.21-22.05,16.41-29.32,9.2-7.26,20.69-10.52,32.33-9.13,16.36,1.94,30.13,12.72,35.95,28.15.26.68.24,1.43-.06,2.1-.3.67-.85,1.18-1.54,1.44-1.41.55-3.01-.19-3.54-1.6-5.09-13.5-17.14-22.93-31.45-24.63ZM260.81,188.17c-16.57,16.57-38.6,25.7-62.04,25.7s-45.47-9.12-62.04-25.7c-16.57-16.57-25.7-38.61-25.7-62.04s9.13-45.47,25.7-62.04c16.57-16.57,38.6-25.7,62.04-25.7,3.34,0,6.7.19,9.99.56.73.08,1.38.45,1.84,1.02.46.58.66,1.3.58,2.02-.08.72-.44,1.38-1.01,1.84-.58.46-1.3.68-2.03.58-3.1-.35-6.25-.53-9.37-.53-21.96,0-42.61,8.56-58.15,24.09-15.53,15.53-24.09,36.19-24.09,58.16s8.56,42.62,24.09,58.15c15.54,15.53,36.19,24.09,58.15,24.09s42.62-8.56,58.16-24.09c15.53-15.53,24.09-36.18,24.09-58.15,0-17.88-5.63-34.87-16.29-49.14-.44-.59-.63-1.32-.52-2.05.11-.73.49-1.37,1.08-1.81.58-.44,1.3-.62,2.03-.52.73.11,1.37.49,1.81,1.07,11.37,15.24,17.38,33.37,17.38,52.44,0,23.43-9.13,45.47-25.7,62.04Z"/></svg></div>
-      <h2 class="fecho__titulo">Você faz o registro.<br /><em>A gente te ensina como fazer.</em></h2>
+      <h2 class="fecho__titulo">Você faz o registro. <br /><em>A gente te ensina como fazer.</em></h2>
       <p class="fecho__sub">Com o registro ativo, a AUVP Advisor te acompanha na adesão à plataforma, no treinamento e na configuração do ambiente de trabalho.</p>
     </div>
 

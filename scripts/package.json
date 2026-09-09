@@ -1,0 +1,12 @@
+{
+  "name": "lp-recrutamento-consultoria-scripts",
+  "private": true,
+  "description": "Ferramentas de desenvolvimento da LP (nao vao para o ar). Hoje: geracao do PDF do Manual de Registro na CVM.",
+  "scripts": {
+    "manual": "node gerar-manual-pdf.js"
+  },
+  "dependencies": {
+    "pdf-lib": "^1.17.1",
+    "playwright": "1.56.1"
+  }
+}

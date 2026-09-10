@@ -1391,6 +1391,8 @@ button:focus-visible {
   border-top: 1px solid var(--border);
   padding-top: var(--sp-3);
 }
+.verba__fine a { color: var(--accent-legivel, var(--accent)); text-decoration: underline; text-underline-offset: 2px; }
+.verba__fine a:hover { text-decoration-thickness: 2px; }
 
 /* O aviso é o asterisco do número, então mora no painel escuro junto dele e
    não em letra miúda do outro lado da dobra. Fica mais claro que a caixa de

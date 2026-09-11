@@ -24,6 +24,14 @@ const PRIVACY_URL =
   "https://cdn.asupernova.com.br/termos/auvp%20advisors/AUVP_Advisor_PP_v1.pdf";
 
 /**
+ * Termo Promocional do pré-lançamento (condições dos benefícios aos 20
+ * primeiros advisors). Mesmo tratamento dos dois acima: PDF no CDN, link em
+ * nova aba, e desabilitado se a URL ficar vazia.
+ */
+const PROMO_URL =
+  "https://cdn.asupernova.com.br/termos/auvp%20advisors/Termo%20Promocional%20-%20PR%C3%89-LAN%C3%87AMENTO%20AUVP%20ADVISOR%20-%2020260902.docx%201.pdf";
+
+/**
  * Vídeo de lançamento (URL de embed, ex.: https://www.youtube.com/embed/ID).
  * Vazio mantém a seção do vídeo oculta.
  */
@@ -219,6 +227,7 @@ function aplicarLinksLegais() {
   const pares = [
     ["[data-terms-link]", TERMS_URL],
     ["[data-privacy-link]", PRIVACY_URL],
+    ["[data-promo-link]", PROMO_URL],
   ];
   pares.forEach(([seletor, url]) => {
     document.querySelectorAll(seletor).forEach((link) => {

@@ -58,6 +58,7 @@ Tudo que depende de terceiros está no bloco de configuração no topo de `asset
 | `FORM_ENDPOINT` | URL do Web App do Apps Script que grava na planilha de leads (ver "Planilha de leads") | ✅ **Configurada.** Vazia, o formulário valida os campos normalmente e avisa que o destino não foi definido |
 | `TERMS_URL` | Termos de Uso do programa (PDF no CDN) | ✅ **Configurada.** Vazia, os links ficam inertes e visivelmente desabilitados |
 | `PRIVACY_URL` | Política de Privacidade do programa (PDF no CDN) | ✅ **Configurada.** Idem |
+| `PROMO_URL` | Termo Promocional do pré-lançamento (PDF no CDN), linkado na letra miúda do bloco de benefícios aos 20 primeiros advisors | ✅ **Configurada.** Idem |
 | `VIDEO_URL` | Embed do vídeo de lançamento | A dobra do vídeo fica oculta |
 
 Além dessas, duas constantes no mesmo bloco governam o simulador de repasse:

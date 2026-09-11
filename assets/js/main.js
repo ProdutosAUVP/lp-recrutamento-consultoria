@@ -28,6 +28,12 @@ const PRIVACY_URL =
  * primeiros advisors). Mesmo tratamento dos dois acima: PDF no CDN, link em
  * nova aba, e desabilitado se a URL ficar vazia.
  */
+/**
+ * Canal de atendimento da LP (página do atendimento AUVP). Vai no rodapé e
+ * logo abaixo do formulário; vazio, os links ficam desabilitados.
+ */
+const ATENDIMENTO_URL = "https://auvp.net/?id=atendimento-lp-advisors";
+
 const PROMO_URL =
   "https://cdn.asupernova.com.br/termos/auvp%20advisors/Termo%20Promocional%20-%20PR%C3%89-LAN%C3%87AMENTO%20AUVP%20ADVISOR%20-%2020260902.docx%201.pdf";
 
@@ -228,6 +234,7 @@ function aplicarLinksLegais() {
     ["[data-terms-link]", TERMS_URL],
     ["[data-privacy-link]", PRIVACY_URL],
     ["[data-promo-link]", PROMO_URL],
+    ["[data-atendimento-link]", ATENDIMENTO_URL],
   ];
   pares.forEach(([seletor, url]) => {
     document.querySelectorAll(seletor).forEach((link) => {

@@ -415,6 +415,8 @@ ul, ol { list-style: none; }
   color: var(--ink-faint);
   max-width: 30rem;
 }
+.hero__compliance a { color: var(--ink-muted); text-decoration: underline; text-underline-offset: 2px; }
+.hero__compliance a:hover { color: var(--ink); }
 
 /* Media do hero — frame arqueado + elementos flutuantes */
 .hero__media { position: relative; }
